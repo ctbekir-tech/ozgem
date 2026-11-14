@@ -2,64 +2,269 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <!-- Tam Ekran ve Uygulama Ayarları -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Oyun Testi</title>
+    <title>Özge'nin Serüveni</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #1e1e1e; /* Koyu arka plan */
-            color: white;
-            font-family: -apple-system, sans-serif;
+            background-color: #121212;
+            color: #f0e6d2;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             height: 100vh;
-            user-select: none; /* Metinlerin yanlışlıkla kopyalanmasını engeller */
+            user-select: none;
+            text-align: center;
+            overflow: hidden;
         }
-        .buton {
-            background-color: #007aff;
-            color: white;
-            padding: 20px 40px;
-            border-radius: 12px;
-            font-size: 24px;
+        #oyun-alani {
+            width: 90%;
+            max-width: 400px;
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .hikaye-metni {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            min-height: 120px;
+            color: #d4c4a8;
+            font-style: italic;
+        }
+        .secenek {
+            background-color: #2a2a2a;
+            color: #d4c4a8;
+            padding: 15px 20px;
+            border: 1px solid #d4c4a8;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .secenek:active {
+            background-color: #d4c4a8;
+            color: #121212;
+        }
+        #envanter-alani {
             margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 14px;
+            color: #888;
+        }
+        .esya {
+            display: inline-block;
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin: 5px;
+            font-size: 13px;
+        }
+        #sifre-alani {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        #sifre-input {
+            padding: 15px;
+            font-size: 20px;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #d4c4a8;
+            background-color: #1e1e1e;
+            color: white;
+            letter-spacing: 5px;
+        }
+        #final-mektup {
+            display: none;
+            text-align: left;
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #d4c4a8;
+            box-shadow: 0 0 20px rgba(212, 196, 168, 0.2);
+            line-height: 1.6;
+            font-size: 16px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .baslik {
+            font-size: 22px;
+            color: #e8d5b5;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <h1>Sistem Hazır!</h1>
-    <p style="font-size: 20px;">Kayıtlı Puan: <span id="puanGosterge">0</span></p>
-    
-    <div class="buton" onclick="puanKazan()">Tıkla Puan Kazan</div>
+    <div id="oyun-alani">
+        <div id="hikaye" class="hikaye-metni">Yükleniyor...</div>
+        
+        <div id="secenekler-alani"></div>
+
+        <div id="sifre-alani">
+            <input type="number" id="sifre-input" placeholder="****" maxlength="4">
+            <div class="secenek" onclick="sifreKontrol()">Kutuyu Aç</div>
+            <div class="secenek" style="border-color: #555; color: #888;" onclick="sahneCiz('salon')">Vazgeç</div>
+        </div>
+
+        <div id="final-mektup">
+            <div class="baslik">İyi ki Doğdun Benim Güzel Eşim, Özge...</div>
+            Bu gizemli evin her odası, her köşesi aslında bizim hayatımızdan birer parça.<br><br>
+            Tıpkı bu oyundaki gibi, hayatımın tüm kilitli kapılarını güzelliğinle, zekanla ve o harika gülüşünle açtın.<br><br>
+            Sana verebileceğim kutulara sığan somut bir hediyem yok... Çünkü aradığım tüm hazineleri zaten sende buldum. Sen sadece bu oyunun değil, benim dünyamın da başrolüsün. Benim en büyük şansım, en güzel hediyem sensin.<br><br>
+            Birlikte kurduğumuz bu hayat ve seninle geçen her an benim en büyük hazinem.<br><br>
+            İyi ki doğdun, iyi ki hayatımdasın kraliçem. Seni çok seviyorum!
+        </div>
+
+        <div id="envanter-alani">
+            Çantandakiler: <span id="envanter-listesi">Boş</span>
+        </div>
+    </div>
 
     <script>
-        // Oyun açıldığında telefonun hafızasındaki puanı kontrol et
-        let puan = localStorage.getItem("oyunHafizasi");
-        
-        // Eğer daha önce oynanmamışsa puanı sıfır yap
-        if (puan == null) {
-            puan = 0;
-        } else {
-            puan = parseInt(puan); // Hafızadaki metni sayıya çevir
+        // Oyun Hafızası ve Değişkenler
+        let oyunDurumu = {
+            sahne: 'antre',
+            envanter: [],
+            plakCalindi: false
+        };
+
+        // Hafızayı kontrol et (Varsa yükle, yoksa sıfırdan başla)
+        if(localStorage.getItem('ozgeOyunKayit')) {
+            oyunDurumu = JSON.parse(localStorage.getItem('ozgeOyunKayit'));
         }
 
-        // Puanı ekrana yazdır
-        document.getElementById("puanGosterge").innerText = puan;
-
-        // Butona basıldığında çalışacak kod
-        function puanKazan() {
-            puan++; // Puanı 1 artır
-            document.getElementById("puanGosterge").innerText = puan; // Ekranda güncelle
-            localStorage.setItem("oyunHafizasi", puan); // Telefonun hafızasına kaydet
+        // Envanteri Güncelleme Fonksiyonu
+        function envanterGuncelle() {
+            let liste = document.getElementById("envanter-listesi");
+            if (oyunDurumu.envanter.length === 0) {
+                liste.innerText = "Boş";
+            } else {
+                liste.innerHTML = "";
+                oyunDurumu.envanter.forEach(esya => {
+                    liste.innerHTML += `<span class="esya">${esya}</span>`;
+                });
+            }
+            // Her işlemde oyunu telefona kaydet
+            localStorage.setItem('ozgeOyunKayit', JSON.stringify(oyunDurumu));
         }
+
+        // Buton (Seçenek) Oluşturma Fonksiyonu
+        function butonOlustur(metin, aksiyon) {
+            let btn = document.createElement("div");
+            btn.className = "secenek";
+            btn.innerText = metin;
+            btn.onclick = aksiyon;
+            return btn;
+        }
+
+        // Sahne Çizim Merkezi
+        function sahneCiz(sahneAdi) {
+            oyunDurumu.sahne = sahneAdi;
+            let hikayeKutusu = document.getElementById("hikaye");
+            let seceneklerKutusu = document.getElementById("secenekler-alani");
+            let sifreKutusu = document.getElementById("sifre-alani");
+            let mektupKutusu = document.getElementById("final-mektup");
+
+            // Temizlik
+            seceneklerKutusu.innerHTML = "";
+            sifreKutusu.style.display = "none";
+            mektupKutusu.style.display = "none";
+            hikayeKutusu.style.display = "block";
+            document.getElementById("envanter-alani").style.display = "block";
+            
+            envanterGuncelle();
+
+            // Sahneler ve Olaylar
+            if (sahneAdi === 'antre') {
+                hikayeKutusu.innerText = "Gizemli, sıcak ve tanıdık bir evin antresindesin. Karşında kilitli, büyük ahşap bir kapı var. Evin içi çok sessiz ama burnuna o çok sevdiğin kahvenin kokusu geliyor.";
+                
+                seceneklerKutusu.appendChild(butonOlustur("Kapıyı Zorla", () => alert("Kilitli, açılmıyor...")));
+                seceneklerKutusu.appendChild(butonOlustur("Küçük Sehpaya Bak", () => alert("Sehpanın üzerinde senin için özenle hazırlanmış, dumanı tüten bir kahve var.")));
+                
+                if (!oyunDurumu.envanter.includes("Eski Anahtar")) {
+                    seceneklerKutusu.appendChild(butonOlustur("Portmantoyu İncele", () => {
+                        alert("Ceketlerden birinin cebinde 'Eski Bir Anahtar' buldun!");
+                        oyunDurumu.envanter.push("Eski Anahtar");
+                        sahneCiz('antre');
+                    }));
+                } else {
+                    seceneklerKutusu.appendChild(butonOlustur("Anahtarı Kullanarak Kapıyı Aç", () => {
+                        sahneCiz('salon');
+                    }));
+                }
+            }
+
+            else if (sahneAdi === 'salon') {
+                hikayeKutusu.innerText = "Salona girdin. Şömine çıtırdıyor. Köşede eski bir plak çalar, duvarda ise boş bir fotoğraf çerçevesi var. Ortadaki masanın üzerinde işlemeli, gümüş bir kutu duruyor ama üzerinde bir şifre paneli var.";
+
+                if (!oyunDurumu.plakCalindi) {
+                    seceneklerKutusu.appendChild(butonOlustur("Plak Çalara Dokun", () => {
+                        alert("İğneyi plağın üzerine koydun... O tanıdık melodi odayı doldurmaya başladı. Birlikte defalarca dinlediğimiz, bize ait o şarkının notaları havada süzülürken çerçevenin arkasından gizli bir bölme açıldı! İçinden 'Birlikte Çekildiğimiz İlk Fotoğraf' düştü.");
+                        oyunDurumu.envanter.push("İlk Fotoğraf");
+                        oyunDurumu.plakCalindi = true;
+                        sahneCiz('salon');
+                    }));
+                }
+
+                seceneklerKutusu.appendChild(butonOlustur("Fotoğraf Çerçevesini İncele", () => {
+                    if (oyunDurumu.plakCalindi) {
+                        alert("İlk fotoğrafımızı çerçeveye yerleştirdin. Gözüne fotoğrafın arkasındaki yırtık bir not takıldı: 'En büyük mutluluğumuzun başladığı o tarih, tüm kilitleri açar.'");
+                    } else {
+                        alert("Bomboş bir çerçeve... Sanki içine çok değerli bir hatıranın konmasını bekliyor gibi.");
+                    }
+                }));
+
+                seceneklerKutusu.appendChild(butonOlustur("Gümüş Kutuyu Açmaya Çalış", () => {
+                    seceneklerKutusu.innerHTML = "";
+                    hikayeKutusu.innerText = "Kutunun üzerinde 4 haneli mekanik bir şifre paneli var. Şifreyi girmen gerekiyor.";
+                    sifreKutusu.style.display = "flex";
+                }));
+            }
+
+            else if (sahneAdi === 'final') {
+                hikayeKutusu.style.display = "none";
+                seceneklerKutusu.style.display = "none";
+                sifreKutusu.style.display = "none";
+                document.getElementById("envanter-alani").style.display = "none";
+                mektupKutusu.style.display = "block";
+            }
+        }
+
+        // Şifre Doğrulama
+        function sifreKontrol() {
+            let girilen = document.getElementById("sifre-input").value;
+            if (girilen === "1993") {
+                // Konfeti efekti yerine ekran titreşimi ve geçiş
+                document.body.style.backgroundColor = "#fff";
+                setTimeout(() => {
+                    document.body.style.backgroundColor = "#121212";
+                    sahneCiz('final');
+                }, 150);
+            } else {
+                alert("Yanlış şifre! Kutu açılmadı.");
+                document.getElementById("sifre-input").value = "";
+            }
+        }
+
+        // Oyunu Başlat
+        sahneCiz(oyunDurumu.sahne);
+
     </script>
 </body>
 </html>
-
