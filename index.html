@@ -1,1 +1,65 @@
-Bu kod, tam ekran özelliğini ve hafıza kaydını test etmemiz için yazdığım çok basit bir iskelettir
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <!-- Tam Ekran ve Uygulama Ayarları -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Oyun Testi</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e1e; /* Koyu arka plan */
+            color: white;
+            font-family: -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            user-select: none; /* Metinlerin yanlışlıkla kopyalanmasını engeller */
+        }
+        .buton {
+            background-color: #007aff;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sistem Hazır!</h1>
+    <p style="font-size: 20px;">Kayıtlı Puan: <span id="puanGosterge">0</span></p>
+    
+    <div class="buton" onclick="puanKazan()">Tıkla Puan Kazan</div>
+
+    <script>
+        // Oyun açıldığında telefonun hafızasındaki puanı kontrol et
+        let puan = localStorage.getItem("oyunHafizasi");
+        
+        // Eğer daha önce oynanmamışsa puanı sıfır yap
+        if (puan == null) {
+            puan = 0;
+        } else {
+            puan = parseInt(puan); // Hafızadaki metni sayıya çevir
+        }
+
+        // Puanı ekrana yazdır
+        document.getElementById("puanGosterge").innerText = puan;
+
+        // Butona basıldığında çalışacak kod
+        function puanKazan() {
+            puan++; // Puanı 1 artır
+            document.getElementById("puanGosterge").innerText = puan; // Ekranda güncelle
+            localStorage.setItem("oyunHafizasi", puan); // Telefonun hafızasına kaydet
+        }
+    </script>
+</body>
+</html>
+
