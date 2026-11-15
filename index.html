@@ -6,14 +6,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#100b20">
-    <title>Özge • Kalbin Şifresi</title>
+    <title>Özge • Birleşen Hatıralar</title>
     <style>
         :root {
             --bg-main: #100b20;
             --bg-card: #1c1433;
-            --bg-card-light: #271c47;
-            --border-gold: rgba(245, 197, 66, 0.35);
+            --bg-card-light: #281d4a;
             --gold: #f5c542;
+            --gold-glow: rgba(245, 197, 66, 0.3);
             --rose: #ff5e8e;
             --green: #2ed573;
             --text-white: #ffffff;
@@ -32,7 +32,7 @@
             padding: 0;
             width: 100%;
             height: 100dvh;
-            background: radial-gradient(circle at 50% 0%, #2e1d59 0%, #100b20 80%);
+            background: radial-gradient(circle at 50% 0%, #341f6e 0%, #100b20 80%);
             color: var(--text-white);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
@@ -51,7 +51,7 @@
         .full-overlay {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 50% 15%, #321f61 0%, #0d081a 90%);
+            background: radial-gradient(circle at 50% 15%, #3a2273 0%, #0d081a 90%);
             z-index: 200;
             display: none;
             flex-direction: column;
@@ -60,78 +60,67 @@
             padding: 20px;
             overflow-y: auto;
         }
-        .full-overlay.active {
-            display: flex;
-        }
+        .full-overlay.active { display: flex; }
 
         .modal-card {
             background: var(--bg-card);
-            border: 2px solid var(--border-gold);
+            border: 2px solid var(--gold);
             border-radius: 26px;
-            padding: 26px 22px;
+            padding: 26px 20px;
             width: 100%;
             max-width: 410px;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.75);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* BÜYÜK ŞİFRE KUTULARI */
         .pin-boxes {
             display: flex;
             justify-content: center;
             gap: 12px;
-            margin: 22px 0;
+            margin: 20px 0;
         }
         .pin-box {
-            width: 58px;
-            height: 66px;
+            width: 54px;
+            height: 62px;
             border-radius: 16px;
             background: #120c24;
-            border: 2px solid var(--border-gold);
-            font-size: 32px;
+            border: 2px solid var(--gold);
+            font-size: 30px;
             font-weight: 800;
             color: var(--gold);
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .pin-box.filled {
-            border-color: var(--gold);
-            background: rgba(245, 197, 66, 0.15);
-        }
+        .pin-box.filled { background: rgba(245, 197, 66, 0.18); }
 
         .pin-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            max-width: 310px;
+            gap: 10px;
+            max-width: 290px;
             margin: 0 auto;
         }
         .pin-key {
-            height: 58px;
-            border-radius: 16px;
+            height: 52px;
+            border-radius: 14px;
             background: var(--bg-card-light);
             border: 1px solid rgba(255,255,255,0.14);
             color: #fff;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             cursor: pointer;
         }
-        .pin-key:active {
-            background: var(--gold);
-            color: #100b20;
-            transform: scale(0.95);
-        }
+        .pin-key:active { background: var(--gold); color: #100b20; transform: scale(0.95); }
 
-        /* FOTOĞRAF ALANI */
         .photo-box {
             position: relative;
             width: 100%;
-            height: 210px;
-            border-radius: 20px;
+            height: 200px;
+            border-radius: 18px;
             overflow: hidden;
             border: 2px solid var(--gold);
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             background: linear-gradient(135deg, #2b194d, #4a1c40);
             display: flex;
             flex-direction: column;
@@ -147,36 +136,35 @@
             display: none;
         }
 
-        /* BÜYÜK ALTIN BUTON */
         .big-btn {
             background: linear-gradient(135deg, #f5c542, #d49b1f);
             color: #120c24;
             border: none;
-            border-radius: 18px;
-            padding: 16px 24px;
-            font-size: 19px;
+            border-radius: 16px;
+            padding: 15px 22px;
+            font-size: 18px;
             font-weight: 800;
             width: 100%;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(245, 197, 66, 0.35);
+            box-shadow: 0 8px 25px var(--gold-glow);
         }
         .big-btn:active { transform: scale(0.97); }
 
-        /* ÜST BİLGİ ÇUBUĞU - SADE VE BÜYÜK */
+        /* ÜST BİLGİ ÇUBUĞU */
         #top-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
-            background: rgba(16, 11, 32, 0.9);
+            padding: 10px 16px;
+            background: rgba(16, 11, 32, 0.92);
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .score-badge {
             background: var(--bg-card-light);
             border: 2px solid var(--gold);
-            padding: 7px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
             color: var(--gold);
             display: flex;
@@ -187,297 +175,176 @@
             background: var(--bg-card-light);
             border: 1.5px solid rgba(255,255,255,0.22);
             color: #fff;
-            padding: 8px 14px;
+            padding: 7px 12px;
             border-radius: 20px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
         }
-        .music-pill.playing {
-            border-color: var(--green);
-            background: rgba(46, 213, 115, 0.18);
-        }
+        .music-pill.playing { border-color: var(--green); background: rgba(46, 213, 115, 0.18); }
 
-        /* ORTA EKRAN ALANI */
+        /* EKRAN İÇERİĞİ */
         #screen-body {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 12px 16px;
             display: flex;
             flex-direction: column;
         }
-        .tab-view {
-            display: none;
-            flex-direction: column;
-            flex: 1;
-        }
-        .tab-view.active {
-            display: flex;
-        }
+        .tab-view { display: none; flex-direction: column; flex: 1; }
+        .tab-view.active { display: flex; }
 
-        /* 1. OYUN EKRANI: TEK ODAKLI BÜYÜK SORU & HARFLER */
-        .level-banner {
+        /* MERGE TAHTASI (SİPARİŞ VE GRID) */
+        .order-banner {
+            background: var(--bg-card);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
-        .level-pill {
-            background: rgba(255, 94, 142, 0.2);
-            border: 1.5px solid var(--rose);
-            color: #ff9ebb;
-            font-size: 15px;
-            font-weight: 800;
-            padding: 6px 14px;
-            border-radius: 14px;
-        }
-        .progress-dots {
-            display: flex;
-            gap: 6px;
-        }
-        .p-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.18);
-        }
-        .p-dot.done {
-            background: var(--gold);
-            box-shadow: 0 0 8px var(--gold);
-        }
+        .order-info { display: flex; align-items: center; gap: 10px; }
+        .order-icon { font-size: 32px; background: rgba(0,0,0,0.3); width: 48px; height: 48px; border-radius: 12px; display:flex; align-items:center; justify-content:center; }
+        .order-text { font-size: 14px; color: var(--text-soft); }
+        .order-title { font-size: 16px; font-weight: 800; color: #fff; }
 
-        .question-card {
-            background: var(--bg-card);
-            border: 2px solid var(--border-gold);
-            border-radius: 24px;
-            padding: 22px 18px;
-            text-align: center;
-            margin-bottom: 18px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-        }
-        .question-label {
-            font-size: 14px;
+        .deliver-btn {
+            background: var(--green);
+            color: #0b2916;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 12px;
             font-weight: 800;
-            color: var(--gold);
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(46, 213, 115, 0.4);
         }
-        .question-text {
-            font-size: 21px;
-            font-weight: 700;
-            line-height: 1.45;
-            color: #ffffff;
-        }
+        .deliver-btn:disabled { background: rgba(255,255,255,0.1); color: #666; cursor: not-allowed; box-shadow: none; }
 
-        /* CEVAP KUTULARI */
-        #answer-slots {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 6px 0 20px;
+        /* ÜRETİCİLER PANELİ */
+        .generators-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
         }
-        .ans-box {
-            width: 48px;
-            height: 56px;
-            border-radius: 14px;
-            background: #140e26;
-            border: 2.5px solid rgba(255,255,255,0.28);
-            font-size: 26px;
-            font-weight: 800;
-            color: #fff;
+        .gen-card {
+            background: var(--bg-card-light);
+            border: 1.5px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
             cursor: pointer;
             transition: 0.15s;
         }
-        .ans-box.filled {
-            background: var(--bg-card-light);
-            border-color: var(--gold);
-            color: var(--gold);
-            transform: translateY(-2px);
-        }
-        .ans-box.correct {
-            background: var(--green);
-            border-color: #fff;
-            color: #0b2916;
-        }
+        .gen-card:active { transform: scale(0.96); background: rgba(245, 197, 66, 0.15); border-color: var(--gold); }
+        .gen-icon { font-size: 28px; }
+        .gen-name { font-size: 13px; font-weight: 800; color: #fff; }
+        .gen-sub { font-size: 11px; color: var(--gold); }
 
-        /* BÜYÜK DOKUNMATİK HARF HAVUZU */
-        .instruction-hint {
-            text-align: center;
-            font-size: 15px;
-            color: var(--text-soft);
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-        #letter-pool {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            max-width: 380px;
-            margin: 0 auto 18px;
-        }
-        .letter-btn {
-            width: 56px;
-            height: 58px;
-            border-radius: 16px;
-            background: linear-gradient(145deg, #302257, #21163d);
-            border: 2px solid rgba(245, 197, 66, 0.45);
-            color: #fff;
-            font-size: 25px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.45);
-            transition: transform 0.1s, opacity 0.15s;
-        }
-        .letter-btn:active {
-            transform: scale(0.92);
-        }
-        .letter-btn.used {
-            opacity: 0.22;
-            pointer-events: none;
-            transform: scale(0.9);
-        }
-
-        /* YARDIMCI BUTONLAR (İPUCU & SİL) */
-        .helper-row {
+        /* 4x4 BİRLEŞTİRME TAHTASI (GRID) */
+        #merge-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: auto;
-            padding-top: 8px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: var(--bg-card);
+            border: 2px solid rgba(255,255,255,0.14);
+            border-radius: 20px;
+            padding: 10px;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
         }
-        .helper-btn {
-            height: 52px;
-            border-radius: 16px;
-            border: 1.5px solid rgba(255,255,255,0.2);
-            background: var(--bg-card-light);
-            color: #fff;
-            font-size: 16px;
-            font-weight: 800;
+        .grid-cell {
+            background: #140e26;
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            position: relative;
             cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
         }
-        .helper-btn.gold-outline {
+        .grid-cell.has-item {
+            background: linear-gradient(145deg, #2d2052, #1b1236);
+            border-color: rgba(245, 197, 66, 0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .grid-cell.selected {
             border-color: var(--gold);
-            color: var(--gold);
+            box-shadow: 0 0 15px var(--gold-glow);
+            transform: scale(1.05);
         }
+        .cell-emoji { font-size: 30px; margin-bottom: 2px; }
+        .cell-name { font-size: 9.5px; font-weight: 700; color: var(--text-soft); text-align: center; padding: 0 2px; }
 
-        /* LİSTE KARTLARI (MEKTUPLAR VE ÖDÜLLER) - BÜYÜK VE FERAH */
+        /* LİSTE KARTLARI (ÖDÜLLER & MEKTUPLAR) */
         .list-card {
             background: var(--bg-card);
             border: 2px solid rgba(255,255,255,0.12);
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 14px;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
         .list-card.unlocked {
             border-color: var(--gold);
-            background: linear-gradient(135deg, rgba(245, 197, 66, 0.12), rgba(28, 20, 51, 0.95));
+            background: linear-gradient(135deg, rgba(245, 197, 66, 0.1), rgba(28, 20, 51, 0.95));
         }
-        .card-top {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .card-emoji {
-            font-size: 36px;
-            width: 58px;
-            height: 58px;
-            border-radius: 16px;
-            background: rgba(0,0,0,0.35);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .card-title {
-            font-size: 19px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .card-desc {
-            font-size: 15px;
-            line-height: 1.45;
-            color: var(--text-soft);
-        }
+        .card-top { display: flex; align-items: center; gap: 12px; }
+        .card-emoji { font-size: 34px; width: 52px; height: 52px; border-radius: 14px; background: rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .card-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+        .card-desc { font-size: 14px; line-height: 1.4; color: var(--text-soft); }
 
-        /* ALT MENÜ - BÜYÜK VE ANLAŞILIR */
+        /* ALT GEZİNME ÇUBUĞU */
         #bottom-bar {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             background: #0c0818;
-            border-top: 1px solid rgba(255,255,255,0.14);
+            border-top: 1px solid rgba(255,255,255,0.12);
             padding: 8px 10px;
         }
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            padding: 8px 4px;
-            border-radius: 14px;
+            gap: 3px;
+            padding: 6px 4px;
+            border-radius: 12px;
             color: #9b92b8;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 800;
             cursor: pointer;
         }
-        .nav-item span.nav-icon {
-            font-size: 22px;
-        }
-        .nav-item.active {
-            color: var(--gold);
-            background: rgba(245, 197, 66, 0.14);
-        }
-
-        /* 3 SANDIK BONUS EKRANI */
-        .chest-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .chest-item {
-            background: var(--bg-card-light);
-            border: 2px solid var(--gold);
-            border-radius: 18px;
-            padding: 18px 8px;
-            font-size: 42px;
-            cursor: pointer;
-            transition: transform 0.15s;
-        }
-        .chest-item:active { transform: scale(0.92); }
+        .nav-item span.nav-icon { font-size: 20px; }
+        .nav-item.active { color: var(--gold); background: rgba(245, 197, 66, 0.12); }
     </style>
 </head>
 <body>
 
-    <!-- GİZLİ DOSYA SEÇİCİLER -->
     <input type="file" id="file-photo" accept="image/*" style="display:none" onchange="saveCustomPhoto(event)">
     <input type="file" id="file-audio" accept="audio/*" style="display:none" onchange="saveCustomAudio(event)">
 
-    <!-- 1. AŞAMA: ŞİFRE EKRANI (1993) -->
+    <!-- 1. GİRİŞ ŞİFRESİ (1993) -->
     <div id="screen-lock" class="full-overlay">
         <div class="modal-card">
-            <div style="font-size: 52px; margin-bottom: 8px;">👑</div>
-            <div style="font-size: 14px; color: var(--gold); font-weight: 800; letter-spacing: 1.5px;">ÖZEL DOĞUM GÜNÜ HEDİYESİ</div>
-            <h1 style="font-size: 28px; margin: 8px 0;">Özge'nin Dünyası</h1>
-            <p style="font-size: 17px; color: var(--text-soft); margin: 0;">
-                Kapıyı açmak için bizim özel tarihimizi tuşla:
-            </p>
+            <div style="font-size: 48px; margin-bottom: 6px;">👑</div>
+            <div style="font-size: 13px; color: var(--gold); font-weight: 800; letter-spacing: 1.5px;">ÖZEL DOĞUM GÜNÜ HEDİYESİ</div>
+            <h1 style="font-size: 26px; margin: 6px 0;">Özge'nin Hatıraları</h1>
+            <p style="font-size: 15px; color: var(--text-soft); margin: 0;">Kapıyı açmak için bizim özel tarihimizi tuşla:</p>
 
             <div class="pin-boxes">
                 <div class="pin-box" id="pbox-0"></div>
@@ -486,7 +353,7 @@
                 <div class="pin-box" id="pbox-3"></div>
             </div>
 
-            <div id="pin-msg" style="color: var(--rose); font-size: 16px; font-weight: 700; min-height: 24px; margin-bottom: 10px;"></div>
+            <div id="pin-msg" style="color: var(--rose); font-size: 15px; font-weight: 700; min-height: 22px; margin-bottom: 8px;"></div>
 
             <div class="pin-pad">
                 <button class="pin-key" onclick="tapPin('1')">1</button>
@@ -498,30 +365,30 @@
                 <button class="pin-key" onclick="tapPin('7')">7</button>
                 <button class="pin-key" onclick="tapPin('8')">8</button>
                 <button class="pin-key" onclick="tapPin('9')">9</button>
-                <button class="pin-key" style="font-size:16px;" onclick="resetPin()">Sil</button>
+                <button class="pin-key" style="font-size:14px;" onclick="resetPin()">Sil</button>
                 <button class="pin-key" onclick="tapPin('0')">0</button>
                 <button class="pin-key" onclick="backPin()">⌫</button>
             </div>
         </div>
     </div>
 
-    <!-- 2. AŞAMA: DOĞUM GÜNÜ MEKTUBU VE FOTOĞRAF -->
+    <!-- 2. DOĞUM GÜNÜ MEKTUBU VE FOTOĞRAF -->
     <div id="screen-letter" class="full-overlay">
         <div class="modal-card">
             <div class="photo-box" onclick="document.getElementById('file-photo').click()">
                 <img id="main-photo" alt="İlk Fotoğrafımız">
                 <div id="photo-placeholder">
-                    <div style="font-size: 48px;">👩‍❤️‍👨</div>
-                    <div style="font-size: 20px; font-weight: 800; color: var(--gold); margin-top: 6px;">ÖZGE • 1993</div>
-                    <div style="font-size: 14px; color: var(--text-soft); margin-top: 4px;">📸 Fotoğrafımızı eklemek için buraya dokun</div>
+                    <div style="font-size: 42px;">👩‍❤️‍👨</div>
+                    <div style="font-size: 18px; font-weight: 800; color: var(--gold); margin-top: 4px;">ÖZGE • 1993</div>
+                    <div style="font-size: 13px; color: var(--text-soft); margin-top: 4px;">📸 Fotoğrafımızı eklemek için buraya dokun</div>
                 </div>
             </div>
 
-            <h2 style="font-size: 24px; color: var(--gold); margin: 0 0 12px 0;">İyi ki Doğdun Güzel Eşim!</h2>
+            <h2 style="font-size: 22px; color: var(--gold); margin: 0 0 10px 0;">İyi ki Doğdun Güzel Eşim!</h2>
 
-            <div style="text-align: left; font-size: 17px; line-height: 1.6; color: #fff; background: rgba(0,0,0,0.35); padding: 16px; border-radius: 18px; border-left: 4px solid var(--gold); margin-bottom: 20px;">
+            <div style="text-align: left; font-size: 15px; line-height: 1.55; color: #fff; background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border-left: 4px solid var(--gold); margin-bottom: 16px;">
                 Hayatımın tüm kilitli kapılarını güzelliğinle, zekanla ve o harika gülüşünle açtın.<br><br>
-                Sana sıradan bir hediye vermek yerine, her soruyu bildiğinde yeni bir hatıramızı ve gerçek hayatta benden hemen isteyebileceğin ödülleri açacağın bir oyun hazırladım.<br><br>
+                Sana sıradan bir hediye vermek yerine, tahtadaki eşyaları birleştirerek siparişleri tamamlayacağın, her görevi bitirdiğinde gerçek hayatta benden dilediğin an isteyebileceğin özel ödülleri açacağın bir dünyayı kurdum.<br><br>
                 Sen benim en güzel hediyemsin. İyi ki doğdun kraliçem, seni çok seviyorum!
             </div>
 
@@ -535,7 +402,7 @@
         <div id="top-header">
             <div class="score-badge">
                 <span>⭐</span>
-                <span id="ui-stars">300</span>
+                <span id="ui-stars">250</span>
             </div>
 
             <button class="music-pill" id="btn-music" onclick="handleMusicButton()">
@@ -551,65 +418,60 @@
         <!-- EKRAN İÇERİĞİ -->
         <div id="screen-body">
 
-            <!-- SEKME 1: ŞİFRE ÇÖZME OYUNU -->
+            <!-- SEKME 1: MERGE OYUNU -->
             <div id="tab-game" class="tab-view active">
-                <div class="level-banner">
-                    <div class="level-pill" id="ui-level-title">BÖLÜM 1 • SORU 1 / 30</div>
-                    <div class="progress-dots" id="ui-dots"></div>
+                <!-- SİPARİŞ KARTI -->
+                <div class="order-banner">
+                    <div class="order-info">
+                        <div class="order-icon" id="order-emoji">☕</div>
+                        <div>
+                            <div class="order-text">Mevcut Sipariş:</div>
+                            <div class="order-title" id="order-title">Közde Türk Kahvesi (Lv. 2)</div>
+                        </div>
+                    </div>
+                    <button class="deliver-btn" id="deliver-btn" onclick="deliverOrder()" disabled>Teslim Et 🎁</button>
                 </div>
 
-                <!-- BÜYÜK SORU KARTI -->
-                <div class="question-card">
-                    <div class="question-label" id="ui-category">BİZİM HİKAYEMİZ</div>
-                    <div class="question-text" id="ui-question">
-                        Kalbinin kapısını açan, bu dünyadaki en özel 4 harfli isim nedir?
+                <!-- ÜRETİCİLER -->
+                <div class="generators-row">
+                    <div class="gen-card" onclick="tapGenerator('kahve')">
+                        <div class="gen-icon">☕</div>
+                        <div>
+                            <div class="gen-name">Kahve Kutusu</div>
+                            <div class="gen-sub">Üret (Dokun)</div>
+                        </div>
+                    </div>
+                    <div class="gen-card" onclick="tapGenerator('hediye')">
+                        <div class="gen-icon">🎁</div>
+                        <div>
+                            <div class="gen-name">Hediye Sandığı</div>
+                            <div class="gen-sub">Üret (Dokun)</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- CEVAP KUTULARI -->
-                <div id="answer-slots"></div>
-
-                <div class="instruction-hint" id="ui-feedback">
-                    👇 Aşağıdaki harflere sırayla dokunarak cevabı yaz:
+                <div style="font-size: 13px; color: var(--text-soft); text-align: center; margin-bottom: 8px;">
+                    💡 Aynı seviyedeki iki eşyaya sırayla dokunarak birleştir!
                 </div>
 
-                <!-- DOKUNMATİK HARF BUTONLARI -->
-                <div id="letter-pool"></div>
-
-                <!-- YARDIMCI BUTONLAR -->
-                <div class="helper-row">
-                    <button class="helper-btn" onclick="clearCurrentAnswer()">
-                        ⌫ Harfi Sil
-                    </button>
-                    <button class="helper-btn gold-outline" onclick="giveOneLetterHint()">
-                        💡 Harf Ver (50 ⭐)
-                    </button>
-                </div>
+                <!-- 4x4 TAHTA -->
+                <div id="merge-grid"></div>
             </div>
 
             <!-- SEKME 2: GERÇEK HAYAT ÖDÜLLERİ (KUPONLAR) -->
             <div id="tab-rewards" class="tab-view">
-                <div style="background: var(--bg-card); border: 2px solid var(--gold); border-radius: 20px; padding: 16px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-size: 17px; font-weight: 800; color: var(--gold);">⏳ Saatlik Yıldız Kumbarası</div>
-                        <div style="font-size: 15px; color: var(--text-soft); margin-top:2px;" id="vault-status">Biriken: +0 ⭐ (Saatlik +150 ⭐)</div>
-                    </div>
-                    <button class="big-btn" style="width:auto; padding:12px 18px; font-size:16px;" onclick="claimHourlyVault()">Topla</button>
-                </div>
-
-                <h2 style="font-size: 22px; margin: 0 0 6px 0; color: var(--gold);">🎁 Gerçek Hayat Ödülleri</h2>
-                <p style="font-size: 16px; color: var(--text-soft); margin: 0 0 16px 0;">
-                    Soruları bilerek kazandığın ⭐ Yıldızlarla bu ödülleri aç, ekran görüntüsü alıp eşine gönder ve gerçek hayatta hemen kullan!
+                <h2 style="font-size: 20px; margin: 0 0 6px 0; color: var(--gold);">🎁 Gerçek Hayat Ödül Sandığı</h2>
+                <p style="font-size: 14px; color: var(--text-soft); margin: 0 0 14px 0;">
+                    Siparişleri tamamlayarak kazandığın ⭐ Yıldızlarla bu özel zarfları aç ve gerçek hayatta hemen kullan!
                 </p>
-
                 <div id="rewards-container"></div>
             </div>
 
-            <!-- SEKME 3: AÇILAN MEKTUPLAR & BÖLÜMLER -->
+            <!-- SEKME 3: AÇILAN MEKTUPLAR -->
             <div id="tab-letters" class="tab-view">
-                <h2 style="font-size: 22px; margin: 0 0 6px 0; color: var(--gold);">💌 Gizli Aşk Mektupların</h2>
-                <p style="font-size: 16px; color: var(--text-soft); margin: 0 0 16px 0;">
-                    Her 5 soruyu çözdüğünde yeni bir mühürlü zarf açılır ve saatlik yıldız kazancın artar!
+                <h2 style="font-size: 20px; margin: 0 0 6px 0; color: var(--gold);">💌 Gizli Aşk Mektupların</h2>
+                <p style="font-size: 14px; color: var(--text-soft); margin: 0 0 14px 0;">
+                    Her sipariş teslimatında hikayemiz ilerler ve yeni mühürlü mektupların kilidi açılır!
                 </p>
                 <div id="letters-container"></div>
             </div>
@@ -620,9 +482,9 @@
         <div id="bottom-bar">
             <div class="nav-item active" onclick="switchMainTab('game', this)">
                 <span class="nav-icon">🧩</span>
-                <span>Oyun</span>
+                <span>Birleştir</span>
             </div>
-            <div class="nav-item" onclick="switchMainTab('rewards', this)">
+            <div class="nav-item" onclick="switchMainTab('rewards', this)" style="position:relative;">
                 <span class="nav-icon">🎁</span>
                 <span>Ödüller</span>
             </div>
@@ -633,199 +495,129 @@
         </div>
     </div>
 
-    <!-- TEBRİKLER / SONRAKİ SORU MODALI -->
-    <div id="modal-win" class="full-overlay" style="background: rgba(10, 6, 22, 0.88);">
-        <div class="modal-card">
-            <div style="font-size: 56px; margin-bottom: 6px;" id="win-emoji">🎉</div>
-            <div style="font-size: 15px; font-weight: 800; color: var(--gold);" id="win-sub">DOĞRU CEVAP!</div>
-            <h2 style="font-size: 28px; margin: 8px 0 12px;" id="win-word">ÖZGE</h2>
-            <div id="win-message" style="font-size: 18px; line-height: 1.5; color: var(--text-soft); margin-bottom: 20px;"></div>
-
-            <!-- 3 SANDIK SEÇİMİ (Her 3 seviyede bir görünür) -->
-            <div id="chest-section" style="display:none; margin-bottom: 18px;">
-                <div style="font-size: 17px; font-weight: 800; color: var(--gold);">🎁 Sürpriz Hediye Sandığından Birini Seç:</div>
-                <div class="chest-grid">
-                    <div class="chest-item" onclick="openBonusChest(0)">🎁</div>
-                    <div class="chest-item" onclick="openBonusChest(1)">🎁</div>
-                    <div class="chest-item" onclick="openBonusChest(2)">🎁</div>
-                </div>
-                <div id="chest-result" style="font-size: 18px; font-weight: 800; color: var(--green); min-height: 26px;"></div>
-            </div>
-
-            <button class="big-btn" onclick="goToNextQuestion()">Sıradaki Soruya Geç ➡️</button>
-        </div>
-    </div>
-
-    <!-- BİLGİ / KUPON / AYARLAR MODALI -->
+    <!-- GENEL BİLGİ / KUPON MODALI -->
     <div id="modal-generic" class="full-overlay" style="background: rgba(10, 6, 22, 0.88);">
         <div class="modal-card">
-            <div style="font-size: 50px; margin-bottom: 8px;" id="gen-icon">🎟️</div>
-            <h2 style="font-size: 24px; color: var(--gold); margin: 4px 0 12px;" id="gen-title">Başlık</h2>
-            <div id="gen-body" style="font-size: 17px; line-height: 1.55; color: #fff; margin-bottom: 20px;"></div>
-            <button class="big-btn" onclick="document.getElementById('modal-generic').classList.remove('active')">Tamam</button>
+            <div style="font-size: 46px; margin-bottom: 6px;" id="gen-icon">🎟️</div>
+            <h2 style="font-size: 22px; color: var(--gold); margin: 4px 0 10px;" id="gen-title">Başlık</h2>
+            <div id="gen-body" style="font-size: 15px; line-height: 1.5; color: #fff; margin-bottom: 18px;"></div>
+            <button class="big-btn" onclick="document.getElementById('modal-generic').classList.remove('aktif')">Tamam</button>
         </div>
     </div>
 
     <script>
         /* =========================================================
-           1. 30 SEVİYELİ NET, ANLAŞILIR VE SÜRÜKLEYİCİ SORU SERİSİ
+           1. MERGE-2 EŞYA ZİNCİRİ (ÖZGE'NİN DÜNYASI)
            ========================================================= */
-        const QUESTIONS = [
-            // BÖLÜM 1 (1-5)
-            { cat: "BÖLÜM 1 • DOĞUM GÜNÜ KRALİÇESİ", q: "Kalbinin kapısını açan, bu dünyadaki en özel 4 harfli isim nedir?", ans: "ÖZGE", extra: "SLİ" },
-            { cat: "BÖLÜM 1 • DOĞUM GÜNÜ KRALİÇESİ", q: "Gözlerinin içine her baktığımda kalbimi dolduran en güçlü duygu nedir?", ans: "SEVGİ", extra: "KLM" },
-            { cat: "BÖLÜM 1 • DOĞUM GÜNÜ KRALİÇESİ", q: "Seninle karşılıklı içtiğimizde tüm yorgunluğumuzu alan o sıcak keyif nedir?", ans: "KAHVE", extra: "RTN" },
-            { cat: "BÖLÜM 1 • DOĞUM GÜNÜ KRALİÇESİ", q: "Bize ait olan o özel şarkının içinde gizlenen 6 harfli isim nedir?", ans: "TÜRKAN", extra: "SİE" },
-            { cat: "BÖLÜM 1 • FİNAL SORUSU", q: "Yüzünde belirdiği anda dünyamı aydınlatan en güzel mucize nedir?", ans: "GÜLÜŞÜN", extra: "AKM" },
+        const ITEMS = {
+            kahve_1: { id: "kahve_1", level: 1, name: "Tekli Çay", emoji: "🍵", gen: "kahve" },
+            kahve_2: { id: "kahve_2", level: 2, name: "Közde Türk Kahvesi", emoji: "☕", gen: "kahve" },
+            kahve_3: { id: "kahve_3", level: 3, name: "Özel Fincan Takımı", emoji: "🫖", gen: "kahve" },
+            kahve_4: { id: "kahve_4", level: 4, name: "Lüks Kahve Keyfi", emoji: "🍰", gen: "kahve" },
 
-            // BÖLÜM 2 (6-10)
-            { cat: "BÖLÜM 2 • BİZİM YUVAMIZ", q: "İkimizin birlikte çekildiği ve hiç unutamadığımız o ilk kare bir nedir?", ans: "HATIRA", extra: "KLE" },
-            { cat: "BÖLÜM 2 • BİZİM YUVAMIZ", q: "Kapısından içeri girdiğimizde huzur bulduğumuz sıcak evimiz, bizim neyimizdir?", ans: "YUVAMIZ", extra: "TER" },
-            { cat: "BÖLÜM 2 • BİZİM YUVAMIZ", q: "Hayatımıza güneş gibi doğan, ailemizin en tatlı meyvesi kimdir?", ans: "KIZIMIZ", extra: "AEN" },
-            { cat: "BÖLÜM 2 • BİZİM YUVAMIZ", q: "Senin sesini duyduğumda ve yanında olduğumda hissettiğim dinginlik nedir?", ans: "HUZUR", extra: "KMA" },
-            { cat: "BÖLÜM 2 • FİNAL SORUSU", q: "Kalbimdeki tahtın tek sahibi olan sen, benim neyimsin?", ans: "KRALİÇEM", extra: "TUS" },
+            hediye_1: { id: "hediye_1", level: 1, name: "Tatlı Not", emoji: "💌", gen: "hediye" },
+            hediye_2: { id: "hediye_2", level: 2, name: "Taze Çiçek Buketi", emoji: "💐", gen: "hediye" },
+            hediye_3: { id: "hediye_3", level: 3, name: "İlk Fotoğrafımız", emoji: "📸", gen: "hediye" },
+            hediye_4: { id: "hediye_4", level: 4, name: "Kraliçe Tacı", emoji: "👑", gen: "hediye" }
+        };
 
-            // BÖLÜM 3 (11-15)
-            { cat: "BÖLÜM 3 • KALBİN SIRLARI", q: "Kimseye anlatamadığım her şeyi bir tek sana anlatabilmem, senin benim neyim olduğunu gösterir?", ans: "SIRDAŞIM", extra: "EKO" },
-            { cat: "BÖLÜM 3 • KALBİN SIRLARI", q: "Senin bakışında, duruşunda ve konuşmanda hayran olduğum o incelik nedir?", ans: "ZARAFET", extra: "KİN" },
-            { cat: "BÖLÜM 3 • KALBİN SIRLARI", q: "Elini tuttuğumda hayattaki her zorluğu aşacağımıza olan inancım nedir?", ans: "GÜVEN", extra: "SAR" },
-            { cat: "BÖLÜM 3 • KALBİN SIRLARI", q: "Seni ilk gördüğüm gün kalbimin hızla çarpmasına sebep olan tatlı duygu nedir?", ans: "HEYECAN", extra: "KİR" },
-            { cat: "BÖLÜM 3 • FİNAL SORUSU", q: "Bana dünyaları verseler değişmeyeceğim, hayatımdaki en değerli varlığın nedir?", ans: "HAZİNEM", extra: "KOT" },
-
-            // BÖLÜM 4 (16-20)
-            { cat: "BÖLÜM 4 • ZAMANIN ÖTESİ", q: "Birbirimize verdiğimiz ve bir ömür boyu sürecek olan bağlılık sözü nedir?", ans: "SADAKAT", extra: "MİE" },
-            { cat: "BÖLÜM 4 • ZAMANIN ÖTESİ", q: "Kızımıza ve bana sarılırken gösterdiğin o sıcacık anne ve eş sevgisi nedir?", ans: "ŞEFKAT", extra: "RNO" },
-            { cat: "BÖLÜM 4 • ZAMANIN ÖTESİ", q: "İkimizin birbirini konuşmadan bile tek bir bakışla anlaması nedir?", ans: "UYUM", extra: "KLA" },
-            { cat: "BÖLÜM 4 • ZAMANIN ÖTESİ", q: "Birlikte kurduğumuz tüm güzel hayallerin gerçekleşeceği o yarınlar nedir?", ans: "GELECEK", extra: "SAN" },
-            { cat: "BÖLÜM 4 • FİNAL SORUSU", q: "Hayat yolculuğunda karşıma çıkan en güzel yazgım, benim neyimsin?", ans: "KADERİM", extra: "TUZ" },
-
-            // BÖLÜM 5 (21-25)
-            { cat: "BÖLÜM 5 • BÜYÜLÜ ANLAR", q: "Seninle baş başa yaptığımız ve tadı damağımızda kalan tatlı konuşmalar nedir?", ans: "SOHBET", extra: "KRA" },
-            { cat: "BÖLÜM 5 • BÜYÜLÜ ANLAR", q: "Evimizin içini dolduran ve hiç eksik olmasını istemediğim neşe sesi nedir?", ans: "KAHKAHA", extra: "EİO" },
-            { cat: "BÖLÜM 5 • BÜYÜLÜ ANLAR", q: "Gözlerinin derinliğinde beni kendine hayran bırakan o çekim gücü nedir?", ans: "BÜYÜ", extra: "KLS" },
-            { cat: "BÖLÜM 5 • BÜYÜLÜ ANLAR", q: "Sana her baktığımda içimden geçen 'İyi ki benim eşim olmuş' duygusu nedir?", ans: "ŞÜKRAN", extra: "EİO" },
-            { cat: "BÖLÜM 5 • FİNAL SORUSU", q: "Ruhumun diğer yarısı, hayatımın anlamı olan kişi kimdir?", ans: "SEVDİĞİM", extra: "KRA" },
-
-            // BÖLÜM 6 (26-30)
-            { cat: "BÖLÜM 6 • SONSUZ AŞK", q: "Yıllar geçse de ilk günkü gibi taze kalan güçlü sevgimizin adı nedir?", ans: "TUTKU", extra: "EİA" },
-            { cat: "BÖLÜM 6 • SONSUZ AŞK", q: "Seninle çıktığımız bu hayat yolculuğunun en keyifli hali nedir?", ans: "MACERA", extra: "KİN" },
-            { cat: "BÖLÜM 6 • SONSUZ AŞK", q: "Üçümüzün bir arada olduğu anlarda hissettiğimiz en büyük zenginlik nedir?", ans: "MUTLULUK", extra: "EAİ" },
-            { cat: "BÖLÜM 6 • SONSUZ AŞK", q: "Sana olan sevgimin süresini anlatan, hiç bitmeyecek olan kavram nedir?", ans: "SONSUZ", extra: "KAE" },
-            { cat: "BÖLÜM 6 • BÜYÜK FİNAL", q: "Kalbimde bugün, yarın ve daima tek sahibi olarak kalacak mucize nedir?", ans: "AŞKIMIZ", extra: "TEN" }
+        const ORDERS = [
+            { req: "kahve_2", title: "Közde Türk Kahvesi (Lv. 2)", emoji: "☕", reward: 150, text: "Sabah kahvesi kokusuyla başlayan harika bir gün!" },
+            { req: "hediye_2", title: "Taze Çiçek Buketi (Lv. 2)", emoji: "💐", reward: 250, text: "Gülüşün gibi taze ve mis kokulu çiçekler..." },
+            { req: "kahve_3", title: "Özel Fincan Takımı (Lv. 3)", emoji: "🫖", reward: 400, text: "Karşılıklı uzun sohbetlerimizin en tatlı eşlikçisi." },
+            { req: "hediye_3", title: "İlk Fotoğrafımız (Lv. 3)", emoji: "📸", reward: 700, text: "O gün aklımdan geçen tek şey seninle bir ömür geçirmekti." },
+            { req: "kahve_4", title: "Lüks Kahve Keyfi (Lv. 4)", emoji: "🍰", reward: 1200, text: "Dünyanın en tatlı eşiyle paylaşılan en özel an." },
+            { req: "hediye_4", title: "Kraliçe Tacı (Lv. 4)", emoji: "👑", reward: 2500, text: "Kalbimin tek kraliçesi Özge, iyi ki doğdun! Bu dünyadaki en büyük ödülüm sensin." }
         ];
 
         const LETTERS_DATA = [
-            { chap: 1, title: "1. Mektup: Doğum Günü Kraliçem", rate: 150, text: "Özge'm, senin adınla başlayan her gün benim hayatımın en güzel hediyesi. İyi ki doğdun, iyi ki kalbimin kraliçesi oldun." },
-            { chap: 2, title: "2. Mektup: Sıcak Yuvamız ve İlk Kare", rate: 300, text: "O şarkımız çaldığında ve ilk fotoğrafımıza her baktığımda kalbim ilk günkü heyecanla çarpıyor. Seninle ve kızımızla kurduğumuz yuva benim cennetim." },
-            { chap: 3, title: "3. Mektup: En Yakın Sırdaşım", rate: 600, text: "Sen sadece eşim değil; en yakın arkadaşım, akıl hocam ve en güvenli limanımsın. Zarafetinle hayatımı güzelleştiriyorsun." },
-            { chap: 4, title: "4. Mektup: Kaderimin En Güzel Yazgısı", rate: 1000, text: "Hayatta yaptığım en doğru şey senin elini tutmak oldu. Yıllar geçtikçe sana olan hayranlığım ve sevgim katlanarak büyüyor." },
-            { chap: 5, title: "5. Mektup: Bir Fincan Kahve Mutluluğu", rate: 1600, text: "Bana dünyaları verseler, seninle karşılıklı içtiğimiz bir kahvenin ve yüzündeki tek bir tebessümün verdiği mutluluğa değişmem." },
-            { chap: 6, title: "6. Mektup: Sonsuzluk Sözüm", rate: 2500, text: "Tüm bölümleri zekanla tamamladın sevgilim! Bu oyun sonsuz modda devam ediyor ama bil ki sana olan aşkım buradaki tüm yıldızlardan daha sonsuz!" }
+            { id: 1, title: "1. Mektup: İlk Kıvılcım", reqOrder: 0, text: "Özge'm, senin adınla başlayan her gün benim hayatımın en güzel hediyesi. İyi ki doğdun, iyi ki kalbimin kraliçesi oldun." },
+            { id: 2, title: "2. Mektup: Çerçevedeki Anı", reqOrder: 1, text: "O ilk fotoğrafımıza her baktığımda zaman duruyor ve ben ilk günkü heyecanla sana yeniden aşık oluyorum." },
+            { id: 3, title: "3. Mektup: Sırdaşım ve Eşim", reqOrder: 2, text: "Sen sadece eşim değil; en yakın arkadaşım, akıl hocam ve evimizin neşesisin. Zarafetinle dünyamı güzelleştiriyorsun." },
+            { id: 4, title: "4. Mektup: Kaderimin Yazgısı", reqOrder: 3, text: "Hayatta yaptığım en doğru şey senin elini tutmak oldu. Yıllar geçtikçe sana olan sevgim katlanarak büyüyor." },
+            { id: 5, title: "5. Mektup: Sonsuzluk Sözü", reqOrder: 5, text: "Tüm siparişleri tamamladın sevgilim! Bu oyun sonsuz modda devam ediyor ama bil ki sana olan aşkım buradaki tüm yıldızlardan daha sonsuz!" }
         ];
 
         const REWARDS_DATA = [
-            { id: "kahve", icon: "☕", title: "Özel Kahve & Sunum Servisi", desc: "Bu ödülü açtığında eşin sana hemen köpüklü bir kahve hazırlayıp ayağına getirir.", cost: 350 },
-            { id: "tatli", icon: "🍰", title: "Tatlı & Çikolata Paketi", desc: "Canının çektiği en sevdiğin tatlı veya çikolata itirazsız hemen temin edilir.", cost: 800 },
-            { id: "masaj", icon: "💆‍♀️", title: "20 Dakika VIP Masaj", desc: "Günün tüm yorgunluğunu silecek 20 dakikalık özel omuz ve ayak masajı.", cost: 1600 },
-            { id: "kumanda", icon: "🎬", title: "Film & Dizi Kraliçesi", desc: "Çerezler hazırlanır ve bu akşam ne izleneceğine %100 Özge karar verir.", cost: 3000 },
-            { id: "izin", icon: "🛋️", title: "Tam Gün Dinlenme Hakkı", desc: "Bugün mutfak ve evdeki tüm işler eşinde, sen sadece keyfine bakıyorsun.", cost: 6000 },
-            { id: "yemek", icon: "🕯️", title: "Baş Başa Özel Akşam Yemeği", desc: "İstediğin bir yerde veya menüde romantik akşam yemeği sözü.", cost: 12000 },
-            { id: "kralice", icon: "👑", title: "24 Saat Kraliçe İlanı!", desc: "Tam bir gün boyunca Özge ne derse o olur, hiçbir isteğine hayır denemez!", cost: 25000 }
+            { id: "kahve", icon: "☕", title: "Özel Kahve & Sunum Servisi", desc: "Bu ödülü açtığında eşin sana hemen köpüklü bir kahve hazırlayıp ayağına getirir.", cost: 300 },
+            { id: "tatli", icon: "🍰", title: "Tatlı & Çikolata Paketi", desc: "Canının çektiği en sevdiğin tatlı veya çikolata hemen kapına gelir.", cost: 600 },
+            { id: "masaj", icon: "💆‍♀️", title: "20 Dakika VIP Masaj", desc: "Günün tüm yorgunluğunu silecek 20 dakikalık özel omuz ve ayak masajı.", cost: 1200 },
+            { id: "kumanda", icon: "🎬", title: "Film & Dizi Kraliçesi", desc: "Çerezler hazırlanır ve bu akşam ne izleneceğine %100 Özge karar verir.", cost: 2500 },
+            { id: "yemek", icon: "🕯️", title: "Baş Başa Akşam Yemeği", desc: "İstediğin bir yerde veya menüde romantik akşam yemeği sözü.", cost: 5000 },
+            { id: "kralice", icon: "👑", title: "24 Saat Kraliçe İlanı!", desc: "Tam bir gün boyunca Özge ne derse o olur, hiçbir isteğine hayır denemez!", cost: 10000 }
         ];
 
         /* =========================================================
-           2. OYUN HAFIZASI (LOCALSTORAGE + INDEXEDDB KALICI MEDYA)
+           2. OYUN HAFIZASI (LOCALSTORAGE)
            ========================================================= */
         let state = {
             pinOpened: false,
-            levelIdx: 0,
-            stars: 300,
-            unlockedRewards: [],
-            lastVaultTime: Date.now()
+            stars: 250,
+            orderIdx: 0,
+            grid: new Array(16).fill(null), // 16 hücreli 4x4 tahta
+            unlockedRewards: []
         };
 
         function loadGameState() {
             try {
-                const raw = localStorage.getItem("ozgeCleanGameV4");
+                const raw = localStorage.getItem("ozgeMergeGameV1");
                 if (raw) state = { ...state, ...JSON.parse(raw) };
             } catch (e) {}
         }
 
         function saveGameState() {
             try {
-                localStorage.setItem("ozgeCleanGameV4", JSON.stringify(state));
+                localStorage.setItem("ozgeMergeGameV1", JSON.stringify(state));
             } catch (e) {}
         }
 
-        // IndexedDB ile Büyük MP3 ve Fotoğrafı Telefona Kalıcı Kaydetme
+        // IndexedDB Kalıcı Medya
         function openMediaDB() {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 const req = indexedDB.open("OzgeMediaDB", 1);
-                req.onupgradeneeded = e => {
-                    e.target.result.createObjectStore("files");
-                };
+                req.onupgradeneeded = e => e.target.result.createObjectStore("files");
                 req.onsuccess = e => resolve(e.target.result);
-                req.onerror = e => reject(e);
+                req.onerror = () => resolve(null);
             });
         }
 
         async function saveToMediaDB(key, blob) {
-            try {
-                const db = await openMediaDB();
-                const tx = db.transaction("files", "readwrite");
-                tx.objectStore("files").put(blob, key);
-            } catch (e) {}
+            const db = await openMediaDB();
+            if (!db) return;
+            const tx = db.transaction("files", "readwrite");
+            tx.objectStore("files").put(blob, key);
         }
 
         async function loadFromMediaDB(key) {
-            try {
-                const db = await openMediaDB();
-                return new Promise(resolve => {
-                    const tx = db.transaction("files", "readonly");
-                    const req = tx.objectStore("files").get(key);
-                    req.onsuccess = () => resolve(req.result || null);
-                    req.onerror = () => resolve(null);
-                });
-            } catch (e) {
-                return null;
-            }
+            const db = await openMediaDB();
+            if (!db) return null;
+            return new Promise(resolve => {
+                const tx = db.transaction("files", "readonly");
+                const req = tx.objectStore("files").get(key);
+                req.onsuccess = () => resolve(req.result || null);
+                req.onerror = () => resolve(null);
+            });
         }
 
         /* =========================================================
-           3. KESİN ÇALIŞAN MP3 VE SES SİSTEMİ (iOS SAFARI UYUMLU)
+           3. MÜZİK VE SES SİSTEMİ
            ========================================================= */
         const bgAudio = new Audio();
         bgAudio.loop = true;
         bgAudio.preload = "auto";
-        let audioReady = false;
         let isPlayingMusic = false;
         let audioCtx = null;
 
         async function setupAudioSource() {
-            // 1. Önce telefondan seçilmiş kalıcı MP3 var mı bak
             const savedBlob = await loadFromMediaDB("customMp3");
             if (savedBlob) {
                 bgAudio.src = URL.createObjectURL(savedBlob);
-                audioReady = true;
                 return;
             }
-            // 2. Yoksa GitHub klasöründeki sarki.mp3 alternatiflerini dene
-            const names = ["sarki.mp3", "Sarki.mp3", "sarki.MP3", "turkan.mp3", "muzik.mp3", "sarki.m4a"];
-            for (const name of names) {
-                try {
-                    const res = await fetch(name, { method: "HEAD" });
-                    if (res.ok) {
-                        bgAudio.src = name;
-                        audioReady = true;
-                        return;
-                    }
-                } catch (e) {}
-            }
-            // Varsayılan olarak sarki.mp3 ata
             bgAudio.src = "sarki.mp3";
         }
 
-        function playEffectNote(freq, dur = 0.2) {
+        function playTone(freq, dur = 0.2) {
             try {
                 const AC = window.AudioContext || window.webkitAudioContext;
                 if (!audioCtx && AC) audioCtx = new AC();
@@ -844,7 +636,6 @@
             } catch (e) {}
         }
 
-        // iOS Safari için doğrudan kullanıcı dokunuşu içinde senkron başlatma
         function triggerMusicPlaySync() {
             bgAudio.play().then(() => {
                 isPlayingMusic = true;
@@ -865,12 +656,11 @@
                     isPlayingMusic = true;
                     updateMusicButtonUI();
                 }).catch(() => {
-                    // Eğer GitHub'da sarki.mp3 bulunamadıysa kullanıcıya telefondan seçme imkanı sun
                     showGenericModal(
                         "🎵",
-                        "Şarkı Dosyası Seç",
-                        "GitHub'da <b>sarki.mp3</b> dosyası bulunamadı veya tarayıcı izin vermedi.<br><br>Aşağıdaki butona basarak telefonundaki MP3 şarkısını seçebilirsin, oyun hafızasına kalıcı kaydedilir:<br><br>" +
-                        "<button class='big-btn' onclick="document.getElementById('file-audio').click()">📱 Telefondan MP3 Seç ve Çal</button>"
+                        "Şarkı Seçimi",
+                        "GitHub'da <b>sarki.mp3</b> bulunamadıysa telefondan seçebilirsin:<br><br>" +
+                        "<button class='big-btn' onclick=\"document.getElementById('file-audio').click()\">📱 Telefondan MP3 Seç</button>"
                     );
                 });
             }
@@ -896,18 +686,16 @@
             if (!file) return;
             await saveToMediaDB("customMp3", file);
             bgAudio.src = URL.createObjectURL(file);
-            audioReady = true;
-            document.getElementById("modal-generic").classList.remove("active");
+            document.getElementById("modal-generic").classList.remove("aktif");
             triggerMusicPlaySync();
         }
 
         /* =========================================================
-           4. FOTOĞRAF YÜKLEME SİSTEMİ
+           4. FOTOĞRAF YÜKLEME
            ========================================================= */
         async function setupPhotoSource() {
             const imgEl = document.getElementById("main-photo");
             const holder = document.getElementById("photo-placeholder");
-
             const savedBlob = await loadFromMediaDB("customPhoto");
             if (savedBlob) {
                 imgEl.src = URL.createObjectURL(savedBlob);
@@ -915,8 +703,7 @@
                 holder.style.display = "none";
                 return;
             }
-
-            const names = ["fotograf.jpg", "fotograf.jpeg", "fotograf.JPG", "fotograf.PNG", "fotograf.png"];
+            const names = ["fotograf.jpg", "fotograf.jpeg", "fotograf.JPG", "fotograf.PNG"];
             for (const name of names) {
                 const ok = await new Promise(r => {
                     const test = new Image();
@@ -941,23 +728,21 @@
             imgEl.src = URL.createObjectURL(file);
             imgEl.style.display = "block";
             document.getElementById("photo-placeholder").style.display = "none";
-            document.getElementById("modal-generic").classList.remove("active");
         }
 
         /* =========================================================
-           5. GİRİŞ ŞİFRESİ (1993) - DOĞRUDAN SENKRON MÜZİK TETİKLEMELİ
+           5. GİRİŞ ŞİFRESİ (1993)
            ========================================================= */
         let pinValue = "";
 
         function tapPin(num) {
             if (pinValue.length >= 4) return;
             pinValue += num;
-            playEffectNote(450 + pinValue.length * 70, 0.12);
+            playTone(450 + pinValue.length * 70, 0.12);
             renderPinBoxes();
 
             if (pinValue.length === 4) {
                 if (pinValue === "1993") {
-                    // ÖNEMLİ: iOS Safari için setTimeout KULLANMADAN doğrudan burada müziği başlatıyoruz!
                     triggerMusicPlaySync();
                     state.pinOpened = true;
                     saveGameState();
@@ -971,15 +756,8 @@
             }
         }
 
-        function backPin() {
-            pinValue = pinValue.slice(0, -1);
-            renderPinBoxes();
-        }
-
-        function resetPin() {
-            pinValue = "";
-            renderPinBoxes();
-        }
+        function backPin() { pinValue = pinValue.slice(0, -1); renderPinBoxes(); }
+        function resetPin() { pinValue = ""; renderPinBoxes(); }
 
         function renderPinBoxes() {
             for (let i = 0; i < 4; i++) {
@@ -992,287 +770,150 @@
         function enterGameFromLetter() {
             triggerMusicPlaySync();
             document.getElementById("screen-letter").classList.remove("active");
-            loadCurrentQuestion();
+            initMergeGame();
         }
 
         /* =========================================================
-           6. NET VE ANLAŞILIR ŞİFRE/KELİME OYUNU MEKANİĞİ
+           6. MERGE-2 OYUN MEKANİĞİ
            ========================================================= */
-        let currentQ = null;
-        let poolLetters = [];
-        let userSlots = []; // Her kutuda hangi poolIndex'in olduğu ({ char, poolIdx, locked })
-        let chestOpenedThisTurn = false;
+        let selectedCellIdx = null;
 
-        function loadCurrentQuestion() {
-            const qIndex = state.levelIdx % QUESTIONS.length;
-            currentQ = QUESTIONS[qIndex];
-            const ansChars = currentQ.ans.split("");
-            const extraChars = currentQ.extra.split("");
-
-            // Harf havuzunu oluştur ve karıştır
-            poolLetters = [...ansChars, ...extraChars];
-            for (let i = poolLetters.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [poolLetters[i], poolLetters[j]] = [poolLetters[j], poolLetters[i]];
+        function initMergeGame() {
+            // Eğer tahta tamamen boşsa başlangıç eşyaları ver
+            if (state.grid.every(x => x === null)) {
+                state.grid[0] = "kahve_1";
+                state.grid[1] = "hediye_1";
             }
-
-            userSlots = new Array(ansChars.length).fill(null);
-
-            // Başlık ve İlerleme Noktaları
-            const chapNum = Math.min(6, Math.floor(state.levelIdx / 5) + 1);
-            document.getElementById("ui-level-title").innerText = `BÖLÜM ${chapNum} • SORU ${state.levelIdx + 1}`;
-            document.getElementById("ui-category").innerText = currentQ.cat;
-            document.getElementById("ui-question").innerText = currentQ.q;
-            document.getElementById("ui-feedback").innerText = "👇 Aşağıdaki harflere sırayla dokunarak cevabı yaz:";
-
-            renderProgressDots();
-            renderAnswerBoxes();
-            renderLetterButtons();
-            updateStarDisplay();
+            renderMergeGrid();
+            renderOrderBanner();
+            updateStarUI();
         }
 
-        function renderProgressDots() {
-            const container = document.getElementById("ui-dots");
-            container.innerHTML = "";
-            const posInChap = state.levelIdx % 5;
-            for (let i = 0; i < 5; i++) {
-                const d = document.createElement("div");
-                d.className = "p-dot" + (i < posInChap ? " done" : "");
-                container.appendChild(d);
-            }
-        }
-
-        function renderAnswerBoxes() {
-            const container = document.getElementById("answer-slots");
-            container.innerHTML = "";
-            userSlots.forEach((slot, idx) => {
-                const box = document.createElement("div");
-                box.className = "ans-box" + (slot ? " filled" : "");
-                box.innerText = slot ? slot.char : "";
-                box.onclick = () => removeLetterAtSlot(idx);
-                container.appendChild(box);
-            });
-        }
-
-        function renderLetterButtons() {
-            const container = document.getElementById("letter-pool");
-            container.innerHTML = "";
-            const usedPoolIndices = userSlots.filter(s => s !== null).map(s => s.poolIdx);
-
-            poolLetters.forEach((ch, pIdx) => {
-                const isUsed = usedPoolIndices.includes(pIdx);
-                const btn = document.createElement("button");
-                btn.className = "letter-btn" + (isUsed ? " used" : "");
-                btn.innerText = ch;
-                btn.onclick = () => selectPoolLetter(ch, pIdx);
-                container.appendChild(btn);
-            });
-        }
-
-        function selectPoolLetter(char, poolIdx) {
-            // İlk boş kutuyu bul
-            const emptyIdx = userSlots.findIndex(s => s === null);
-            if (emptyIdx === -1) return;
-
-            userSlots[emptyIdx] = { char, poolIdx, locked: false };
-            playEffectNote(520 + emptyIdx * 60, 0.12);
-            renderAnswerBoxes();
-            renderLetterButtons();
-
-            // Tüm kutular dolduysa kontrol et
-            if (userSlots.every(s => s !== null)) {
-                checkAnswerNow();
-            }
-        }
-
-        function removeLetterAtSlot(slotIdx) {
-            if (!userSlots[slotIdx] || userSlots[slotIdx].locked) return;
-            userSlots[slotIdx] = null;
-            playEffectNote(350, 0.1);
-            renderAnswerBoxes();
-            renderLetterButtons();
-        }
-
-        function clearCurrentAnswer() {
-            letlastIdx = -1;
-            for (let i = userSlots.length - 1; i >= 0; i--) {
-                if (userSlots[i] !== null && !userSlots[i].locked) {
-                    userSlots[i] = null;
-                    break;
-                }
-            }
-            renderAnswerBoxes();
-            renderLetterButtons();
-        }
-
-        function giveOneLetterHint() {
-            if (state.stars < 50) {
-                showGenericModal("⭐", "Yıldız Yetersiz", "Harf ipucu almak için 50 ⭐ gerekiyor. Ödüller sekmesindeki Saatlik Kumbarayı toplayabilirsin!");
+        function tapGenerator(type) {
+            // Boş hücre bul
+            const emptyIdx = state.grid.findIndex(x => x === null);
+            if (emptyIdx === -1) {
+                showGenericModal("⚠️", "Tahta Dolu!", "Yeni eşya üretmek için aynı seviyedeki eşyaları üst üste birleştirerek yer açmalısın.");
                 return;
             }
-            const targetAns = currentQ.ans.split("");
-            // Henüz doğru olmayan veya boş olan ilk kutuyu bul
-            let targetSlot = -1;
-            for (let i = 0; i < targetAns.length; i++) {
-                if (!userSlots[i] || userSlots[i].char !== targetAns[i]) {
-                    targetSlot = i;
-                    break;
+            state.grid[emptyIdx] = type === 'kahve' ? "kahve_1" : "hediye_1";
+            playTone(520, 0.12);
+            renderMergeGrid();
+            saveGameState();
+        }
+
+        function handleCellClick(idx) {
+            const item = state.grid[idx];
+            if (selectedCellIdx === null) {
+                if (item !== null) {
+                    selectedCellIdx = idx;
+                    playTone(400, 0.08);
+                    renderMergeGrid();
                 }
-            }
-            if (targetSlot === -1) return;
+            } else {
+                if (selectedCellIdx === idx) {
+                    // Aynı hücreye tekrar basılırsa seçimi kaldır
+                    selectedCellIdx = null;
+                    renderMergeGrid();
+                    return;
+                }
 
-            const neededChar = targetAns[targetSlot];
-            // Bu kutuda yanlış bir harf varsa boşalt
-            userSlots[targetSlot] = null;
+                const sourceItem = state.grid[selectedCellIdx];
+                const targetItem = state.grid[idx];
 
-            // Havuzdan uygun harfi bul
-            const usedIndices = userSlots.filter(s => s !== null).map(s => s.poolIdx);
-            const foundPoolIdx = poolLetters.findIndex((ch, idx) => ch === neededChar && !usedIndices.includes(idx));
-
-            if (foundPoolIdx !== -1) {
-                state.stars -= 50;
-                userSlots[targetSlot] = { char: neededChar, poolIdx: foundPoolIdx, locked: true };
-                playEffectNote(780, 0.2);
-                updateStarDisplay();
+                if (targetItem === null) {
+                    // Boş yere taşı
+                    state.grid[idx] = sourceItem;
+                    state.grid[selectedCellIdx] = null;
+                    selectedCellIdx = null;
+                    playTone(480, 0.1);
+                } else if (sourceItem === targetItem) {
+                    // İki eşya aynı! Birleştir ve seviye atlat
+                    const currentObj = ITEMS[sourceItem];
+                    const nextLevel = currentObj.level + 1;
+                    const genType = currentObj.gen;
+                    
+                    // Son seviyeden büyük eşya var mı kontrol et
+                    const nextKey = `${genType}_${nextLevel}`;
+                    if (ITEMS[nextKey]) {
+                        state.grid[idx] = nextKey;
+                        state.grid[selectedCellIdx] = null;
+                        playTone(750, 0.25);
+                    } else {
+                        // Maksimum seviye
+                        showGenericModal("✨", "Maksimum Seviye!", "Bu eşyayı daha fazla birleştiremezsin, siparişte teslim edebilirsin!");
+                    }
+                    selectedCellIdx = null;
+                } else {
+                    // Farklı eşyalar, seçimi değiştir
+                    selectedCellIdx = idx;
+                    playTone(400, 0.08);
+                }
+                renderMergeGrid();
+                renderOrderBanner();
                 saveGameState();
-                renderAnswerBoxes();
-                renderLetterButtons();
+            }
+        }
 
-                if (userSlots.every(s => s !== null)) {
-                    checkAnswerNow();
+        function renderMergeGrid() {
+            const container = document.getElementById("merge-grid");
+            container.innerHTML = "";
+
+            state.grid.forEach((itemId, idx) => {
+                const cell = document.createElement("div");
+                cell.className = "grid-cell" + (itemId !== null ? " has-item" : "") + (selectedCellIdx === idx ? " selected" : "");
+                cell.onclick = () => handleCellClick(idx);
+
+                if (itemId !== null && ITEMS[itemId]) {
+                    const obj = ITEMS[itemId];
+                    cell.innerHTML = `
+                        <div class="cell-emoji">${obj.emoji}</div>
+                        <div class="cell-name">${obj.name}</div>
+                    `;
                 }
-            }
-        }
-
-        function checkAnswerNow() {
-            const formed = userSlots.map(s => s.char).join("");
-            if (formed === currentQ.ans) {
-                // DOĞRU CEVAP!
-                document.querySelectorAll(".ans-box").forEach(b => b.classList.add("correct"));
-                playEffectNote(659, 0.18);
-                setTimeout(() => playEffectNote(880, 0.35), 140);
-
-                const finishedNum = state.levelIdx + 1;
-                const isChapEnd = finishedNum % 5 === 0 && finishedNum <= 30;
-                const earned = isChapEnd ? 250 : 100;
-                state.stars += earned;
-                updateStarDisplay();
-
-                setTimeout(() => {
-                    showWinModal(formed, earned, isChapEnd, finishedNum);
-                }, 350);
-            } else {
-                // Yanlış cevap uyarısı: kilitli olmayanları temizle
-                playEffectNote(220, 0.25);
-                document.getElementById("ui-feedback").innerHTML = "<span style='color:var(--rose);'>❌ Harf sırası farklı, tekrar dene sevgilim!</span>";
-                setTimeout(() => {
-                    userSlots = userSlots.map(s => (s && s.locked) ? s : null);
-                    renderAnswerBoxes();
-                    renderLetterButtons();
-                }, 650);
-            }
-        }
-
-        function showWinModal(word, earnedStars, isChapEnd, finishedNum) {
-            chestOpenedThisTurn = false;
-            document.getElementById("win-word").innerText = word;
-
-            if (isChapEnd) {
-                const chapIdx = Math.floor((finishedNum - 1) / 5);
-                const letterObj = LETTERS_DATA[chapIdx];
-                document.getElementById("win-emoji").innerText = "💌";
-                document.getElementById("win-sub").innerText = `BÖLÜM ${chapIdx + 1} TAMAMLANDI!`;
-                document.getElementById("win-message").innerHTML = `
-                    <div style="background:rgba(245,197,66,0.14); border:2px solid var(--gold); padding:15px; border-radius:16px; font-style:italic; color:#fff; margin-bottom:10px;">
-                        "${letterObj.text}"
-                    </div>
-                    <div style="color:var(--gold); font-weight:800;">+${earnedStars} ⭐ Bölüm Ödülü Kazandın!</div>
-                `;
-            } else {
-                document.getElementById("win-emoji").innerText = "🎉";
-                document.getElementById("win-sub").innerText = `SORU ${finishedNum} ÇÖZÜLDÜ!`;
-                document.getElementById("win-message").innerHTML = `Harika bildin sevgilim! <strong style="color:var(--gold);">+${earnedStars} ⭐ Yıldız</strong> kazandın.`;
-            }
-
-            // Her 3 soruda bir 3'lü Hediye Sandığı seçimi açılır
-            const chestSec = document.getElementById("chest-section");
-            if (finishedNum % 3 === 0) {
-                chestSec.style.display = "block";
-                document.getElementById("chest-result").innerText = "";
-                document.querySelectorAll(".chest-item").forEach(el => {
-                    el.innerText = "🎁";
-                    el.style.opacity = "1";
-                });
-            } else {
-                chestSec.style.display = "none";
-            }
-
-            document.getElementById("modal-win").classList.add("active");
-        }
-
-        function openBonusChest(idx) {
-            if (chestOpenedThisTurn) return;
-            chestOpenedThisTurn = true;
-            const prizes = [150, 250, 400];
-            const bonus = prizes[Math.floor(Math.random() * prizes.length)];
-            state.stars += bonus;
-            playEffectNote(987, 0.3);
-            updateStarDisplay();
-            saveGameState();
-
-            const items = document.querySelectorAll(".chest-item");
-            items.forEach((el, i) => {
-                if (i === idx) el.innerText = "💎";
-                else el.style.opacity = "0.35";
+                container.appendChild(cell);
             });
-            document.getElementById("chest-result").innerText = `🎊 Sandıktan +${bonus} ⭐ Ekstra Yıldız Çıktı!`;
         }
 
-        function goToNextQuestion() {
-            document.getElementById("modal-win").classList.remove("active");
-            state.levelIdx++;
+        function renderOrderBanner() {
+            const currentOrder = ORDERS[state.orderIdx % ORDERS.length];
+            document.getElementById("order-emoji").innerText = currentOrder.emoji;
+            document.getElementById("order-title").innerText = currentOrder.title;
+
+            // Tahtada bu eşyadan var mı kontrol et
+            const hasItem = state.grid.includes(currentOrder.req);
+            const btn = document.getElementById("deliver-btn");
+            btn.disabled = !hasItem;
+        }
+
+        function deliverOrder() {
+            const currentOrder = ORDERS[state.orderIdx % ORDERS.length];
+            const itemIdx = state.grid.indexOf(currentOrder.req);
+            if (itemIdx === -1) return;
+
+            // Eşyayı tahtadan kaldır
+            state.grid[itemIdx] = null;
+            state.stars += currentOrder.reward;
+            state.orderIdx++;
+
+            playTone(880, 0.4);
+            updateStarUI();
+            renderMergeGrid();
+            renderOrderBanner();
             saveGameState();
-            loadCurrentQuestion();
+
+            showGenericModal(
+                "🎉",
+                "Sipariş Teslim Edildi!",
+                `<div style="font-style:italic; color:var(--text-soft); margin-bottom:12px;">"${currentOrder.text}"</div>` +
+                `<strong style="color:var(--gold); font-size:18px;">+${currentOrder.reward} ⭐ Yıldız Kazandın!</strong>`
+            );
         }
 
         /* =========================================================
-           7. SAATLİK KUMBARA, ÖDÜLLER VE MEKTUPLAR
+           7. ÖDÜLLER VE MEKTUPLAR
            ========================================================= */
-        function getCurrentHourlyRate() {
-            const chap = Math.min(6, Math.floor(state.levelIdx / 5) + 1);
-            return LETTERS_DATA[chap - 1].rate;
-        }
-
-        function getPendingVault() {
-            const hours = (Date.now() - state.lastVaultTime) / 3600000;
-            const rate = getCurrentHourlyRate();
-            return Math.min(Math.floor(hours * rate), rate * 12);
-        }
-
-        function updateVaultStatusUI() {
-            const pending = getPendingVault();
-            const rate = getCurrentHourlyRate();
-            const el = document.getElementById("vault-status");
-            if (el) el.innerText = `Biriken: +${pending} ⭐ (Saatlik +${rate} ⭐)`;
-        }
-
-        function claimHourlyVault() {
-            const pending = getPendingVault();
-            if (pending < 1) {
-                showGenericModal("⏳", "Kumbaran Doluyor", `Yıldız kumbaran her dakika otomatik yıldız üretir (Saatlik +${getCurrentHourlyRate()} ⭐). Birazdan tekrar gelip toplayabilirsin!`);
-                return;
-            }
-            state.stars += pending;
-            state.lastVaultTime = Date.now();
-            playEffectNote(880, 0.3);
-            updateStarDisplay();
-            updateVaultStatusUI();
-            renderRewardsList();
-            saveGameState();
-        }
-
         function renderRewardsList() {
-            updateVaultStatusUI();
             const container = document.getElementById("rewards-container");
             container.innerHTML = "";
 
@@ -1301,15 +942,11 @@
 
         function purchaseReward(id) {
             const r = REWARDS_DATA.find(x => x.id === id);
-            if (!r) return;
-            if (state.stars < r.cost) {
-                showGenericModal("⭐", "Yıldız Biriktirelim", `Bu ödülü açmak için <b>${r.cost} ⭐</b> gerekiyor. Şu an <b>${state.stars} ⭐</b> yıldızın var. Soruları çözerek hemen yıldız kazanabilirsin!`);
-                return;
-            }
+            if (!r || state.stars < r.cost) return;
             state.stars -= r.cost;
             if (!state.unlockedRewards.includes(id)) state.unlockedRewards.push(id);
-            playEffectNote(880, 0.35);
-            updateStarDisplay();
+            playTone(880, 0.35);
+            updateStarUI();
             renderRewardsList();
             saveGameState();
             showCouponModal(id);
@@ -1322,12 +959,12 @@
                 r.icon,
                 r.title,
                 `<div style="border:2px dashed var(--gold); padding:16px; border-radius:16px; background:rgba(0,0,0,0.4);">
-                    <div style="color:var(--gold); font-weight:800; font-size:14px; margin-bottom:6px;">RESMİ ÖDÜL BİLETİ</div>
-                    <div style="font-size:17px; margin-bottom:12px;">${r.desc}</div>
-                    <div style="background:rgba(245,197,66,0.2); color:var(--gold); padding:10px; border-radius:10px; font-weight:800; font-family:monospace;">
+                    <div style="color:var(--gold); font-weight:800; font-size:13px; margin-bottom:6px;">RESMİ ÖDÜL BİLETİ</div>
+                    <div style="font-size:16px; margin-bottom:10px;">${r.desc}</div>
+                    <div style="background:rgba(245,197,66,0.2); color:var(--gold); padding:8px; border-radius:8px; font-weight:800; font-family:monospace;">
                         KOD: OZGE-1993-${id.toUpperCase()}
                     </div>
-                    <div style="color:var(--green); font-size:15px; font-weight:700; margin-top:12px;">
+                    <div style="color:var(--green); font-size:14px; font-weight:700; margin-top:10px;">
                         📸 Şimdi bu ekranın görüntüsünü alıp eşine WhatsApp'tan gönder!
                     </div>
                 </div>`
@@ -1339,7 +976,7 @@
             container.innerHTML = "";
 
             LETTERS_DATA.forEach(item => {
-                const unlocked = state.levelIdx >= item.chap * 5 || item.chap === 1;
+                const unlocked = state.orderIdx >= item.reqOrder;
                 const card = document.createElement("div");
                 card.className = "list-card" + (unlocked ? " unlocked" : "");
                 card.innerHTML = `
@@ -1350,7 +987,7 @@
                             <div class="card-desc">
                                 ${unlocked
                                     ? `"${item.text}"`
-                                    : `Bu mektubu açmak için ${item.chap * 5}. soruya ulaşmalısın. (Şu an: Soru ${state.levelIdx + 1})`
+                                    : `Bu mektubu açmak için toplam ${item.reqOrder + 1}. siparişi tamamlamalısın. (Şu an: ${state.orderIdx}. siparistesin)`
                                 }
                             </div>
                         </div>
@@ -1363,16 +1000,16 @@
         function openSettingsModal() {
             showGenericModal(
                 "⚙️",
-                "Fotoğraf, Müzik & Mektup",
-                `<div style="display:flex; flex-direction:column; gap:12px;">
-                    <button class="big-btn" style="font-size:16px; padding:14px;" onclick="document.getElementById('file-audio').click()">🎵 Telefondan Şarkı (MP3) Seç</button>
-                    <button class="big-btn" style="font-size:16px; padding:14px;" onclick="document.getElementById('file-photo').click()">📸 Galeriden Fotoğrafımızı Seç</button>
-                    <button class="big-btn" style="font-size:16px; padding:14px; background:var(--bg-card-light); color:#fff; border:1px solid var(--gold);" onclick="document.getElementById('modal-generic').classList.remove('active'); document.getElementById('screen-letter').classList.add('active');">💌 Doğum Günü Kartını Göster</button>
+                "Fotoğraf & Müzik Ayarları",
+                `<div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="big-btn" style="font-size:15px; padding:12px;" onclick="document.getElementById('file-audio').click()">🎵 Telefondan MP3 Seç</button>
+                    <button class="big-btn" style="font-size:15px; padding:12px;" onclick="document.getElementById('file-photo').click()">📸 Galeriden Fotoğraf Seç</button>
+                    <button class="big-btn" style="font-size:15px; padding:12px; background:var(--bg-card-light); color:#fff; border:1px solid var(--gold);" onclick="document.getElementById('modal-generic').classList.remove('aktif'); document.getElementById('screen-letter').classList.add('active');">💌 Doğum Günü Mektubunu Göster</button>
                 </div>`
             );
         }
 
-        function updateStarDisplay() {
+        function updateStarUI() {
             document.getElementById("ui-stars").innerText = Math.floor(state.stars);
         }
 
@@ -1390,11 +1027,11 @@
             document.getElementById("gen-icon").innerText = icon;
             document.getElementById("gen-title").innerText = title;
             document.getElementById("gen-body").innerHTML = html;
-            document.getElementById("modal-generic").classList.add("active");
+            document.getElementById("modal-generic").classList.add("aktif");
         }
 
         /* =========================================================
-           8. BAŞLATMA VE İLK DOKUNUŞTA SES KİLİDİ AÇMA
+           8. BAŞLATMA
            ========================================================= */
         window.onload = async () => {
             loadGameState();
@@ -1404,10 +1041,9 @@
             if (!state.pinOpened) {
                 document.getElementById("screen-lock").classList.add("active");
             } else {
-                loadCurrentQuestion();
+                initMergeGame();
             }
 
-            // iOS Safari'de kullanıcı ekrana ilk dokunduğu anda müziği otomatik başlat
             const unlockOnce = () => {
                 if (state.pinOpened && !isPlayingMusic) {
                     triggerMusicPlaySync();
