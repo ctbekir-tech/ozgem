@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0b0914">
+    <title>ÖZGE • Kalbin Şifreleri</title>
+    <style>
+        :root {
+            --bg-deep: #0b0914;
+            --bg-panel: rgba(24, 19, 38, 0.78);
+            --bg-card: rgba(255, 255, 255, 0.045);
+            --border-subtle: rgba(232, 180, 184, 0.16);
+            --gold: #e5c158;
+            --gold-soft: rgba(229, 193, 88, 0.2);
+            --rose: #e899a0;
+            --rose-bright: #ff5e7e;
+            --text-light: #f8f5f2;
+            --text-dim: #9e96b0;
+            --success: #4cd137;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 15%, #231738 0%, #0b0914 75%);
+            color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+        }
+
+        /* ARKA PLAN YILDIZ EFEKTİ */
+        .stars-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1px 1px at 80% 20%, rgba(229,193,88,0.5), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(232,153,160,0.35), transparent),
+                radial-gradient(1.5px 1.5px at 75% 85%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 15% 80%, rgba(229,193,88,0.4), transparent);
+            z-index: 0;
+        }
+
+        #app {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            max-width: 460px;
+            margin: 0 auto;
+            padding-top: env(safe-area-inset-top, 16px);
+            padding-bottom: env(safe-area-inset-bottom, 10px);
+        }
+
+        /* TAM EKRAN KARŞILAMA VE MEKTUP OVERLAY */
+        .overlay-screen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 20%, #2a1b42 0%, #090710 85%);
+            z-index: 150;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+        }
+        .overlay-screen.active {
+            display: flex;
+            animation: slowFade 0.5s ease;
+        }
+
+        .luxury-card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 28px;
+            padding: 28px 22px;
+            width: 100%;
+            max-width: 390px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .crown-badge {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(229,193,88,0.2), rgba(232,153,160,0.15));
+            border: 1px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 0 25px rgba(229, 193, 88, 0.25);
+        }
+
+        .pin-dots {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin: 22px 0;
+        }
+        .pin-dot {
+            width: 48px;
+            height: 56px;
+            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gold);
+            transition: all 0.2s;
+        }
+        .pin-dot.filled {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px var(--gold-soft);
+            transform: translateY(-2px);
+        }
+
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+        .num-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            height: 52px;
+            color: var(--text-light);
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .num-btn:active {
+            background: var(--gold);
+            color: #000;
+            transform: scale(0.95);
+        }
+
+        /* FOTOĞRAF ÇERÇEVESİ VE SANATSAL FALLBACK */
+        .photo-frame {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 18px;
+            border: 1.5px solid var(--gold);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, #1f1433, #3b1d3d);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: none;
+        }
+        .art-fallback {
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+        }
+        .photo-upload-chip {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 5;
+            background: rgba(11, 9, 20, 0.78);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 11px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .gold-btn {
+            background: linear-gradient(135deg, #e5c158, #c99738);
+            color: #140f21;
+            border: none;
+            border-radius: 16px;
+            padding: 15px 24px;
+            font-size: 15px;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(229, 193, 88, 0.35);
+            transition: transform 0.15s;
+        }
+        .gold-btn:active { transform: scale(0.97); }
+
+        /* ÜST BAR */
+        #top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(11, 9, 20, 0.6);
+            backdrop-filter: blur(12px);
+        }
+        .brand-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .level-tag {
+            background: var(--gold-soft);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+        .score-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-subtle);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--gold);
+        }
+        .top-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .icon-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* PASİF KUMBARA BANNER */
+        #kumbara-bar {
+            margin: 8px 16px 0;
+            padding: 8px 14px;
+            border-radius: 14px;
+            background: linear-gradient(90deg, rgba(229,193,88,0.12), rgba(232,153,160,0.12));
+            border: 1px solid rgba(229,193,88,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+        .kumbara-btn {
+            background: var(--gold);
+            color: #120e1c;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* ANA EKRAN SEKMELERİ */
+        #main-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .tab-pane {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        .tab-pane.active {
+            display: flex;
+            animation: slowFade 0.25s ease;
+        }
+
+        /* 1. SEKME: KELİME VE ŞİFRE BULMACASI */
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .chapter-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--rose);
+            font-weight: 700;
+        }
+        .clue-box {
+            font-size: 14px;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 4px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.035);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* KELİME KUTULARI ALANI */
+        #word-grid {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+            min-height: 150px;
+        }
+        .word-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+        .letter-slot {
+            width: 38px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255, 255, 255, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            font-weight: 800;
+            color: transparent;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .letter-slot.revealed {
+            background: linear-gradient(145deg, rgba(229, 193, 88, 0.28), rgba(232, 153, 160, 0.22));
+            border-color: var(--gold);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(229, 193, 88, 0.25);
+            transform: scale(1.03);
+        }
+        .letter-slot.hinted {
+            color: var(--gold);
+            border-color: rgba(229, 193, 88, 0.5);
+        }
+
+        /* SEÇİLEN HARF ÖNİZLEME ÇUBUĞU */
+        .current-word-bar {
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        #current-word-pill {
+            background: linear-gradient(135deg, var(--rose-bright), #c44569);
+            color: #fff;
+            font-weight: 800;
+            font-size: 17px;
+            letter-spacing: 3px;
+            padding: 6px 18px;
+            border-radius: 20px;
+            min-height: 34px;
+            display: none;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(255, 94, 126, 0.4);
+        }
+
+        /* HARF ÇARKI ALANI */
+        .wheel-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 10px 8px;
+        }
+        .side-tool-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .side-tool-btn span {
+            font-size: 9px;
+            color: var(--gold);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .side-tool-btn:active { transform: scale(0.92); }
+
+        #wheel-box {
+            position: relative;
+            width: 210px;
+            height: 210px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 70%);
+            border: 1px solid var(--border-subtle);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.5), 0 8px 25px rgba(0,0,0,0.4);
+            touch-action: none;
+        }
+        #wheel-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .wheel-node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            margin-left: -25px;
+            margin-top: -25px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #251d3a, #171226);
+            border: 1.5px solid rgba(232, 180, 184, 0.35);
+            color: var(--text-light);
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+            transition: transform 0.15s, background 0.15s, border-color 0.15s;
+            cursor: pointer;
+        }
+        .wheel-node.selected {
+            background: linear-gradient(135deg, var(--gold), #d49b35);
+            color: #120e1c;
+            border-color: #fff;
+            transform: scale(1.15);
+            box-shadow: 0 0 18px rgba(229, 193, 88, 0.7);
+        }
+
+        /* 2. SEKME: SERÜVEN HARİTASI VE MEKTUPLAR */
+        .section-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 16px;
+        }
+        .chapter-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .chapter-card.unlocked {
+            border-color: rgba(229, 193, 88, 0.45);
+            background: linear-gradient(135deg, rgba(229,193,88,0.08), rgba(255,255,255,0.03));
+        }
+        .badge-num {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .action-chip {
+            background: var(--gold);
+            color: #140f21;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .action-chip:disabled {
+            background: rgba(255,255,255,0.07);
+            color: var(--text-dim);
+            cursor: not-allowed;
+        }
+
+        /* ALT MENÜ */
+        #bottom-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: rgba(11, 9, 20, 0.92);
+            border-top: 1px solid var(--border-subtle);
+            padding: 6px 12px;
+            backdrop-filter: blur(16px);
+        }
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 7px 0;
+            border-radius: 14px;
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-tab.active {
+            color: var(--gold);
+            background: rgba(229, 193, 88, 0.1);
+        }
+
+        /* MODAL PENCERELER */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.82);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 22px;
+        }
+        .modal-bg.active { display: flex; animation: slowFade 0.25s ease; }
+
+        @keyframes slowFade {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars-bg"></div>
+
+    <!-- GİZLİ MEDYA YÜKLEYİCİLER (İphone Galerisinden veya Dosyalardan Seçim İçin) -->
+    <input type="file" id="photo-picker" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+    <input type="file" id="audio-picker" accept="audio/*" style="display:none" onchange="handleAudioUpload(event)">
+
+    <!-- 1. GİRİŞ ŞİFRE EKRANI (1993) -->
+    <div id="lock-screen" class="overlay-screen">
+        <div class="luxury-card">
+            <div class="crown-badge">👑</div>
+            <div style="font-size:11px; letter-spacing:2px; color:var(--gold); font-weight:700; margin-bottom:4px;">ÖZEL DOĞUM GÜNÜ SERİSİ</div>
+            <h2 style="margin:0 0 8px 0; font-size:24px;">Özge'nin Evreni</h2>
+            <p style="color:var(--text-dim); font-size:13px; margin:0;">Kalbin kapılarını açmak için bizim özel tarihimizi gir.</p>
+
+            <div class="pin-dots">
+                <div class="pin-dot" id="dot-0"></div>
+                <div class="pin-dot" id="dot-1"></div>
+                <div class="pin-dot" id="dot-2"></div>
+                <div class="pin-dot" id="dot-3"></div>
+            </div>
+
+            <div id="pin-error" style="color:var(--rose-bright); font-size:12px; min-height:18px; margin-bottom:8px;"></div>
+
+            <div class="numpad">
+                <button class="num-btn" onclick="pressPin('1')">1</button>
+                <button class="num-btn" onclick="pressPin('2')">2</button>
+                <button class="num-btn" onclick="pressPin('3')">3</button>
+                <button class="num-btn" onclick="pressPin('4')">4</button>
+                <button class="num-btn" onclick="pressPin('5')">5</button>
+                <button class="num-btn" onclick="pressPin('6')">6</button>
+                <button class="num-btn" onclick="pressPin('7')">7</button>
+                <button class="num-btn" onclick="pressPin('8')">8</button>
+                <button class="num-btn" onclick="pressPin('9')">9</button>
+                <button class="num-btn" style="font-size:14px; color:var(--text-dim);" onclick="clearPin()">Temizle</button>
+                <button class="num-btn" onclick="pressPin('0')">0</button>
+                <button class="num-btn" style="font-size:16px; color:var(--gold);" onclick="deletePin()">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. DOĞUM GÜNÜ KARTI VE ANLAMLI FOTOĞRAF EKRANI -->
+    <div id="birthday-screen" class="overlay-screen">
+        <div class="luxury-card">
+            <div class="photo-frame">
+                <img id="couple-photo" alt="İlk Fotoğrafımız">
+                <div class="art-fallback" id="photo-fallback">
+                    <div style="font-size:44px; margin-bottom:6px;">👩‍❤️‍👨 ✨</div>
+                    <div style="font-size:18px; font-weight:800; color:var(--gold); letter-spacing:1px;">ÖZGE • 1993</div>
+                    <div style="font-size:12px; color:var(--text-dim); margin-top:4px;">İlk Fotoğrafımız & Sonsuz Hikayemiz</div>
+                </div>
+                <div class="photo-upload-chip" onclick="document.getElementById('photo-picker').click()">📸 Fotoğrafımızı Seç</div>
+            </div>
+
+            <div style="font-size:11px; letter-spacing:1.5px; color:var(--gold); font-weight:700;">İYİ Kİ DOĞDUN GÜZEL EŞİM</div>
+            <h2 style="margin:4px 0 12px; font-size:22px; color:#fff;">Kalbimdeki Tek Kraliçe, Özge</h2>
+
+            <div style="text-align:left; font-size:13.5px; line-height:1.65; color:#e6e1f0; background:rgba(0,0,0,0.3); padding:15px; border-radius:16px; border-left:3px solid var(--gold); margin-bottom:18px;">
+                Hayatımın tüm kilitli kapılarını zekanla, zarafetinle ve o eşsiz gülüşünle açtın.<br><br>
+                Sana sıradan bir hediye vermek yerine, içinde bizim hikayemizin yaşadığı, her bölümünde yeni bir sırrımızı ve gerçek hayatta benden dilediğin an isteyebileceğin ödülleri açacağın bir dünya kurdum.<br><br>
+                Sen benim en büyük şansım, en güzel hediyemsin. İyi ki doğdun sevgilim, seni çok seviyorum!
+            </div>
+
+            <button class="gold-btn" onclick="startJourney()">Serüvene Başla ✨</button>
+        </div>
+    </div>
+
+    <!-- ANA OYUN ARAYÜZÜ -->
+    <div id="app">
+        <!-- ÜST ÇUBUK -->
+        <div id="top-bar">
+            <div class="brand-pill">
+                <span class="level-tag" id="top-level-badge">BÖLÜM 1 • SV 1</span>
+            </div>
+            <div class="score-pill">
+                <span>✨</span>
+                <span id="score-text">250</span>
+            </div>
+            <div class="top-actions">
+                <button class="icon-circle" id="music-toggle-btn" onclick="toggleMusic()" title="Melodi">🎵</button>
+                <button class="icon-circle" onclick="openBirthdayCard()" title="Doğum Günü Mektubu">💌</button>
+                <button class="icon-circle" onclick="openMediaSettings()" title="Medya Ayarları">⚙️</button>
+            </div>
+        </div>
+
+        <!-- SAATLİK YILDIZ KUMBARASI -->
+        <div id="kumbara-bar">
+            <div>
+                <span style="color:var(--gold); font-weight:700;">⏳ Yıldız Kumbarası:</span>
+                <span id="vault-amount" style="color:#fff; font-weight:700;">+0 ✨</span>
+                <span id="vault-rate" style="color:var(--text-dim); font-size:11px;">(Saatlik +120 ✨)</span>
+            </div>
+            <button class="kumbara-btn" onclick="collectVault()">Topla</button>
+        </div>
+
+        <!-- ORTA İÇERİK -->
+        <div id="main-view">
+
+            <!-- SEKME 1: KELİME & ZİHİN BULMACASI -->
+            <div id="tab-puzzle" class="tab-pane active">
+                <div class="chapter-header">
+                    <div class="chapter-title" id="chapter-name">BÖLÜM 1: İLK KIVILCIM</div>
+                    <div class="clue-box" id="level-clue">"Kalbin kapısını açan en değerli isim..."</div>
+                </div>
+
+                <!-- BULMACA KUTULARI -->
+                <div id="word-grid"></div>
+
+                <!-- SEÇİLEN KELİME -->
+                <div class="current-word-bar">
+                    <div id="current-word-pill"></div>
+                </div>
+
+                <!-- HARF ÇARKI -->
+                <div class="wheel-wrapper">
+                    <button class="side-tool-btn" onclick="shuffleWheel()" title="Harfleri Karıştır">
+                        🔀
+                        <span>Karıştır</span>
+                    </button>
+
+                    <div id="wheel-box">
+                        <svg id="wheel-svg"></svg>
+                        <div id="wheel-nodes"></div>
+                    </div>
+
+                    <button class="side-tool-btn" onclick="useHint()" title="Harf Aç">
+                        💡
+                        <span>60 ✨</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SEKME 2: SERÜVEN BÖLÜMLERİ VE MÜHÜRLÜ MEKTUPLAR -->
+            <div id="tab-chapters" class="tab-pane">
+                <div style="margin-bottom:12px;">
+                    <div style="font-size:16px; font-weight:800; color:var(--gold);">📖 Kalbin Yolu Serisi</div>
+                    <div style="font-size:12px; color:var(--text-dim);">Her 5 seviyede bir yeni bölüm ve mühürlü bir mektup açılır. Açtığın her bölüm saatlik Yıldız Kumbarası üretimini artırır!</div>
+                </div>
+                <div id="chapters-list" class="section-list"></div>
+            </div>
+
+            <!-- SEKME 3: GERÇEK HAYAT ÖDÜL ZARFLARI -->
+            <div id="tab-rewards" class="tab-pane">
+                <div style="margin-bottom:12px;">
+                    <div style="font-size:16px; font-weight:800; color:var(--gold);">🎁 Gerçek Hayat Ödül Sandığı</div>
+                    <div style="font-size:12px; color:var(--text-dim);">Bulmacaları çözerek ve kumbaradan topladığın ✨ Yıldız Puanlarıyla gerçek hayatta eşinden talep edebileceğin özel zarfları aç!</div>
+                </div>
+                <div id="rewards-list" class="section-list"></div>
+            </div>
+
+        </div>
+
+        <!-- ALT NAVİGASYON -->
+        <div id="bottom-nav">
+            <div class="nav-tab active" onclick="switchTab('puzzle', this)">
+                <span style="font-size:18px;">🧩</span>
+                <span>Bulmaca</span>
+            </div>
+            <div class="nav-tab" onclick="switchTab('chapters', this)">
+                <span style="font-size:18px;">🗺️</span>
+                <span>Serüven (<span id="unlocked-chap-count">1/6</span>)</span>
+            </div>
+            <div class="nav-tab" onclick="switchTab('rewards', this)">
+                <span style="font-size:18px;">👑</span>
+                <span>Ödüller</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEVİYE TAMAMLANDI / MÜHÜRLÜ MEKTUP MODALI -->
+    <div id="win-modal" class="modal-bg">
+        <div class="luxury-card" style="text-align:center;">
+            <div style="font-size:46px; margin-bottom:6px;" id="win-icon">✨</div>
+            <div style="font-size:11px; letter-spacing:2px; color:var(--gold); font-weight:700;" id="win-subtitle">SEVİYE TAMAMLANDI</div>
+            <h3 style="margin:6px 0 12px; font-size:22px;" id="win-title">Harika Zeka!</h3>
+            <p id="win-desc" style="font-size:14px; color:#e2dcf0; line-height:1.6; margin-bottom:18px;"></p>
+            <button class="gold-btn" onclick="nextLevelConfirm()">Sonraki Seviyeye Geç →</button>
+        </div>
+    </div>
+
+    <!-- GERÇEK HAYAT BİLETİ & MEDYA AYARLARI MODALI -->
+    <div id="info-modal" class="modal-bg">
+        <div class="luxury-card" style="text-align:center;">
+            <div style="font-size:44px; margin-bottom:8px;" id="info-icon">🎟️</div>
+            <h3 style="margin:4px 0 10px; font-size:20px; color:var(--gold);" id="info-title">Başlık</h3>
+            <div id="info-body" style="font-size:13.5px; color:#e6e1f0; line-height:1.6; margin-bottom:18px;"></div>
+            <button class="gold-btn" onclick="closeInfoModal()">Tamam</button>
+        </div>
+    </div>
+
+    <script>
+        /* ==============================================================
+           1. BÖLÜMLÜ KELİME VE ZİHİN BULMACASI VERİTABANI (30 SEVİYE + SONSUZ)
+           Her seviyedeki kelimeler, çarktaki harflerden %100 üretilebilir.
+           ============================================================== */
+        const LEVELS = [
+            // BÖLÜM 1: DOĞUM GÜNÜ KRALİÇESİ (Seviye 1 - 5)
+            { chap: 1, clue: "Kalbinin kapısını açan, bu dünyadaki en özel isim...", letters: ["Ö","Z","G","E","L","İ"], words: ["ÖZGE", "ÖZEL", "GÖL", "GÖZ"] },
+            { chap: 1, clue: "Gözlerinin içine her baktığımda kalbimi saran en saf duygu...", letters: ["S","E","V","G","İ","L","İ"], words: ["SEVGİLİ", "SEVGİ", "İLGİ", "EVLİ"] },
+            { chap: 1, clue: "Seninle karşılıklı içtiğimizde dünyayı güzelleştiren keyif...", letters: ["K","A","H","V","E","S","İ"], words: ["KAHVE", "HEVES", "KASE", "ASKI"] },
+            { chap: 1, clue: "Bize ait o unutulmaz şarkının sakladığı gizli isim...", letters: ["T","Ü","R","K","A","N"], words: ["TÜRKAN", "TÜRK", "KÜRT", "KART", "AKü".toUpperCase()] },
+            { chap: 1, clue: "Yüzünde belirdiği anda tüm yorgunluğumu silen mucize...", letters: ["G","Ü","L","Ü","Ş","ÜN".slice(1),"D"], words: ["GÜLÜŞ", "GÜLÜŞÜN", "DÜŞÜN", "GÜN", "GÜL"] },
+
+            // BÖLÜM 2: BİZİM MELODİMİZ (Seviye 6 - 10)
+            { chap: 2, clue: "Çerçevede duran ve ilk heyecanımızı saklayan o kare...", letters: ["H","A","T","I","R","A","M"], words: ["HATIRA", "HATIRAM", "HARİTA", "MARTI", "TAHİR"] },
+            { chap: 2, clue: "Birlikte kurduğumuz, içinde huzur bulduğumuz sığınak...", letters: ["Y","U","V","A","M","I","Z"], words: ["YUVAMIZ", "YUVA", "UMAY", "MAVİ", "YAZI"] },
+            { chap: 2, clue: "Hayatımıza güneş gibi doğan en değerli varlığımız...", letters: ["K","I","Z","I","M","A","N"], words: ["KIZIM", "KIZ", "ANI", "KAZI", "AZI"] },
+            { chap: 2, clue: "Seninle geçen her saniyenin kalbimdeki karşılığı...", letters: ["H","U","Z","U","R","L","U"], words: ["HUZURLU", "HUZUR", "ZUHUR", "RUH", "TUZ"] },
+            { chap: 2, clue: "Geceyi aydınlatan, dilek tuttuğumuz parlak gökyüzü...", letters: ["Y","I","L","D","I","Z","A"], words: ["YILDIZ", "YAZILI", "YAZI", "YALI", "DİZİ"] },
+
+            // BÖLÜM 3: KALBİN SIRLARI (Seviye 11 - 15)
+            { chap: 3, clue: "Kimseye anlatamadıklarımı bir tek sana açabilmemin sırrı...", letters: ["S","I","R","D","A","Ş","I"], words: ["SIRDAŞ", "ASIR", "SARI", "SIRA", "DIŞI"] },
+            { chap: 3, clue: "Senin yürüyüşünde, konuşmanda ve bakışında olan asillik...", letters: ["Z","A","R","A","F","E","T"], words: ["ZARAFET", "TARAF", "ZAFER", "ARAF", "FAZ"] },
+            { chap: 3, clue: "El ele verdiğimizde aşamayacağımız hiçbir engel olmaması...", letters: ["G","Ü","V","E","N","L","İ"], words: ["GÜVENLİ", "GÜVEN", "ÜNLÜ", "GÜN", "EVCİL"] },
+            { chap: 3, clue: "Kalbimde taht kuran, bu evrenin tek sahibi...", letters: ["K","R","A","L","İ","Ç","E"], words: ["KRALİÇE", "KRAL", "ÇİLEK", "ÇARE", "ELÇİ"] },
+            { chap: 3, clue: "Seninle çıktığımız ve hiç bitmesini istemediğim serüven...", letters: ["M","A","C","E","R","A","M"], words: ["MACERA", "MACERAM", "MERAM", "ACAR", "MERA"] },
+
+            // BÖLÜM 4: ZAMANIN ÖTESİ (Seviye 16 - 20)
+            { chap: 4, clue: "Seni ilk gördüğüm andaki o tatlı kalp çarpıntısı...", letters: ["H","E","Y","E","C","A","N"], words: ["HEYECAN", "SAHNE", "CEYHAN", "HANE", "AYN"] },
+            { chap: 4, clue: "Birbirimize verdiğimiz ve ömür boyu sürecek olan yemin...", letters: ["S","A","D","A","K","A","T"], words: ["SADAKAT", "ADAK", "SAKA", "KASA", "TAKA"] },
+            { chap: 4, clue: "Senin kokunun ve sesinin bana verdiği tarifsiz his...", letters: ["Ş","E","F","K","A","T","L"], words: ["ŞEFKAT", "AFET", "ATEŞ", "KALE", "ŞEF"] },
+            { chap: 4, clue: "En karanlık günde bile yolumuzu aydınlatan duygu...", letters: ["U","M","U","T","L","U","K"], words: ["UMUTLU", "MUTLU", "UMUT", "KUTU", "TUTKU"] },
+            { chap: 4, clue: "İkimizin kalbinin aynı ritimde atması...", letters: ["U","Y","U","M","L","U","K"], words: ["UYUMLU", "UYUM", "UYKU", "KUYU", "KUL"] },
+
+            // BÖLÜM 5: BÜYÜLÜ ANLAR (Seviye 21 - 25)
+            { chap: 5, clue: "Gözlerinin derinliğinde kaybolduğum o eşsiz tılsım...", letters: ["B","Ü","Y","Ü","L","Ü","K"], words: ["BÜYÜLÜ", "BÜYÜK", "BÜYÜ", "YÜK", "KÜL"] },
+            { chap: 5, clue: "Sana sarıldığımda dünyanın durduğu o kıymetli vakit...", letters: ["Z","A","M","A","N","S","I"], words: ["ZAMAN", "NAMAZ", "AZMAN", "SIMA", "ANI"] },
+            { chap: 5, clue: "Hayatımın en değerli mücevheri, paha biçilemez varlığın...", letters: ["H","A","Z","İ","N","E","M"], words: ["HAZİNEM", "HAZİNE", "ZİHİN", "MİZAÇ", "İMZA"] },
+            { chap: 5, clue: "Birlikte yaşlanacağımız o güzel yarınların resmi...", letters: ["G","E","L","E","C","E","K"], words: ["GELECEK", "ELEK", "LEKE", "KELEK", "ECE"] },
+            { chap: 5, clue: "Kalbimde açan ve hiç solmayan bahar çiçeği...", letters: ["M","E","N","E","K","Ş","E"], words: ["MENEKŞE", "ÇEŞME", "EŞEK", "EMEK", "ŞEN"] },
+
+            // BÖLÜM 6: SONSUZ AŞK (Seviye 26 - 30)
+            { chap: 6, clue: "Seninle her gün yeniden doğan, hiç tükenmeyen enerji...", letters: ["T","U","T","K","U","L","U"], words: ["TUTKULU", "TUTKU", "KUTLU", "KUTU", "KUL"] },
+            { chap: 6, clue: "Ruhumun diğer yarısı, kaderimin en güzel yazgısı...", letters: ["K","A","D","E","R","İ","M"], words: ["KADERİM", "KADER", "MERAK", "KREM", "DERİ"] },
+            { chap: 6, clue: "Seni tanıdığım güne her saniye ettiğim teşekkür...", letters: ["Ş","Ü","K","R","A","N","I"], words: ["ŞÜKRAN", "ŞARKI", "AKIŞ", "KIRA", "AŞIK"] },
+            { chap: 6, clue: "Başlangıcı 1993, bitişi ise asla olmayan yolculuğumuz...", letters: ["S","O","N","S","U","Z","A"], words: ["SONSUZA", "SONSUZ", "SUSUZ", "SOk".toUpperCase(), "SON"] },
+            { chap: 6, clue: "Bu oyunun ve kalbimin ebedi imzası...", letters: ["E","B","E","D","İ","Y","E"], words: ["EBEDİ", "HEDİYE", "YEDİ", "BİYE", "DİYE"] }
+        ];
+
+        const CHAPTER_INFO = [
+            { id: 1, title: "Bölüm 1: Doğum Günü Kraliçesi", rate: 120, letter: "Özge'm, senin adınla başlayan her cümle benim hayatımın en güzel şiiri. İyi ki doğdun, iyi ki benim eşim oldun." },
+            { id: 2, title: "Bölüm 2: Bizim Melodimiz", rate: 280, letter: "O şarkının ilk notası çaldığında ve ilk fotoğrafımıza her baktığımda, zaman duruyor ve ben sana ilk günkü gibi yeniden aşık oluyorum." },
+            { id: 3, title: "Bölüm 3: Kalbin Sırları", rate: 550, letter: "Sen sadece eşim değil; en yakın arkadaşım, sırdaşım, kızımızın harika annesi ve evimizin neşesisin." },
+            { id: 4, title: "Bölüm 4: Zamanın Ötesi", rate: 950, letter: "Yıllar geçse de senin o zarafetin, gülüşündeki sıcaklık ve bana verdiğin huzur her geçen gün daha da büyüyor." },
+            { id: 5, title: "Bölüm 5: Büyülü Anlar", rate: 1500, letter: "Bana dünyaları verseler, seninle karşılıklı içtiğimiz bir fincan kahvenin ve ettiğimiz iki çift tatlı sohbetin yerini tutamaz." },
+            { id: 6, title: "Bölüm 6: Sonsuzluk Sözü", rate: 2500, letter: "Tüm bölümleri zekanla açtın kraliçem! Bu oyun sonsuz modda devam ediyor ama bil ki sana olan sevgim buradaki tüm sayılardan çok daha sonsuz!" }
+        ];
+
+        const REWARDS = [
+            { id: "kahve", icon: "☕", title: "Özel Kahve & Sunum Servisi", desc: "Bu zarfı açtığında eşin sana hemen köpüklü, sıcak bir kahve hazırlayıp servis eder.", cost: 400 },
+            { id: "tatli", icon: "🍰", title: "Tatlı Mutluluk Paketi", desc: "Canının çektiği en sevdiğin tatlı veya çikolata hemen kapına gelir.", cost: 950 },
+            { id: "masaj", icon: "💆‍♀️", title: "20 Dakika VIP Masaj", desc: "Günün tüm yorgunluğunu silecek 20 dakikalık özel omuz ve ayak masajı.", cost: 2200 },
+            { id: "sinema", icon: "🎬", title: "Film & Dizi Kraliçesi", desc: "Mısırlar patlatılır ve bu akşam ne izleneceğine %100 Özge karar verir.", cost: 4500 },
+            { id: "tatil_gunu", icon: "🛋️", title: "Sıfır İş & Tam Dinlenme Günü", desc: "Bugün mutfak ve evdeki tüm işler eşinde, sen sadece dinlenmene bakıyorsun.", cost: 9000 },
+            { id: "yemek", icon: "🕯️", title: "Baş Başa Özel Akşam Yemeği", desc: "İstediğin bir mekanda veya menüde romantik akşam yemeği.", cost: 18000 },
+            { id: "kralice", icon: "👑", title: "24 Saat Kraliçe İlanı", desc: "Tam bir gün boyunca Özge'nin her isteği kanundur, hiçbir şeye itiraz edilemez!", cost: 35000 }
+        ];
+
+        // Her seviyedeki kelimeleri harf kümesine göre doğrula/temizle
+        function sanitizeLevels() {
+            LEVELS.forEach(lv => {
+                lv.words = lv.words.filter(w => {
+                    let pool = [...lv.letters];
+                    for (let ch of w) {
+                        let idx = pool.indexOf(ch);
+                        if (idx === -1) return false;
+                        pool.splice(idx, 1);
+                    }
+                    return true;
+                });
+            });
+        }
+        sanitizeLevels();
+
+        /* ==============================================================
+           2. OYUN HAFIZASI VE DURUM YÖNETİMİ
+           ============================================================== */
+        let state = {
+            unlockedPin: false,
+            levelIndex: 0,
+            stars: 250,
+            foundWords: [],
+            revealedCells: {},
+            unlockedRewards: [],
+            lastVaultClaim: Date.now(),
+            musicOn: true
+        };
+
+        function loadState() {
+            try {
+                let raw = localStorage.getItem("ozgeRoyalPuzzleV3");
+                if (raw) {
+                    let parsed = JSON.parse(raw);
+                    state = { ...state, ...parsed };
+                }
+            } catch (e) {}
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem("ozgeRoyalPuzzleV3", JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        /* ==============================================================
+           3. SES MOTORU (MP3 + DAHİLİ ROMANTİK PİYANO/MÜZİK KUTUSU SENTEZLEYİCİ)
+           Harici mp3 olmasa bile Web Audio API ile kristal netliğinde müzik çalar!
+           ============================================================== */
+        let audioCtx = null;
+        let bgAudioEl = new Audio();
+        bgAudioEl.loop = true;
+        let hasExternalAudio = false;
+        let synthTimer = null;
+
+        function initAudioSources() {
+            // Önce hafızada kayıtlı özel ses var mı kontrol et
+            let savedAudio = localStorage.getItem("ozgeCustomAudio");
+            if (savedAudio) {
+                bgAudioEl.src = savedAudio;
+                hasExternalAudio = true;
+                return;
+            }
+            // GitHub'daki olası dosya adlarını sırayla dene
+            const candidates = ["sarki.mp3", "sarki.MP3", "sarki.m4a", "muzik.mp3"];
+            let idx = 0;
+            function tryNext() {
+                if (idx >= candidates.length) return;
+                let testAudio = new Audio(candidates[idx]);
+                testAudio.addEventListener("canplaythrough", () => {
+                    if (!hasExternalAudio) {
+                        bgAudioEl.src = candidates[idx];
+                        hasExternalAudio = true;
+                    }
+                }, { once: true });
+                testAudio.addEventListener("error", () => {
+                    idx++;
+                    tryNext();
+                }, { once: true });
+            }
+            tryNext();
+        }
+
+        function ensureAudioCtx() {
+            if (!audioCtx) {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                if (AC) audioCtx = new AC();
+            }
+            if (audioCtx && audioCtx.state === "suspended") {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq, duration = 0.35, type = "sine", vol = 0.08) {
+            if (!state.musicOn) return;
+            ensureAudioCtx();
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(vol, audioCtx.currentTime + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration + 0.02);
+            } catch (e) {}
+        }
+
+        // Romantik Müzik Kutusu Arpej Melodisi (sarki.mp3 yüklenmemişse otomatik devreye girer)
+        const MELODY_NOTES = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46, 587.33, 493.88, 587.33, 783.99, 659.25, 523.25];
+        let melodyStep = 0;
+
+        function startAmbientMusic() {
+            if (!state.musicOn) return;
+            if (hasExternalAudio) {
+                bgAudioEl.play().catch(() => {});
+                if (synthTimer) { clearInterval(synthTimer); synthTimer = null; }
+            } else {
+                ensureAudioCtx();
+                if (!synthTimer) {
+                    synthTimer = setInterval(() => {
+                        if (!state.musicOn) return;
+                        if (hasExternalAudio) {
+                            clearInterval(synthTimer);
+                            synthTimer = null;
+                            bgAudioEl.play().catch(() => {});
+                            return;
+                        }
+                        let note = MELODY_NOTES[melodyStep % MELODY_NOTES.length];
+                        playTone(note, 1.1, "sine", 0.035);
+                        melodyStep++;
+                    }, 650);
+                }
+            }
+            updateMusicIcon();
+        }
+
+        function stopAmbientMusic() {
+            bgAudioEl.pause();
+            if (synthTimer) {
+                clearInterval(synthTimer);
+                synthTimer = null;
+            }
+            updateMusicIcon();
+        }
+
+        function toggleMusic() {
+            state.musicOn = !state.musicOn;
+            saveState();
+            if (state.musicOn) startAmbientMusic();
+            else stopAmbientMusic();
+        }
+
+        function updateMusicIcon() {
+            const btn = document.getElementById("music-toggle-btn");
+            if (btn) btn.innerText = state.musicOn ? "🎵" : "🔇";
+        }
+
+        /* ==============================================================
+           4. FOTOĞRAF MOTORU (ÇOKLU UZANTI + GALERİDEN SEÇİM + SANATSAL ÇERÇEVE)
+           ============================================================== */
+        function initPhotoSources() {
+            const imgEl = document.getElementById("couple-photo");
+            const fallbackEl = document.getElementById("photo-fallback");
+
+            let savedPhoto = localStorage.getItem("ozgeCustomPhoto");
+            if (savedPhoto) {
+                imgEl.src = savedPhoto;
+                imgEl.style.display = "block";
+                fallbackEl.style.display = "none";
+                return;
+            }
+
+            const extensions = ["fotograf.jpg", "fotograf.jpeg", "fotograf.JPG", "fotograf.JPEG", "fotograf.png", "fotograf.PNG"];
+            let i = 0;
+            function tryNextImg() {
+                if (i >= extensions.length) return;
+                let tester = new Image();
+                tester.onload = () => {
+                    imgEl.src = extensions[i];
+                    imgEl.style.display = "block";
+                    fallbackEl.style.display = "none";
+                };
+                tester.onerror = () => {
+                    i++;
+                    tryNextImg();
+                };
+                tester.src = extensions[i];
+            }
+            tryNextImg();
+        }
+
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                // Resmi iPhone hafızasına sığacak şekilde sıkıştır
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    const maxW = 700;
+                    const scale = Math.min(1, maxW / img.width);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+                    try {
+                        localStorage.setItem("ozgeCustomPhoto", dataUrl);
+                    } catch (err) {}
+                    const imgEl = document.getElementById("couple-photo");
+                    imgEl.src = dataUrl;
+                    imgEl.style.display = "block";
+                    document.getElementById("photo-fallback").style.display = "none";
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleAudioUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            bgAudioEl.src = url;
+            hasExternalAudio = true;
+            state.musicOn = true;
+            startAmbientMusic();
+            closeInfoModal();
+        }
+
+        /* ==============================================================
+           5. GİRİŞ ŞİFRESİ (1993) VE KARŞILAMA
+           ============================================================== */
+        let currentPin = "";
+
+        function pressPin(digit) {
+            if (currentPin.length >= 4) return;
+            currentPin += digit;
+            playTone(440 + currentPin.length * 80, 0.15, "sine", 0.06);
+            renderPinDots();
+
+            if (currentPin.length === 4) {
+                if (currentPin === "1993") {
+                    playTone(587.33, 0.2, "triangle", 0.09);
+                    setTimeout(() => playTone(880, 0.45, "triangle", 0.1), 150);
+                    state.unlockedPin = true;
+                    saveState();
+                    setTimeout(() => {
+                        document.getElementById("lock-screen").classList.remove("active");
+                        document.getElementById("birthday-screen").classList.add("active");
+                        startAmbientMusic();
+                    }, 250);
+                } else {
+                    playTone(220, 0.3, "sawtooth", 0.06);
+                    document.getElementById("pin-error").innerText = "Tarih doğru değil sevgilim, tekrar dene (İpucu: 1993)";
+                    setTimeout(() => {
+                        currentPin = "";
+                        renderPinDots();
+                    }, 500);
+                }
+            }
+        }
+
+        function deletePin() {
+            currentPin = currentPin.slice(0, -1);
+            renderPinDots();
+        }
+
+        function clearPin() {
+            currentPin = "";
+            renderPinDots();
+        }
+
+        function renderPinDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById("dot-" + i);
+                if (currentPin[i]) {
+                    dot.innerText = currentPin[i];
+                    dot.classList.add("filled");
+                } else {
+                    dot.innerText = "";
+                    dot.classList.remove("filled");
+                }
+            }
+        }
+
+        function startJourney() {
+            document.getElementById("birthday-screen").classList.remove("active");
+            startAmbientMusic();
+            loadLevel();
+        }
+
+        function openBirthdayCard() {
+            document.getElementById("birthday-screen").classList.add("active");
+        }
+
+        /* ==============================================================
+           6. KELİME ÇARKI VE BULMACA MEKANİĞİ
+           Hem parmak kaydırma (Swipe) hem dokunma (Tap) destekli
+           ============================================================== */
+        let activeLevel = null;
+        let wheelOrder = [];
+        let selectedIndices = [];
+        let isDragging = false;
+        let pointerPos = { x: 0, y: 0 };
+
+        function getActiveLevelData() {
+            if (state.levelIndex < LEVELS.length) {
+                return LEVELS[state.levelIndex];
+            }
+            // 30 seviyeden sonra Sonsuz Mod: seviyeleri karıştırarak yüksek ödüllü sunar
+            let base = LEVELS[state.levelIndex % LEVELS.length];
+            return {
+                chap: 6,
+                clue: "Sonsuzluk Modu • " + base.clue,
+                letters: base.letters,
+                words: base.words
+            };
+        }
+
+        function loadLevel() {
+            activeLevel = getActiveLevelData();
+            wheelOrder = [...activeLevel.letters];
+            selectedIndices = [];
+
+            const chapNum = Math.min(6, Math.floor(state.levelIndex / 5) + 1);
+            const chapObj = CHAPTER_INFO[chapNum - 1];
+
+            document.getElementById("top-level-badge").innerText = `BÖLÜM ${chapNum} • SV ${state.levelIndex + 1}`;
+            document.getElementById("chapter-name").innerText = chapObj.title.toUpperCase();
+            document.getElementById("level-clue").innerText = `"${activeLevel.clue}"`;
+            document.getElementById("unlocked-chap-count").innerText = `${chapNum}/6`;
+
+            renderWordGrid();
+            renderWheel();
+            updateScoreUI();
+            renderChaptersTab();
+            renderRewardsTab();
+        }
+
+        function renderWordGrid() {
+            const grid = document.getElementById("word-grid");
+            grid.innerHTML = "";
+
+            activeLevel.words.forEach((word, wIdx) => {
+                const row = document.createElement("div");
+                row.className = "word-row";
+                const isFound = state.foundWords.includes(word);
+
+                for (let cIdx = 0; cIdx < word.length; cIdx++) {
+                    const cellKey = `${wIdx}_${cIdx}`;
+                    const isHinted = state.revealedCells[cellKey];
+                    const slot = document.createElement("div");
+                    slot.className = "letter-slot" + (isFound ? " revealed" : (isHinted ? " hinted" : ""));
+                    slot.innerText = (isFound || isHinted) ? word[cIdx] : "";
+                    slot.onclick = () => {
+                        if (!isFound && !isHinted) revealSpecificCell(wIdx, cIdx);
+                    };
+                    row.appendChild(slot);
+                }
+                grid.appendChild(row);
+            });
+        }
+
+        function renderWheel() {
+            const container = document.getElementById("wheel-nodes");
+            container.innerHTML = "";
+            const count = wheelOrder.length;
+            const radius = 74;
+            const center = 105;
+
+            wheelOrder.forEach((letter, idx) => {
+                const angle = (idx / count) * (2 * Math.PI) - Math.PI / 2;
+                const x = center + radius * Math.cos(angle);
+                const y = center + radius * Math.sin(angle);
+
+                const node = document.createElement("div");
+                node.className = "wheel-node" + (selectedIndices.includes(idx) ? " selected" : "");
+                node.style.left = x + "px";
+                node.style.top = y + "px";
+                node.dataset.index = idx;
+                node.innerText = letter;
+                container.appendChild(node);
+            });
+
+            drawWheelLines();
+        }
+
+        function getNodeCoordinates(idx) {
+            const count = wheelOrder.length;
+            const radius = 74;
+            const center = 105;
+            const angle = (idx / count) * (2 * Math.PI) - Math.PI / 2;
+            return {
+                x: center + radius * Math.cos(angle),
+                y: center + radius * Math.sin(angle)
+            };
+        }
+
+        function drawWheelLines() {
+            const svg = document.getElementById("wheel-svg");
+            svg.innerHTML = "";
+            if (selectedIndices.length === 0) return;
+
+            let points = selectedIndices.map(i => {
+                const p = getNodeCoordinates(i);
+                return `${p.x},${p.y}`;
+            });
+            if (isDragging) {
+                points.push(`${pointerPos.x},${pointerPos.y}`);
+            }
+
+            const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            polyline.setAttribute("points", points.join(" "));
+            polyline.setAttribute("fill", "none");
+            polyline.setAttribute("stroke", "#e5c158");
+            polyline.setAttribute("stroke-width", "5");
+            polyline.setAttribute("stroke-linecap", "round");
+            polyline.setAttribute("stroke-linejoin", "round");
+            svg.appendChild(polyline);
+        }
+
+        function updateCurrentWordDisplay() {
+            const pill = document.getElementById("current-word-pill");
+            if (selectedIndices.length === 0) {
+                pill.style.display = "none";
+                pill.innerText = "";
+            } else {
+                pill.style.display = "flex";
+                pill.innerText = selectedIndices.map(i => wheelOrder[i]).join("");
+            }
+        }
+
+        function setupWheelEvents() {
+            const box = document.getElementById("wheel-box");
+
+            function getTouchLocalPos(clientX, clientY) {
+                const rect = box.getBoundingClientRect();
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function checkHitNode(x, y) {
+                const count = wheelOrder.length;
+                for (let i = 0; i < count; i++) {
+                    const p = getNodeCoordinates(i);
+                    const dist = Math.hypot(x - p.x, y - p.y);
+                    if (dist < 28) {
+                        if (!selectedIndices.includes(i)) {
+                            selectedIndices.push(i);
+                            playTone(480 + selectedIndices.length * 65, 0.12, "sine", 0.06);
+                            renderWheel();
+                            updateCurrentWordDisplay();
+                        } else if (selectedIndices.length >= 2 && selectedIndices[selectedIndices.length - 2] === i) {
+                            // Geri kaydırınca son harfi geri al
+                            selectedIndices.pop();
+                            renderWheel();
+                            updateCurrentWordDisplay();
+                        }
+                        break;
+                    }
+                }
+            }
+
+            box.addEventListener("pointerdown", e => {
+                isDragging = true;
+                selectedIndices = [];
+                pointerPos = getTouchLocalPos(e.clientX, e.clientY);
+                checkHitNode(pointerPos.x, pointerPos.y);
+                drawWheelLines();
+            });
+
+            window.addEventListener("pointermove", e => {
+                if (!isDragging) return;
+                pointerPos = getTouchLocalPos(e.clientX, e.clientY);
+                checkHitNode(pointerPos.x, pointerPos.y);
+                drawWheelLines();
+            });
+
+            window.addEventListener("pointerup", () => {
+                if (!isDragging) return;
+                isDragging = false;
+                evaluateSelectedWord();
+            });
+        }
+
+        function evaluateSelectedWord() {
+            const formed = selectedIndices.map(i => wheelOrder[i]).join("");
+            selectedIndices = [];
+            renderWheel();
+            updateCurrentWordDisplay();
+
+            if (formed.length < 2) return;
+
+            if (activeLevel.words.includes(formed)) {
+                if (!state.foundWords.includes(formed)) {
+                    // Doğru kelime bulundu!
+                    state.foundWords.push(formed);
+                    const reward = formed.length * 15;
+                    state.stars += reward;
+                    playTone(659.25, 0.18, "triangle", 0.09);
+                    setTimeout(() => playTone(880, 0.3, "triangle", 0.1), 110);
+
+                    renderWordGrid();
+                    updateScoreUI();
+                    saveState();
+                    checkLevelComplete();
+                } else {
+                    playTone(440, 0.15, "sine", 0.04);
+                }
+            } else {
+                playTone(240, 0.2, "sine", 0.04);
+            }
+        }
+
+        function checkLevelComplete() {
+            const allFound = activeLevel.words.every(w => state.foundWords.includes(w));
+            if (allFound) {
+                setTimeout(() => {
+                    const finishedLevelNum = state.levelIndex + 1;
+                    const isChapterEnd = finishedLevelNum % 5 === 0 && finishedLevelNum <= 30;
+                    const bonusStars = isChapterEnd ? 250 : 90;
+                    state.stars += bonusStars;
+                    updateScoreUI();
+
+                    const modal = document.getElementById("win-modal");
+                    if (isChapterEnd) {
+                        const chapIdx = Math.floor((finishedLevelNum - 1) / 5);
+                        const chapInfo = CHAPTER_INFO[chapIdx];
+                        document.getElementById("win-icon").innerText = "💌";
+                        document.getElementById("win-subtitle").innerText = `${chapInfo.title.toUpperCase()} TAMAMLANDI!`;
+                        document.getElementById("win-title").innerText = "Mühürlü Zarf Açıldı";
+                        document.getElementById("win-desc").innerHTML = `
+                            <div style="background:rgba(229,193,88,0.12); border:1px solid var(--gold); padding:14px; border-radius:14px; font-style:italic; margin-bottom:10px;">
+                                "${chapInfo.letter}"
+                            </div>
+                            <div style="color:var(--gold); font-weight:700;">+${bonusStars} ✨ Bölüm Ödülü Kazandın!</div>
+                        `;
+                    } else {
+                        document.getElementById("win-icon").innerText = "✨";
+                        document.getElementById("win-subtitle").innerText = `SEVİYE ${finishedLevelNum} ÇÖZÜLDÜ`;
+                        document.getElementById("win-title").innerText = "Muhteşem Zeka, Özge!";
+                        document.getElementById("win-desc").innerHTML = `Tüm şifreleri çözdün ve <strong style="color:var(--gold);">+${bonusStars} ✨ Yıldız Puanı</strong> kazandın!`;
+                    }
+                    modal.classList.add("active");
+                }, 400);
+            }
+        }
+
+        function nextLevelConfirm() {
+            document.getElementById("win-modal").classList.remove("active");
+            state.levelIndex++;
+            state.foundWords = [];
+            state.revealedCells = {};
+            saveState();
+            loadLevel();
+        }
+
+        function shuffleWheel() {
+            for (let i = wheelOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [wheelOrder[i], wheelOrder[j]] = [wheelOrder[j], wheelOrder[i]];
+            }
+            playTone(520, 0.12, "sine", 0.05);
+            renderWheel();
+        }
+
+        function useHint() {
+            if (state.stars < 60) {
+                showInfoModal("✨", "Yıldız Puanı Yetersiz", "İpucu kullanmak için 60 ✨ gerekiyor. Kelime bularak veya üstteki Yıldız Kumbarasını toplayarak puan kazanabilirsin.");
+                return;
+            }
+            // Açılmamış bir harf bul
+            let candidates = [];
+            activeLevel.words.forEach((word, wIdx) => {
+                if (!state.foundWords.includes(word)) {
+                    for (let cIdx = 0; cIdx < word.length; cIdx++) {
+                        const key = `${wIdx}_${cIdx}`;
+                        if (!state.revealedCells[key]) candidates.push({ wIdx, cIdx, key });
+                    }
+                }
+            });
+
+            if (candidates.length === 0) return;
+            const pick = candidates[Math.floor(Math.random() * candidates.length)];
+            revealSpecificCell(pick.wIdx, pick.cIdx, true);
+        }
+
+        function revealSpecificCell(wIdx, cIdx, fromButton = false) {
+            if (state.stars < 60) {
+                if (!fromButton) showInfoModal("💡", "Harf İpucu (60 ✨)", "Herhangi bir kutuya dokunarak veya 💡 butonuna basarak 60 ✨ karşılığında o harfi açabilirsin.");
+                return;
+            }
+            const key = `${wIdx}_${cIdx}`;
+            state.stars -= 60;
+            state.revealedCells[key] = true;
+            playTone(740, 0.2, "triangle", 0.08);
+
+            // Eğer kelimenin tüm harfleri ipucuyla açıldıysa kelimeyi tamamla
+            const word = activeLevel.words[wIdx];
+            let allOpened = true;
+            for (let i = 0; i < word.length; i++) {
+                if (!state.revealedCells[`${wIdx}_${i}`]) allOpened = false;
+            }
+            if (allOpened && !state.foundWords.includes(word)) {
+                state.foundWords.push(word);
+            }
+
+            renderWordGrid();
+            updateScoreUI();
+            saveState();
+            checkLevelComplete();
+        }
+
+        /* ==============================================================
+           7. SAATLİK YILDIZ KUMBARASI (SÜREKLİ GİRİŞ MOTİVASYONU)
+           ============================================================== */
+        function getHourlyRate() {
+            const chapNum = Math.min(6, Math.floor(state.levelIndex / 5) + 1);
+            return CHAPTER_INFO[chapNum - 1].rate;
+        }
+
+        function getPendingVaultStars() {
+            const elapsedHours = (Date.now() - state.lastVaultClaim) / 3600000;
+            const rate = getHourlyRate();
+            return Math.min(Math.floor(elapsedHours * rate), rate * 12); // Maks 12 saatlik birikir
+        }
+
+        function updateVaultUI() {
+            const pending = getPendingVaultStars();
+            const rate = getHourlyRate();
+            document.getElementById("vault-amount").innerText = `+${pending} ✨`;
+            document.getElementById("vault-rate").innerText = `(Saatlik +${rate} ✨)`;
+        }
+
+        function collectVault() {
+            const pending = getPendingVaultStars();
+            if (pending < 1) {
+                showInfoModal("⏳", "Yıldız Kumbarası", `Kumbaran her dakika otomatik olarak ✨ Yıldız Puanı üretir (Şu anki hızın: Saatlik +${getHourlyRate()} ✨). Birazdan tekrar toplayabilirsin!`);
+                return;
+            }
+            state.stars += pending;
+            state.lastVaultClaim = Date.now();
+            playTone(880, 0.3, "triangle", 0.1);
+            updateScoreUI();
+            updateVaultUI();
+            saveState();
+        }
+
+        /* ==============================================================
+           8. SERÜVEN HARİTASI VE GERÇEK HAYAT ÖDÜLLERİ
+           ============================================================== */
+        function renderChaptersTab() {
+            const list = document.getElementById("chapters-list");
+            list.innerHTML = "";
+            const currentChap = Math.min(6, Math.floor(state.levelIndex / 5) + 1);
+
+            CHAPTER_INFO.forEach(ch => {
+                const isCompleted = state.levelIndex >= ch.id * 5;
+                const isCurrent = ch.id === currentChap;
+
+                const card = document.createElement("div");
+                card.className = "chapter-card" + (isCompleted || isCurrent ? " unlocked" : "");
+                card.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="badge-num">${isCompleted ? "💌" : (isCurrent ? "✨" : "🔒")}</div>
+                        <div>
+                            <div style="font-weight:800; font-size:14px; color:#fff;">${ch.title}</div>
+                            <div style="font-size:12px; color:var(--text-dim); margin-top:2px;">
+                                Kumbara Üretimi: Saatlik +${ch.rate} ✨
+                            </div>
+                        </div>
+                    </div>
+                    ${isCompleted 
+                        ? `<button class="action-chip" onclick="readChapterLetter(${ch.id - 1})">Mektubu Oku</button>`
+                        : `<span style="font-size:11px; color:var(--gold); font-weight:700;">Seviye ${(ch.id-1)*5 + 1}-${ch.id*5}</span>`
+                    }
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function readChapterLetter(idx) {
+            const ch = CHAPTER_INFO[idx];
+            showInfoModal("💌", ch.title, `<div style="font-style:italic; padding:10px; background:rgba(255,255,255,0.04); border-radius:12px; border-left:3px solid var(--gold);">"${ch.letter}"</div>`);
+        }
+
+        function renderRewardsTab() {
+            const list = document.getElementById("rewards-list");
+            list.innerHTML = "";
+
+            REWARDS.forEach(r => {
+                const owned = state.unlockedRewards.includes(r.id);
+                const canAfford = state.stars >= r.cost;
+
+                const card = document.createElement("div");
+                card.className = "chapter-card" + (owned ? " unlocked" : "");
+                card.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="badge-num">${r.icon}</div>
+                        <div>
+                            <div style="font-weight:800; font-size:14px; color:#fff;">${r.title}</div>
+                            <div style="font-size:12px; color:var(--text-dim); margin-top:2px;">${r.desc}</div>
+                        </div>
+                    </div>
+                    ${owned
+                        ? `<button class="action-chip" onclick="showRewardTicket('${r.id}')">Kuponu Gör 🎟️</button>`
+                        : `<button class="action-chip" ${canAfford ? "" : "disabled"} onclick="buyReward('${r.id}')">${r.cost} ✨</button>`
+                    }
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function buyReward(id) {
+            const r = REWARDS.find(x => x.id === id);
+            if (!r || state.stars < r.cost) return;
+            state.stars -= r.cost;
+            if (!state.unlockedRewards.includes(id)) state.unlockedRewards.push(id);
+            playTone(784, 0.25, "triangle", 0.1);
+            updateScoreUI();
+            renderRewardsTab();
+            saveState();
+            showRewardTicket(id);
+        }
+
+        function showRewardTicket(id) {
+            const r = REWARDS.find(x => x.id === id);
+            if (!r) return;
+            const html = `
+                <div style="border:1.5px dashed var(--gold); padding:16px; border-radius:16px; background:rgba(0,0,0,0.35);">
+                    <div style="font-size:11px; color:var(--gold); letter-spacing:1.5px; font-weight:700;">ÖZEL KRALİÇE KUPONU</div>
+                    <div style="font-size:16px; font-weight:800; margin:6px 0;">${r.title}</div>
+                    <div style="font-size:13px; color:#d2cce0; margin-bottom:12px;">${r.desc}</div>
+                    <div style="font-family:monospace; background:rgba(229,193,88,0.15); color:var(--gold); padding:8px; border-radius:8px; font-weight:700;">
+                        KOD: OZGE-1993-${id.toUpperCase()}
+                    </div>
+                    <div style="font-size:11.5px; color:var(--success); margin-top:12px; font-weight:600;">
+                        📸 Bu ekranın görüntüsünü alıp eşine WhatsApp'tan göndererek ödülünü hemen kullanabilirsin!
+                    </div>
+                </div>
+            `;
+            showInfoModal(r.icon, "Ödül Kuponun Hazır!", html);
+        }
+
+        function openMediaSettings() {
+            const html = `
+                <div style="text-align:left; font-size:13px; color:#dcd6e8; margin-bottom:14px;">
+                    GitHub'a dosya yüklemekle uğraşmadan doğrudan telefonunun galerisinden fotoğrafınızı veya şarkınızı seçebilirsin:
+                </div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="gold-btn" style="padding:12px;" onclick="document.getElementById('photo-picker').click()">📸 Galeriden Fotoğrafımızı Seç</button>
+                    <button class="gold-btn" style="padding:12px; background:linear-gradient(135deg, #e899a0, #c44569); color:#fff;" onclick="document.getElementById('audio-picker').click()">🎵 Telefondan Şarkı (MP3/M4A) Seç</button>
+                </div>
+            `;
+            showInfoModal("⚙️", "Fotoğraf & Müzik Ayarları", html);
+        }
+
+        function updateScoreUI() {
+            document.getElementById("score-text").innerText = Math.floor(state.stars).toLocaleString("tr-TR");
+        }
+
+        function switchTab(tabName, el) {
+            document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+            document.getElementById("tab-" + tabName).classList.add("active");
+            document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+            el.classList.add("active");
+            if (tabName === "chapters") renderChaptersTab();
+            if (tabName === "rewards") renderRewardsTab();
+        }
+
+        function showInfoModal(icon, title, bodyHtml) {
+            document.getElementById("info-icon").innerText = icon;
+            document.getElementById("info-title").innerText = title;
+            document.getElementById("info-body").innerHTML = bodyHtml;
+            document.getElementById("info-modal").classList.add("active");
+        }
+
+        function closeInfoModal() {
+            document.getElementById("info-modal").classList.remove("active");
+        }
+
+        /* ==============================================================
+           9. BAŞLATMA
+           ============================================================== */
+        window.onload = () => {
+            loadState();
+            initAudioSources();
+            initPhotoSources();
+            setupWheelEvents();
+            updateMusicIcon();
+
+            if (!state.unlockedPin) {
+                document.getElementById("lock-screen").classList.add("active");
+            } else {
+                loadLevel();
+            }
+
+            updateVaultUI();
+            setInterval(updateVaultUI, 15000);
+        };
+    </script>
+</body>
+</html>
