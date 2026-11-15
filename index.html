@@ -2,376 +2,1066 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Sonsuz Hatıra Ağacı</title>
+    <meta name="theme-color" content="#0d0b1e">
+    <title>Özge'nin Dünyası</title>
     <style>
-        * { box-sizing: border-box; user-select: none; }
-        body {
-            margin: 0; padding: 0;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #fff;
-            font-family: -apple-system, sans-serif;
-            height: 100vh;
+        :root {
+            --bg-dark: #0d0b1e;
+            --bg-card: rgba(255, 255, 255, 0.06);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --accent: #ff4757;
+            --accent-glow: rgba(255, 71, 87, 0.45);
+            --gold: #ffa502;
+            --green: #2ed573;
+            --text-main: #ffffff;
+            --text-muted: #a4b0be;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2c1654 0%, #0d0b1e 70%);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
+        }
+
+        /* ANA KAPSAYICI */
+        #app {
             display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding-top: env(safe-area-inset-top, 20px);
+            padding-bottom: env(safe-area-inset-bottom, 15px);
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* TAM EKRAN KİLİT & MEKTUP */
+        .tam-ekran-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, #2c1654 0%, #0d0b1e 100%);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-        }
-        /* Cam Efekti Paneller */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 400px;
-            animation: fadeIn 1s ease-in-out;
-            max-height: 90vh;
+        }
+        .tam-ekran-overlay.aktif { display: flex; animation: fadeIn 0.5s ease; }
+
+        .kilit-kutu {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 30px 24px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            max-height: 88vh;
             overflow-y: auto;
         }
-        
-        /* Ekran Geçişleri */
-        .ekran { display: none; }
-        .aktif-ekran { display: flex; flex-direction: column; align-items: center; }
 
-        /* Kilit Ekranı */
-        input[type="password"] {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.2);
+        input.sifre-giris {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glass);
             color: #fff;
-            font-size: 24px;
-            padding: 15px;
-            border-radius: 10px;
+            font-size: 28px;
+            padding: 14px;
+            border-radius: 14px;
             text-align: center;
-            letter-spacing: 8px;
-            width: 80%;
+            letter-spacing: 12px;
+            width: 85%;
             margin: 20px 0;
             outline: none;
         }
-        .buton {
-            background: linear-gradient(45deg, #ff6b6b, #ff4757);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-            transition: transform 0.2s;
-        }
-        .buton:active { transform: scale(0.95); }
-        #hata-mesaji { color: #ff6b6b; font-size: 14px; margin-top: 10px; opacity: 0; transition: 0.3s; }
 
-        /* Sürpriz Ekranı (Fotoğraf ve Mektup) */
+        .ana-buton {
+            background: linear-gradient(135deg, #ff6b81, #ff4757);
+            border: none;
+            padding: 15px 28px;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            box-shadow: 0 6px 20px var(--accent-glow);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .ana-buton:active { transform: scale(0.96); }
+
         #surpriz-foto {
             width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
-            margin-bottom: 20px;
-            display: none; /* Fotoğraf yüklenene kadar gizli */
-        }
-        .mektup {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #e0e0e0;
-            text-align: left;
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-
-        /* Oyun Ekranı (Clicker/Idle) */
-        .enerji-baslik { font-size: 18px; color: #a4b0be; margin-bottom: 5px; }
-        .enerji-skor { font-size: 40px; font-weight: bold; color: #ff4757; text-shadow: 0 0 15px rgba(255,71,87,0.5); margin-bottom: 5px; }
-        .saniye-skor { font-size: 14px; color: #7bed9f; margin-bottom: 30px; }
-        
-        #agac-buton {
-            font-size: 80px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            animation: pulse 2s infinite;
-            filter: drop-shadow(0 0 20px rgba(255,71,87,0.3));
-            margin-bottom: 30px;
-        }
-        
-        /* Market ve Sürpriz Notlar Listesi */
-        .liste-baslik { font-size: 18px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 15px; width: 100%; text-align: left;}
-        .market-item {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .market-item div { text-align: left; }
-        .market-isim { font-weight: bold; color: #fff; font-size: 15px; }
-        .market-guc { font-size: 12px; color: #7bed9f; }
-        .market-fiyat { font-size: 14px; color: #ff4757; font-weight: bold; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 15px; }
-        
-        .not-kutusu {
-            background: rgba(255, 71, 87, 0.1);
-            border-left: 4px solid #ff4757;
-            padding: 15px;
-            margin-bottom: 15px;
-            text-align: left;
-            font-size: 14px;
-            font-style: italic;
-            border-radius: 0 10px 10px 0;
+            max-height: 240px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 2px solid rgba(255,255,255,0.2);
             display: none;
         }
 
-        /* Görsel Efektler (Partiküller) */
-        .partikul {
-            position: absolute;
-            pointer-events: none;
-            color: #ff4757;
-            font-size: 24px;
-            animation: ucma 1s ease-out forwards;
-            text-shadow: 0 0 10px rgba(255,71,87,0.8);
+        .mektup-metin {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            text-align: left;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.25);
+            padding: 16px;
+            border-radius: 14px;
+            border-left: 3px solid var(--accent);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes ucma { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
-        
-        /* Çevrimdışı Kazanç Paneli */
-        #cevrimdisi-panel { display: none; background: rgba(123, 237, 159, 0.2); border: 1px solid #7bed9f; color: #7bed9f; padding: 15px; border-radius: 12px; margin-bottom: 20px; width: 100%; }
+        /* ÜST BİLGİ ÇUBUĞU */
+        #ust-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid var(--border-glass);
+            backdrop-filter: blur(10px);
+        }
+        .skor-kutu { display: flex; flex-direction: column; }
+        .skor-ana { font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
+        .skor-alt { font-size: 12px; color: var(--green); font-weight: 600; }
+
+        .ust-ikonlar { display: flex; gap: 10px; }
+        .ikon-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .bildirim-nokta {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        /* SEKME İÇERİKLERİ */
+        #icerik-alani {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .sekme-sayfa { display: none; flex-direction: column; gap: 14px; height: 100%; }
+        .sekme-sayfa.aktif { display: flex; animation: fadeIn 0.25s ease; }
+
+        /* 1. SEKME: ANI BİRLEŞTİRME (2048 OYUNU) */
+        .oyun-ust-bilgi {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border-glass);
+        }
+        .hedef-kutu { font-size: 13px; color: var(--text-muted); }
+        .hedef-kutu strong { color: var(--gold); font-size: 14px; }
+
+        #board-container {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 10px;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 8px;
+            touch-action: none;
+            position: relative;
+        }
+
+        .hucre {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.15s ease, background 0.2s;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        .hucre.dolu {
+            background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+            border-color: rgba(255,255,255,0.18);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .hucre-emoji { font-size: 28px; line-height: 1; margin-bottom: 3px; }
+        .hucre-isim { font-size: 10px; color: #dcdde1; font-weight: 600; text-align: center; padding: 0 2px; }
+        .hucre-seviye {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            font-size: 9px;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .yon-tuslari {
+            display: grid;
+            grid-template-columns: repeat(3, 56px);
+            grid-template-rows: repeat(2, 44px);
+            gap: 6px;
+            justify-content: center;
+            margin-top: 2px;
+        }
+        .yon-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .yon-btn:active { background: var(--accent); }
+
+        /* LİSTE KARTLARI (BAHÇE, KUPON, KASA) */
+        .bolum-baslik {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kart {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            transition: 0.2s;
+        }
+        .kart-sol { display: flex; align-items: center; gap: 12px; text-align: left; }
+        .kart-ikon {
+            font-size: 28px;
+            width: 48px;
+            height: 48px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .kart-baslik { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 3px; }
+        .kart-aciklama { font-size: 12px; color: var(--text-muted); line-height: 1.35; }
+        .satin-al-btn {
+            background: linear-gradient(135deg, #ff6b81, #ff4757);
+            border: none;
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .satin-al-btn:disabled {
+            background: rgba(255,255,255,0.08);
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* ALT GEZİNME MENÜSÜ */
+        #alt-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: rgba(13, 11, 30, 0.95);
+            border-top: 1px solid var(--border-glass);
+            padding: 8px 6px;
+            backdrop-filter: blur(15px);
+        }
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .menu-item span.ikon { font-size: 20px; }
+        .menu-item.aktif {
+            color: #fff;
+            background: rgba(255, 71, 87, 0.15);
+        }
+
+        /* MODALLAR (BİLET & ŞANS ÇARKI) */
+        .modal-arka {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-arka.aktif { display: flex; animation: fadeIn 0.25s ease; }
+
+        .bilet-kutu {
+            background: linear-gradient(135deg, #1e1b38, #2c1654);
+            border: 2px dashed var(--gold);
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        .bilet-kod {
+            background: rgba(0,0,0,0.4);
+            color: var(--gold);
+            font-family: monospace;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 8px;
+            margin: 12px 0;
+            letter-spacing: 2px;
+        }
+
+        /* PARTİKÜL */
+        .partikul {
+            position: fixed;
+            pointer-events: none;
+            font-weight: 800;
+            color: var(--gold);
+            font-size: 16px;
+            z-index: 999;
+            animation: yukariUc 0.9s ease-out forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes yukariUc { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-55px) scale(1.2); } }
     </style>
 </head>
 <body>
 
-    <!-- Müzik Çalar (Gizli) -->
     <audio id="arkaPlanMuzik" loop>
         <source src="sarki.mp3" type="audio/mpeg">
     </audio>
 
     <!-- 1. KİLİT EKRANI -->
-    <div id="kilit-ekrani" class="glass-panel ekran aktif-ekran">
-        <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
-        <h2 style="margin-bottom: 5px;">Zamanın Kapıları</h2>
-        <p style="color: #a4b0be; font-size: 14px;">En büyük mutluluğumuzun başladığı tarihi girin.</p>
-        <input type="password" id="sifreInput" maxlength="4" placeholder="****" inputmode="numeric">
-        <button class="buton" onclick="sifreKontrol()">Kilidi Aç</button>
-        <div id="hata-mesaji">Hatalı şifre, tekrar dene.</div>
-    </div>
-
-    <!-- 2. SÜRPRİZ EKRANI (Doğum Günü Mektubu) -->
-    <div id="surpriz-ekrani" class="glass-panel ekran">
-        <img id="surpriz-foto" src="fotograf.jpg" alt="Biz">
-        <h2 style="color: #ff4757; margin-top:0;">İyi ki Doğdun Özge...</h2>
-        <div class="mektup">
-            Hayatımın tüm kilitli kapılarını güzelliğinle, zekanla ve o harika gülüşünle açtın.<br><br>
-            Sana verebileceğim kutulara sığan somut bir hediyem yok... Çünkü aradığım tüm hazineleri zaten sende buldum. Benim en büyük şansım, en güzel hediyem sensin.<br><br>
-            Birlikte kurduğumuz bu hayat ve seninle geçen her an benim en büyük hazinem. İyi ki hayatımdasın kraliçem. Seni çok seviyorum!
+    <div id="kilit-overlay" class="tam-ekran-overlay">
+        <div class="kilit-kutu">
+            <div style="font-size: 52px; margin-bottom: 8px;">🔐</div>
+            <h2 style="margin: 0 0 8px 0;">Özge'nin Dünyası</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin: 0;">En büyük mutluluğumuzun başladığı o özel tarihi gir.</p>
+            <input type="password" id="sifreInput" class="sifre-giris" maxlength="4" placeholder="••••" inputmode="numeric">
+            <button class="ana-buton" onclick="sifreKontrol()">Kapıyı Aç</button>
+            <div id="hata-mesaji" style="color: var(--accent); font-size: 13px; margin-top: 12px; display: none;">Bu şifre kilidi açmadı, tekrar dene sevgilim.</div>
         </div>
-        <button class="buton" onclick="oyunaGec()">Hikayemizi Büyütmeye Devam Et</button>
     </div>
 
-    <!-- 3. OYUN EKRANI (Sonsuz Döngü) -->
-    <div id="oyun-ekrani" class="glass-panel ekran" style="height: 90vh;">
-        <div id="cevrimdisi-panel"></div>
-        
-        <div class="enerji-baslik">Sevgi Enerjisi</div>
-        <div class="enerji-skor" id="skor-gosterge">0</div>
-        <div class="saniye-skor" id="saniye-gosterge">Saniyede: 0 üretim</div>
+    <!-- 2. DOĞUM GÜNÜ MEKTUBU EKRANI -->
+    <div id="mektup-overlay" class="tam-ekran-overlay">
+        <div class="kilit-kutu">
+            <img id="surpriz-foto" src="fotograf.jpg" alt="İlk Fotoğrafımız">
+            <h2 style="color: var(--accent); margin: 0 0 12px 0;">İyi ki Doğdun Özge...</h2>
+            <div class="mektup-metin">
+                Hayatımın tüm kilitli kapılarını güzelliğinle, zekanla ve o harika gülüşünle açtın.<br><br>
+                Sana kutulara sığan sıradan bir hediye vermek istemedim; çünkü aradığım tüm hazineleri zaten sende buldum. Benim en büyük şansım, en güzel hediyem sensin.<br><br>
+                Bu oyun bizim yaşayan dünyamız. İçindeki anıları birleştirerek gerçek hayatta benden dilediğin zaman kullanabileceğin ödül kuponları ve gizli mektuplar kazanacaksın.<br><br>
+                İyi ki doğdun, iyi ki hayatımdasın kraliçem. Seni çok seviyorum!
+            </div>
+            <button class="ana-buton" onclick="mektubuKapat()">Dünyamıza Giriş Yap ✨</button>
+        </div>
+    </div>
 
-        <button id="agac-buton" onclick="agacaDokun(event)">💖</button>
+    <!-- ANA UYGULAMA EKRANI -->
+    <div id="app">
+        <!-- ÜST BAR -->
+        <div id="ust-bar">
+            <div class="skor-kutu">
+                <div class="skor-ana">❤️ <span id="enerji-metin">0</span></div>
+                <div class="skor-alt" id="saniye-metin">+0 / saniye</div>
+            </div>
+            <div class="ust-ikonlar">
+                <button class="ikon-btn" onclick="carkModalAc()" title="Günlük Şans Çarkı">
+                    🎡
+                    <div id="cark-bildirim" class="bildirim-nokta" style="display: none;"></div>
+                </button>
+                <button class="ikon-btn" onclick="mektupTekrarAc()" title="Doğum Günü Mektubu">💌</button>
+                <button class="ikon-btn" id="muzik-btn" onclick="muzikDegistir()" title="Müzik">🔇</button>
+            </div>
+        </div>
 
-        <div class="liste-baslik">Sürpriz Notlar</div>
-        <div id="not-1" class="not-kutusu">100 Enerji: Bugün gülüşün her zamankinden daha güzeldi.</div>
-        <div id="not-2" class="not-kutusu">500 Enerji: Akşam yemeğini ben ısmarlıyorum, kraliçenin emrindeyim!</div>
-        <div id="not-3" class="not-kutusu">1000 Enerji: İyi ki varsın... Sonsuza dek.</div>
+        <!-- ORTA İÇERİK ALANI -->
+        <div id="icerik-alani">
 
-        <div class="liste-baslik" style="margin-top: 20px;">Enerji Üreticileri (Market)</div>
-        <div id="market-listesi"></div>
+            <!-- SEKME 1: OYUN (ANI BİRLEŞTİRME) -->
+            <div id="sekme-oyun" class="sekme-sayfa aktif">
+                <div class="oyun-ust-bilgi">
+                    <div class="hedef-kutu">En Yüksek Anı: <strong id="en-yuksek-ani">☕ Kahve</strong></div>
+                    <button onclick="tahtayiSifirla()" style="background:rgba(255,255,255,0.1); border:none; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px;">Yeni Tur 🔄</button>
+                </div>
+
+                <div style="font-size: 12px; color: var(--text-muted); text-align: center;">
+                    Parmağınla kaydırarak aynı anıları birleştir ve <strong>Sevgi Enerjisi</strong> üret!
+                </div>
+
+                <div id="board-container"></div>
+
+                <!-- Tek elle kolay oynanış için yön tuşları -->
+                <div class="yon-tuslari">
+                    <div></div>
+                    <button class="yon-btn" onclick="hamleYap('yukari')">⬆️</button>
+                    <div></div>
+                    <button class="yon-btn" onclick="hamleYap('sol')">⬅️</button>
+                    <button class="yon-btn" onclick="hamleYap('asagi')">⬇️</button>
+                    <button class="yon-btn" onclick="hamleYap('sag')">➡️</button>
+                </div>
+            </div>
+
+            <!-- SEKME 2: BAHÇEMİZ (PASİF ÜRETİM) -->
+            <div id="sekme-bahce" class="sekme-sayfa">
+                <div class="bolum-baslik">
+                    <span>🏡 Sevgi Üreticileri</span>
+                    <span style="font-size: 12px; color: var(--text-muted);">Sen yokken de çalışır</span>
+                </div>
+                <div id="bahce-listesi" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+
+            <!-- SEKME 3: GERÇEK HAYAT KUPON MAĞAZASI -->
+            <div id="sekme-magaza" class="sekme-sayfa">
+                <div class="bolum-baslik">
+                    <span>🎟️ Gerçek Hayat Ödülleri</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">
+                    Biriktirdiğin enerjilerle bu kuponları satın al, bileti eşine gönder ve gerçek hayatta anında kullan!
+                </div>
+                <div id="kupon-listesi" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+
+            <!-- SEKME 4: KASA (KİLİTLİ NOTLAR) -->
+            <div id="sekme-kasa" class="sekme-sayfa">
+                <div class="bolum-baslik">
+                    <span>🔐 Kilitli Kalp Kasası</span>
+                    <span id="kasa-sayac" style="font-size: 12px; color: var(--gold);">0 / 10 Açıldı</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">
+                    Toplam ürettiğin enerji arttıkça sana özel yazılmış gizli notların kilidi otomatik açılır.
+                </div>
+                <div id="kasa-listesi" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+
+        </div>
+
+        <!-- ALT MENÜ -->
+        <div id="alt-menu">
+            <div class="menu-item aktif" onclick="sekmeDegistir('oyun', this)">
+                <span class="ikon">🎮</span>
+                <span>Birleştir</span>
+            </div>
+            <div class="menu-item" onclick="sekmeDegistir('bahce', this)">
+                <span class="ikon">🏡</span>
+                <span>Bahçemiz</span>
+            </div>
+            <div class="menu-item" onclick="sekmeDegistir('magaza', this)">
+                <span class="ikon">🎟️</span>
+                <span>Kuponlar</span>
+            </div>
+            <div class="menu-item" onclick="sekmeDegistir('kasa', this)">
+                <span class="ikon">🔐</span>
+                <span>Kasa</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- DİJİTAL KUPON BİLETİ MODALI -->
+    <div id="bilet-modal" class="modal-arka">
+        <div class="bilet-kutu">
+            <div style="font-size: 46px;" id="bilet-ikon">🎟️</div>
+            <div style="font-size: 12px; color: var(--gold); font-weight: 700; letter-spacing: 1px; margin-top: 6px;">RESMİ ÖDÜL KUPONU</div>
+            <h3 id="bilet-baslik" style="margin: 8px 0; font-size: 20px;">Kahve Servisi</h3>
+            <p id="bilet-aciklama" style="font-size: 13px; color: #dcdde1; margin: 0 0 12px 0;"></p>
+            <div class="bilet-kod" id="bilet-kod">OZGE-1993-XXXX</div>
+            <div id="bilet-tarih" style="font-size: 11px; color: var(--text-muted); margin-bottom: 18px;"></div>
+            <p style="font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 16px;">
+                📸 Şimdi bu ekranın görüntüsünü al ve eşine WhatsApp'tan göndererek ödülünü talep et!
+            </p>
+            <button class="ana-buton" onclick="document.getElementById('bilet-modal').classList.remove('aktif')">Tamam</button>
+        </div>
+    </div>
+
+    <!-- GÜNLÜK ŞANS ÇARKI MODALI -->
+    <div id="cark-modal" class="modal-arka">
+        <div class="bilet-kutu">
+            <div style="font-size: 54px; margin-bottom: 10px;" id="cark-emoji">🎡</div>
+            <h3 style="margin: 0 0 8px 0;">Günlük Şans Çarkı</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;" id="cark-durum">
+                Her gün 1 kez çevirerek sürpriz Sevgi Enerjisi kazanabilirsin!
+            </p>
+            <button class="ana-buton" id="cark-cevir-btn" onclick="carkiCevir()">Çarkı Çevir ✨</button>
+            <button onclick="document.getElementById('cark-modal').classList.remove('aktif')" style="background:none; border:none; color:var(--text-muted); margin-top:14px; font-size:14px; cursor:pointer;">Kapat</button>
+        </div>
     </div>
 
     <script>
-        // --- OYUN HAFIZASI VE SİSTEMİ ---
-        let oyunData = {
+        // --- ANI SEVİYELERİ (2048 TAHTASI İÇİN) ---
+        const ANILAR = {
+            2:    { emoji: "☕", isim: "Kahve" },
+            4:    { emoji: "💬", isim: "Tatlı Sohbet" },
+            8:    { emoji: "🌹", isim: "İlk Buluşma" },
+            16:   { emoji: "📸", isim: "İlk Fotoğraf" },
+            32:   { emoji: "🎶", isim: "Bizim Şarkımız" },
+            64:   { emoji: "💍", isim: "Söz & Yemin" },
+            128:  { emoji: "🏡", isim: "Sıcak Yuvamız" },
+            256:  { emoji: "👶", isim: "Canımız Kızımız" },
+            512:  { emoji: "🌟", isim: "Mutlu Aile" },
+            1024: { emoji: "💎", isim: "Ömürlük Sevda" },
+            2048: { emoji: "👑", isim: "Kraliçe Özge" },
+            4096: { emoji: "♾️", isim: "Sonsuzluk" }
+        };
+
+        // --- KİLİTLİ KASA NOTLARI (UZUN VADELİ HEDEFLER) ---
+        const KASA_NOTLARI = [
+            { hedef: 500,     baslik: "İlk Kıvılcım", metin: "Gözlerinin içine ilk baktığım an, hayatımın en güzel yolculuğunun başlayacağını biliyordum." },
+            { hedef: 2500,    baslik: "Sesindeki Huzur", metin: "Günün tüm yorgunluğu, senin tek bir gülüşünle ve sesini duymamla saniyesinde uçup gidiyor." },
+            { hedef: 10000,   baslik: "Bizim Melodimiz", metin: "Ne zaman o şarkımız çalsa, kalbim hala ilk günkü heyecanla çarpıyor." },
+            { hedef: 35000,   baslik: "En Güzel Anne", metin: "Kızımıza olan sevgin, şefkatin ve sabrın... Sen dünyanın en harika annesi ve eşisin." },
+            { hedef: 100000,  baslik: "Gizli İtiraf", metin: "Bazen sen fark etmeden sadece seni izliyorum ve ne kadar şanslı bir adam olduğuma şükrediyorum." },
+            { hedef: 300000,  baslik: "Zor Günlerin Gücü", metin: "Hayatta karşıma ne çıkarsa çıksın, elini tuttuğum sürece yenemeyeceğimiz hiçbir zorluk yok." },
+            { hedef: 800000,  baslik: "Güzelliğin Sırrı", metin: "Yıllar geçtikçe daha da güzelleşiyorsun, sana her geçen gün yeniden aşık oluyorum." },
+            { hedef: 2000000, baslik: "En Büyük Hazinem", metin: "Bana dünyaları verseler, seninle içtiğimiz bir fincan kahvenin verdiği mutluluğa değişmem." },
+            { hedef: 5000000, baslik: "Ruh Eşim", metin: "Sen sadece eşim değil; en yakın arkadaşım, sırdaşım ve kalbimin tek sahibisin." },
+            { hedef: 15000000,baslik: "Sonsuzluk Sözü", metin: "Bu oyundaki sayılar bir gün bitebilir ama sana olan sevgim ömrümün sonuna kadar katlanarak büyüyecek. Seni çok seviyorum Özge!" }
+        ];
+
+        // --- GERÇEK HAYAT KUPONLARI ---
+        const KUPONLAR = [
+            { id: "kahve",  ikon: "☕", baslik: "Özel Kahve Servisi", aciklama: "Eşin sana hemen köpüklü, sıcak bir kahve hazırlayıp ayağına getirir.", fiyat: 15000 },
+            { id: "tatli",  ikon: "🍫", baslik: "Tatlı Krizi Çözücü", aciklama: "Canının çektiği o tatlı veya çikolata itirazsız temin edilir.", fiyat: 45000 },
+            { id: "masaj",  ikon: "💆‍♀️", baslik: "15 Dakika VIP Masaj", aciklama: "Günün yorgunluğunu atman için 15 dakikalık omuz ve ayak masajı.", fiyat: 120000 },
+            { id: "film",   ikon: "🎬", baslik: "Kumanda Kraliçede", aciklama: "Bu akşam izlenecek film veya diziye %100 Özge karar verir.", fiyat: 300000 },
+            { id: "izin",   ikon: "🛋️", baslik: "Tam Dinlenme Hakkı", aciklama: "Bugün mutfak ve ev işlerinden tamamen muafsın, her şeyi eşin halleder.", fiyat: 850000 },
+            { id: "yemek",  ikon: "🍽️", baslik: "Romantik Akşam Yemeği", aciklama: "İstediğin yerde veya menüde baş başa harika bir yemek.", fiyat: 2500000 },
+            { id: "kralice",ikon: "👑", baslik: "Kraliçe Günü İlanı!", aciklama: "24 saat boyunca Özge'nin her dediği kanundur, hiçbir şeye hayır denemez!", fiyat: 10000000 }
+        ];
+
+        // --- OYUN VERİSİ ---
+        let state = {
+            sifreAcildi: false,
             enerji: 0,
-            tiklamaGucu: 1,
-            saniyeGucu: 0,
+            toplamEnerji: 0,
+            enYuksekTas: 2,
+            tahta: [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
             sonGiris: Date.now(),
-            oyunBasladi: false,
-            esyaSeviyeleri: {
-                gulus: { isim: "O Güzel Gülüşün", uretim: 1, tabanFiyat: 15, seviye: 0 },
-                sicaklik: { isim: "Ellerinin Sıcaklığı", uretim: 5, tabanFiyat: 100, seviye: 0 },
-                zaman: { isim: "Birlikte Geçen Zaman", uretim: 15, tabanFiyat: 500, seviye: 0 }
+            sonCark: 0,
+            alinanKuponlar: [],
+            bahce: {
+                kahve:   { ikon: "☕", isim: "Sabah Kahvesi",     uretim: 2,    fiyat: 150,    seviye: 0 },
+                cicek:   { ikon: "🌷", isim: "Taze Çiçekler",     uretim: 10,   fiyat: 900,    seviye: 0 },
+                notlar:  { ikon: "💌", isim: "Sürpriz Notlar",    uretim: 45,   fiyat: 5000,   seviye: 0 },
+                kahkaha: { ikon: "😂", isim: "Mutlu Kahkahalar",  uretim: 200,  fiyat: 28000,  seviye: 0 },
+                tatil:   { ikon: "🏖️", isim: "Tatlı Kaçamaklar", uretim: 950,  fiyat: 160000, seviye: 0 },
+                aile:    { ikon: "👨‍👩‍👧", isim: "Aile Saadeti",     uretim: 4500, fiyat: 950000, seviye: 0 }
             }
         };
 
-        // Hafızayı Yükle
-        if (localStorage.getItem("ozgeOyunData")) {
-            let kayit = JSON.parse(localStorage.getItem("ozgeOyunData"));
-            oyunData = { ...oyunData, ...kayit };
+        // --- HAFIZA YÜKLEME ---
+        function yukle() {
+            let kayit = localStorage.getItem("ozgeMegaOyunV2");
+            if (kayit) {
+                try {
+                    let parsed = JSON.parse(kayit);
+                    state = { ...state, ...parsed, bahce: { ...state.bahce, ...(parsed.bahce || {}) } };
+                } catch(e) {}
+            }
         }
 
-        // --- EKRAN YÖNETİMİ ---
-        function ekranGoster(ekranId) {
-            document.querySelectorAll('.ekran').forEach(e => e.classList.remove('aktif-ekran'));
-            document.getElementById(ekranId).classList.add('aktif-ekran');
+        function kaydet() {
+            state.sonGiris = Date.now();
+            localStorage.setItem("ozgeMegaOyunV2", JSON.stringify(state));
         }
 
-        // Başlangıç Kontrolü: Daha önce şifreyi geçtiyse direkt oyuna at
+        // --- BAŞLANGIÇ ---
         window.onload = () => {
-            if(oyunData.oyunBasladi) {
-                cevrimdisiKazancHesapla();
-                ekranGoster('oyun-ekrani');
-                oyunDongusuBaslat();
-                marketCiz();
-                notlariKontrolEt();
-            }
-            
-            // Fotoğraf varsa göster, yoksa çirkin bir ikon çıkmasını engelle
+            yukle();
+
+            // Fotoğraf kontrolü
             let img = document.getElementById("surpriz-foto");
-            img.onerror = () => { img.style.display = "none"; };
             img.onload = () => { img.style.display = "block"; };
+            img.onerror = () => { img.style.display = "none"; };
+
+            if (!state.sifreAcildi) {
+                document.getElementById("kilit-overlay").classList.add("aktif");
+            } else {
+                oyunuBaslat();
+            }
+
+            dokunmatikAyarla();
         };
 
-        // --- ŞİFRE VE GEÇİŞ ---
         function sifreKontrol() {
-            if (document.getElementById("sifreInput").value === "1993") {
-                // Şifre doğruysa müziği başlat ve sürpriz ekranına geç
-                let muzik = document.getElementById("arkaPlanMuzik");
-                muzik.play().catch(e => console.log("Müzik otomatik başlatılamadı, etkileşim bekleniyor."));
-                ekranGoster('surpriz-ekrani');
+            let val = document.getElementById("sifreInput").value;
+            if (val === "1993") {
+                state.sifreAcildi = true;
+                kaydet();
+                document.getElementById("kilit-overlay").classList.remove("aktif");
+                document.getElementById("mektup-overlay").classList.add("aktif");
+                muzikBaslat();
             } else {
-                let hata = document.getElementById("hata-mesaji");
-                hata.style.opacity = "1";
-                setTimeout(() => { hata.style.opacity = "0"; }, 2000);
+                let h = document.getElementById("hata-mesaji");
+                h.style.display = "block";
                 document.getElementById("sifreInput").value = "";
             }
         }
 
-        function oyunaGec() {
-            oyunData.oyunBasladi = true;
+        function mektubuKapat() {
+            document.getElementById("mektup-overlay").classList.remove("aktif");
+            oyunuBaslat();
+        }
+
+        function mektupTekrarAc() {
+            document.getElementById("mektup-overlay").classList.add("aktif");
+        }
+
+        // --- MÜZİK KONTROLÜ ---
+        let muzikCaliyor = false;
+        function muzikBaslat() {
+            let audio = document.getElementById("arkaPlanMuzik");
+            audio.play().then(() => {
+                muzikCaliyor = true;
+                document.getElementById("muzik-btn").innerText = "🎵";
+            }).catch(() => {});
+        }
+
+        function muzikDegistir() {
+            let audio = document.getElementById("arkaPlanMuzik");
+            if (muzikCaliyor) {
+                audio.pause();
+                muzikCaliyor = false;
+                document.getElementById("muzik-btn").innerText = "🔇";
+            } else {
+                audio.play().catch(()=>{});
+                muzikCaliyor = true;
+                document.getElementById("muzik-btn").innerText = "🎵";
+            }
+        }
+
+        // --- OYUN DÖNGÜSÜ ---
+        function oyunuBaslat() {
+            if (state.tahta.every(x => x === 0)) {
+                rastgeleTasEkle();
+                rastgeleTasEkle();
+            }
+            cevrimdisiHesapla();
+            ekraniGuncelle();
+            tahtayiCiz();
+            bahceCiz();
+            kuponlariCiz();
+            kasaCiz();
+
+            setInterval(() => {
+                let sn = saniyeUretimHesapla();
+                if (sn > 0) {
+                    enerjiEkle(sn);
+                }
+                carkBildirimKontrol();
+                kaydet();
+            }, 1000);
+        }
+
+        function saniyeUretimHesapla() {
+            let toplam = 0;
+            for (let k in state.bahce) {
+                toplam += state.bahce[k].seviye * state.bahce[k].uretim;
+            }
+            return toplam;
+        }
+
+        function enerjiEkle(miktar) {
+            state.enerji += miktar;
+            state.toplamEnerji += miktar;
+            ekraniGuncelle();
+        }
+
+        functioncevrimdisiHesapla() {}
+        function cevrimdisiHesapla() {
+            let sn = saniyeUretimHesapla();
+            if (sn > 0) {
+                let gecen = Math.min(Math.floor((Date.now() - state.sonGiris) / 1000), 28800); // Maks 8 saat
+                if (gecen > 60) {
+                    let kazanc = gecen * sn;
+                    enerjiEkle(kazanc);
+                }
+            }
+        }
+
+        function sayiFormatla(n) {
+            return Math.floor(n).toLocaleString('tr-TR');
+        }
+
+        function ekraniGuncelle() {
+            document.getElementById("enerji-metin").innerText = sayiFormatla(state.enerji);
+            document.getElementById("saniye-metin").innerText = `+${sayiFormatla(saniyeUretimHesapla())} / saniye`;
+            let enYuksek = ANILAR[state.enYuksekTas] || ANILAR[2];
+            document.getElementById("en-yuksek-ani").innerText = `${enYuksek.emoji} ${enYuksek.isim}`;
+        }
+
+        // --- 2048 ANI BİRLEŞTİRME MEKANİĞİ ---
+        function rastgeleTasEkle() {
+            let boslar = [];
+            state.tahta.forEach((deger, idx) => { if (deger === 0) boslar.push(idx); });
+            if (boslar.length > 0) {
+                let secilen = boslar[Math.floor(Math.random() * boslar.length)];
+                state.tahta[secilen] = Math.random() < 0.85 ? 2 : 4;
+            }
+        }
+
+        function tahtayiCiz() {
+            let container = document.getElementById("board-container");
+            container.innerHTML = "";
+            state.tahta.forEach(deger => {
+                let div = document.createElement("div");
+                if (deger === 0) {
+                    div.className = "hucre";
+                } else {
+                    let bilgi = ANILAR[deger] || { emoji: "💖", isim: "Efsane" };
+                    let sv = Math.log2(deger);
+                    div.className = "hucre dolu";
+                    div.innerHTML = `
+                        <span class="hucre-seviye">Sv.${sv}</span>
+                        <div class="hucre-emoji">${bilgi.emoji}</div>
+                        <div class="hucre-isim">${bilgi.isim}</div>
+                    `;
+                }
+                container.appendChild(div);
+            });
+        }
+
+        function satirKaydir(satir) {
+            let dolu = satir.filter(x => x !== 0);
+            let yeni = [];
+            let kazanilanPuan = 0;
+
+            for (let i = 0; i < dolu.length; i++) {
+                if (i < dolu.length - 1 && dolu[i] === dolu[i + 1]) {
+                    let birlesik = dolu[i] * 2;
+                    yeni.push(birlesik);
+                    kazanilanPuan += birlesik * 4; // Her birleşmede cömert enerji
+                    if (birlesik > state.enYuksekTas) state.enYuksekTas = birlesik;
+                    i++;
+                } else {
+                    yeni.push(dolu[i]);
+                }
+            }
+            while (yeni.length < 4) yeni.push(0);
+            return { yeni, kazanilanPuan };
+        }
+
+        function hamleYap(yon) {
+            let eskiTahta = [...state.tahta];
+            let toplamKazanilan = 0;
+
+            for (let i = 0; i < 4; i++) {
+                let indeksler = [];
+                for (let j = 0; j < 4; j++) {
+                    if (yon === 'sol') indeksler.push(i * 4 + j);
+                    if (yon === 'sag') indeksler.push(i * 4 + (3 - j));
+                    if (yon === 'yukari') indeksler.push(j * 4 + i);
+                    if (yon === 'asagi') indeksler.push((3 - j) * 4 + i);
+                }
+
+                let mevcutSatir = indeksler.map(idx => state.tahta[idx]);
+                let sonuc = satirKaydir(mevcutSatir);
+                toplamKazanilan += sonuc.kazanilanPuan;
+
+                indeksler.forEach((idx, k) => {
+                    state.tahta[idx] = sonuc.yeni[k];
+                });
+            }
+
+            let degisti = state.tahta.some((val, idx) => val !== eskiTahta[idx]);
+            if (degisti) {
+                rastgeleTasEkle();
+                if (toplamKazanilan > 0) {
+                    enerjiEkle(toplamKazanilan);
+                    partikulGoster(`+${toplamKazanilan} ❤️`);
+                } else {
+                    enerjiEkle(2);
+                }
+                tahtayiCiz();
+                bahceCiz();
+                kuponlariCiz();
+                kasaCiz();
+                kaydet();
+            }
+        }
+
+        function tahtayiSifirla() {
+            state.tahta = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0];
+            rastgeleTasEkle();
+            rastgeleTasEkle();
+            tahtayiCiz();
             kaydet();
-            ekranGoster('oyun-ekrani');
-            oyunDongusuBaslat();
-            marketCiz();
         }
 
-        // --- OYUN MEKANİKLERİ ---
-        function kaydet() {
-            oyunData.sonGiris = Date.now();
-            localStorage.setItem("ozgeOyunData", JSON.stringify(oyunData));
+        function dokunmatikAyarla() {
+            let board = document.getElementById("board-container");
+            let basX = 0, basY = 0;
+
+            board.addEventListener("touchstart", e => {
+                basX = e.touches[0].clientX;
+                basY = e.touches[0].clientY;
+            }, { passive: true });
+
+            board.addEventListener("touchend", e => {
+                let bitX = e.changedTouches[0].clientX;
+                let bitY = e.changedTouches[0].clientY;
+                let dx = bitX - basX;
+                let dy = bitY - basY;
+
+                if (Math.max(Math.abs(dx), Math.abs(dy)) > 25) {
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        hamleYap(dx > 0 ? 'sag' : 'sol');
+                    } else {
+                        hamleYap(dy > 0 ? 'asagi' : 'yukari');
+                    }
+                }
+            }, { passive: true });
         }
 
-        function agacaDokun(e) {
-            oyunData.enerji += oyunData.tiklamaGucu;
-            gorselGuncelle();
-            partikulOlustur(e);
-            notlariKontrolEt();
-            marketCiz(); // Buton renklerini güncelle
+        function partikulGoster(metin) {
+            let p = document.createElement("div");
+            p.className = "partikul";
+            p.innerText = metin;
+            p.style.left = (window.innerWidth / 2 - 30) + "px";
+            p.style.top = (window.innerHeight / 2 - 40) + "px";
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 900);
         }
 
-        function partikulOlustur(e) {
-            let partikul = document.createElement("div");
-            partikul.className = "partikul";
-            partikul.innerText = "❤️";
-            
-            // Dokunulan yeri hesapla
-            let rect = e.target.getBoundingClientRect();
-            let x = e.clientX || rect.left + rect.width / 2;
-            let y = e.clientY || rect.top;
-            
-            partikul.style.left = (x - 10) + "px";
-            partikul.style.top = (y - 20) + "px";
-            document.body.appendChild(partikul);
-            
-            setTimeout(() => { partikul.remove(); }, 1000);
-        }
+        // --- BAHÇE (PASİF ÜRETİM) ---
+        function bahceCiz() {
+            let alan = document.getElementById("bahce-listesi");
+            alan.innerHTML = "";
+            for (let id in state.bahce) {
+                let b = state.bahce[id];
+                let guncelFiyat = Math.floor(b.fiyat * Math.pow(1.22, b.seviye));
+                let yetiyor = state.enerji >= guncelFiyat;
 
-        function marketCiz() {
-            let liste = document.getElementById("market-listesi");
-            liste.innerHTML = "";
-            
-            for (let id in oyunData.esyaSeviyeleri) {
-                let esya = oyunData.esyaSeviyeleri[id];
-                let fiyat = Math.floor(esya.tabanFiyat * Math.pow(1.15, esya.seviye));
-                let satinAlinabilir = oyunData.enerji >= fiyat;
-                
-                liste.innerHTML += `
-                    <div class="market-item" onclick="esyaAl('${id}')" style="cursor: ${satinAlinabilir ? 'pointer' : 'not-allowed'}; opacity: ${satinAlinabilir ? '1' : '0.5'}; border-color: ${satinAlinabilir ? '#ff4757' : 'rgba(255,255,255,0.1)'}">
-                        <div>
-                            <div class="market-isim">${esya.isim} (Sv. ${esya.seviye})</div>
-                            <div class="market-guc">Saniyede +${esya.uretim} Üretir</div>
+                alan.innerHTML += `
+                    <div class="kart">
+                        <div class="kart-sol">
+                            <div class="kart-ikon">${b.ikon}</div>
+                            <div>
+                                <div class="kart-baslik">${b.isim} <span style="color:var(--gold); font-size:12px;">(Sv.${b.seviye})</span></div>
+                                <div class="kart-aciklama">Saniyede +${sayiFormatla(b.uretim)} ❤️ üretir</div>
+                            </div>
                         </div>
-                        <div class="market-fiyat">${fiyat} ❤️</div>
+                        <button class="satin-al-btn" ${yetiyor ? '' : 'disabled'} onclick="bahceSatinAl('${id}')">
+                            ${sayiFormatla(guncelFiyat)} ❤️
+                        </button>
                     </div>
                 `;
             }
         }
 
-        function esyaAl(id) {
-            let esya = oyunData.esyaSeviyeleri[id];
-            let fiyat = Math.floor(esya.tabanFiyat * Math.pow(1.15, esya.seviye));
-            
-            if (oyunData.enerji >= fiyat) {
-                oyunData.enerji -= fiyat;
-                esya.seviye++;
-                oyunSaniyeGucunuHesapla();
-                gorselGuncelle();
-                marketCiz();
+        function bahceSatinAl(id) {
+            let b = state.bahce[id];
+            let guncelFiyat = Math.floor(b.fiyat * Math.pow(1.22, b.seviye));
+            if (state.enerji >= guncelFiyat) {
+                state.enerji -= guncelFiyat;
+                b.seviye++;
+                ekraniGuncelle();
+                bahceCiz();
+                kuponlariCiz();
+                kaydet();
             }
         }
 
-        function oyunSaniyeGucunuHesapla() {
-            let toplamUretim = 0;
-            for (let id in oyunData.esyaSeviyeleri) {
-                toplamUretim += oyunData.esyaSeviyeleri[id].seviye * oyunData.esyaSeviyeleri[id].uretim;
-            }
-            oyunData.saniyeGucu = toplamUretim;
+        // --- GERÇEK HAYAT KUPONLARI ---
+        function kuponlariCiz() {
+            let alan = document.getElementById("kupon-listesi");
+            alan.innerHTML = "";
+            KUPONLAR.forEach(k => {
+                let alindiMi = state.alinanKuponlar.includes(k.id);
+                let yetiyor = state.enerji >= k.fiyat;
+
+                alan.innerHTML += `
+                    <div class="kart" style="border-color: ${alindiMi ? 'var(--gold)' : 'var(--border-glass)'}">
+                        <div class="kart-sol">
+                            <div class="kart-ikon">${k.ikon}</div>
+                            <div>
+                                <div class="kart-baslik">${k.baslik}</div>
+                                <div class="kart-aciklama">${k.aciklama}</div>
+                            </div>
+                        </div>
+                        ${alindiMi
+                            ? `<button class="satin-al-btn" style="background:var(--gold); color:#000;" onclick="biletGoster('${k.id}')">Bileti Gör 🎟️</button>`
+                            : `<button class="satin-al-btn" ${yetiyor ? '' : 'disabled'} onclick="kuponAl('${k.id}')">${sayiFormatla(k.fiyat)} ❤️</button>`
+                        }
+                    </div>
+                `;
+            });
         }
 
-        function gorselGuncelle() {
-            document.getElementById("skor-gosterge").innerText = Math.floor(oyunData.enerji);
-            document.getElementById("saniye-gosterge").innerText = `Saniyede: ${oyunData.saniyeGucu} üretim`;
-        }
-
-        function notlariKontrolEt() {
-            // Kodun içine yeni notlar eklemek istersen bu mantıkla alt alta ekleyebilirsin
-            if(oyunData.enerji >= 100) document.getElementById("not-1").style.display = "block";
-            if(oyunData.enerji >= 500) document.getElementById("not-2").style.display = "block";
-            if(oyunData.enerji >= 1000) document.getElementById("not-3").style.display = "block";
-        }
-
-        function cevrimdisiKazancHesapla() {
-            if (oyunData.saniyeGucu > 0) {
-                let gecenSaniye = Math.floor((Date.now() - oyunData.sonGiris) / 1000);
-                if (gecenSaniye > 60) { // Sadece 1 dakikadan fazla kapalı kalmışsa göster
-                    let kazanilan = gecenSaniye * oyunData.saniyeGucu;
-                    oyunData.enerji += kazanilan;
-                    
-                    let panel = document.getElementById("cevrimdisi-panel");
-                    panel.style.display = "block";
-                    panel.innerText = `Hoş geldin! Sen yokken ağacımız ${kazanilan} Sevgi Enerjisi üretti.`;
-                    setTimeout(() => { panel.style.display = "none"; }, 5000);
+        function kuponAl(id) {
+            let kupon = KUPONLAR.find(x => x.id === id);
+            if (kupon && state.enerji >= kupon.fiyat) {
+                state.enerji -= kupon.fiyat;
+                if (!state.alinanKuponlar.includes(id)) {
+                    state.alinanKuponlar.push(id);
                 }
+                ekraniGuncelle();
+                kuponlariCiz();
+                bahceCiz();
+                kaydet();
+                biletGoster(id);
             }
         }
 
-        function oyunDongusuBaslat() {
-            setInterval(() => {
-                if (oyunData.saniyeGucu > 0) {
-                    oyunData.enerji += oyunData.saniyeGucu;
-                    gorselGuncelle();
-                    notlariKontrolEt();
-                    marketCiz();
-                }
-                kaydet(); // Her saniye arka planda kaydeder
-            }, 1000);
+        function biletGoster(id) {
+            let kupon = KUPONLAR.find(x => x.id === id);
+            if (!kupon) return;
+            document.getElementById("bilet-ikon").innerText = kupon.ikon;
+            document.getElementById("bilet-baslik").innerText = kupon.baslik;
+            document.getElementById("bilet-aciklama").innerText = kupon.aciklama;
+            document.getElementById("bilet-kod").innerText = `OZGE-1993-${id.toUpperCase()}`;
+            document.getElementById("bilet-tarih").innerText = `Onay Tarihi: ${new Date().toLocaleDateString('tr-TR')}`;
+            document.getElementById("bilet-modal").classList.add("aktif");
+        }
+
+        // --- KİLİTLİ KASA ---
+        function kasaCiz() {
+            let alan = document.getElementById("kasa-listesi");
+            alan.innerHTML = "";
+            let acilanSayisi = 0;
+
+            KASA_NOTLARI.forEach((not, idx) => {
+                let acik = state.toplamEnerji >= not.hedef;
+                if (acik) acilanSayisi++;
+
+                alan.innerHTML += `
+                    <div class="kart" style="opacity: ${acik ? '1' : '0.6'}; border-left: 4px solid ${acik ? 'var(--green)' : '#555'};">
+                        <div class="kart-sol">
+                            <div class="kart-ikon">${acik ? '💌' : '🔒'}</div>
+                            <div>
+                                <div class="kart-baslik">#${idx + 1} - ${acik ? not.baslik : 'Kilitli Hatıra'}</div>
+                                <div class="kart-aciklama" style="color: ${acik ? '#fff' : 'var(--text-muted)'}; font-style: ${acik ? 'italic' : 'normal'};">
+                                    ${acik ? `"${not.metin}"` : `Açmak için toplam ${sayiFormatla(not.hedef)} ❤️ enerjiye ulaşmalısın. (Şu an: ${sayiFormatla(state.toplamEnerji)})`}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById("kasa-sayac").innerText = `${acilanSayisi} / ${KASA_NOTLARI.length} Açıldı`;
+        }
+
+        // --- GÜNLÜK ŞANS ÇARKI ---
+        function carkBildirimKontrol() {
+            let hazir = (Date.now() - state.sonCark) >= 86400000;
+            document.getElementById("cark-bildirim").style.display = hazir ? "block" : "none";
+        }
+
+        function carkModalAc() {
+            let gecen = Date.now() - state.sonCark;
+            let btn = document.getElementById("cark-cevir-btn");
+            let durum = document.getElementById("cark-durum");
+
+            if (gecen >= 86400000) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                durum.innerText = "Bugünkü şans çarkın hazır! Çevir ve sürpriz enerji ödülünü kap.";
+            } else {
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                let kalanSaat = Math.ceil((86400000 - gecen) / 3600000);
+                durum.innerText = `Bugünkü hakkını kullandın sevgilim. Yeni çark için yaklaşık ${kalanSaat} saat kaldı.`;
+            }
+            document.getElementById("cark-modal").classList.add("aktif");
+        }
+
+        function carkiCevir() {
+            if ((Date.now() - state.sonCark) < 86400000) return;
+            let oduller = [1500, 3000, 5000, 10000, 25000];
+            let secilen = oduller[Math.floor(Math.random() * oduller.length)];
+
+            state.sonCark = Date.now();
+            enerjiEkle(secilen);
+            kaydet();
+            bahceCiz();
+            kuponlariCiz();
+            kasaCiz();
+
+            document.getElementById("cark-durum").innerHTML = `<strong style="color:var(--gold); font-size:18px;">🎉 Tebrikler! +${sayiFormatla(secilen)} ❤️ Kazandın!</strong>`;
+            document.getElementById("cark-cevir-btn").disabled = true;
+            document.getElementById("cark-cevir-btn").style.opacity = "0.5";
+            carkBildirimKontrol();
+        }
+
+        // --- SEKME GEÇİŞİ ---
+        function sekmeDegistir(sekmeAdi, el) {
+            document.querySelectorAll(".sekme-sayfa").forEach(s => s.classList.remove("aktif"));
+            document.getElementById("sekme-" + sekmeAdi).classList.add("aktif");
+
+            document.querySelectorAll(".menu-item").forEach(m => m.classList.remove("aktif"));
+            el.classList.add("aktif");
+
+            if (sekmeAdi === 'bahce') bahceCiz();
+            if (sekmeAdi === 'magaza') kuponlariCiz();
+            if (sekmeAdi === 'kasa') kasaCiz();
         }
     </script>
 </body>
