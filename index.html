@@ -1,522 +1,93 @@
 <!DOCTYPE html>
-<html lang="tr" class="h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kafe Sırları: Birleştirme Oyunu</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Inter & Outfit) -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Confetti library for celebration effects -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                        body: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        coffee: {
-                            dark: '#1e1411',
-                            card: '#2c1e19',
-                            border: '#54382f',
-                            gold: '#f59e0b',
-                            accent: '#d97706',
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                        'steam': 'steam 2s ease-out infinite',
-                        'shimmer': 'shimmer 2.5s infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-6px)' },
-                        },
-                        steam: {
-                            '0%': { transform: 'translateY(0) scale(1)', opacity: '0.8' },
-                            '100%': { transform: 'translateY(-25px) scale(1.4)', opacity: '0' },
-                        },
-                        shimmer: {
-                            '0%': { transform: 'translateX(-100%)' },
-                            '100%': { transform: 'translateX(100%)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 - Mini Puzzle</title>
     <style>
         body {
-            background: radial-gradient(circle at 50% 0%, #311c18 0%, #170e0b 60%, #0d0806 100%);
-            color: #f3f4f6;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
+            background: #faf8ef;
+            color: #776e65;
+            font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: #54382f; border-radius: 4px; }
-        
-        .glass-panel {
-            background: rgba(44, 30, 25, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        h1 { font-size: 50px; margin: 0; }
+        .score-container {
+            background: #bbada0;
+            padding: 10px 20px;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
         }
-        .glass-card {
-            background: rgba(53, 37, 31, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(245, 158, 11, 0.18);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .grid {
+            width: 320px;
+            height: 320px;
+            background: #bbada0;
+            border-radius: 6px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+            padding: 10px;
+            margin-top: 20px;
         }
-        .glass-card:hover {
-            border-color: rgba(245, 158, 11, 0.5);
-            transform: translateY(-2px);
+        .cell {
+            background: rgba(238, 228, 218, 0.35);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #776e65;
         }
-        .glow-gold {
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
-        }
-        .glow-gold-lg {
-            box-shadow: 0 0 35px rgba(245, 158, 11, 0.5);
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.6); opacity: 0; }
-            70% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-pop {
-            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes mergeSparkle {
-            0% { transform: scale(0.8) rotate(0deg); opacity: 1; }
-            50% { transform: scale(1.3) rotate(180deg); opacity: 0.9; filter: brightness(1.5); }
-            100% { transform: scale(1.8) rotate(360deg); opacity: 0; }
-        }
-        .merge-anim {
-            animation: mergeSparkle 0.4s ease-out forwards;
-        }
+        .n2 { background: #eee4da; }
+        .n4 { background: #ede0c8; }
+        .n8 { background: #f2b179; color: white; }
+        .n16 { background: #f59563; color: white; }
     </style>
 </head>
-<body class="h-full flex flex-col items-center justify-between font-sans overflow-hidden">
+<body>
 
-    <!-- Top Floating Header Bar -->
-    <header class="w-full max-w-md px-4 pt-4 pb-2 z-20 flex items-center justify-between">
-        <!-- Puan Rozeti (Frosted Glass & Parıltılı) -->
-        <div class="glass-panel px-4 py-2 rounded-2xl flex items-center gap-3 glow-gold relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-amber-400/20 to-transparent animate-shimmer pointer-events-none"></div>
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-coffee-dark font-black shadow-lg">
-                <i class="fa-solid fa-star text-lg animate-spin" style="animation-duration: 6s;"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-[10px] uppercase font-semibold text-amber-300/80 tracking-wider">Altın Puan</span>
-                <span id="scoreDisplay" class="text-lg font-extrabold text-amber-200 tracking-wide">3,150</span>
-            </div>
-        </div>
+    <h1>2048</h1>
+    <div class="score-container">Skor: <span id="score">0</span></div>
 
-        <!-- Ses Kontrol -->
-        <button onclick="toggleAudio()" id="audioBtn" class="glass-panel px-3.5 py-2.5 rounded-2xl flex items-center gap-2 hover:bg-amber-900/40 transition active:scale-95 group">
-            <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition">
-                <i id="audioIcon" class="fa-solid fa-volume-high text-xs"></i>
-            </div>
-            <span id="audioText" class="text-xs font-semibold text-emerald-300">Müzik Açık</span>
-        </button>
-
-        <!-- Ayarlar -->
-        <button onclick="openSettings()" class="glass-panel w-11 h-11 rounded-2xl flex items-center justify-center text-amber-300 hover:bg-amber-900/40 transition active:scale-95">
-            <i class="fa-solid fa-gear text-lg animate-spin" style="animation-duration: 10s;"></i>
-        </button>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="w-full max-w-md flex-1 flex flex-col px-4 py-2 gap-4 overflow-y-auto z-10">
-        
-        <!-- Active Order / Kahve Tepsisi Konsepti -->
-        <div class="glass-panel p-4 rounded-3xl glow-gold-lg relative overflow-hidden">
-            <!-- Arka Plan Kahve Buhar Efekti & İllüstrasyonlar -->
-            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
-            
-            <div class="flex items-center justify-between relative z-10">
-                <div class="flex items-center gap-3.5">
-                    <!-- Kahve İkonu ve Buhar -->
-                    <div class="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-700/60 to-amber-900/80 border border-amber-500/40 flex items-center justify-center shadow-lg">
-                        <i class="fa-solid fa-mug-hot text-2xl text-amber-300 animate-float"></i>
-                        <!-- Buhar parçacıkları -->
-                        <div class="absolute -top-3 left-3 w-1.5 h-3 bg-amber-200/40 rounded-full blur-[1px] animate-steam"></div>
-                        <div class="absolute -top-4 right-4 w-1.5 h-3 bg-amber-200/40 rounded-full blur-[1px] animate-steam" style="animation-delay: 0.8s;"></div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-1.5 mb-0.5">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400/90 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-500/20">Mevcut Sipariş</span>
-                            <span class="text-[10px] text-amber-300/70 font-medium">Ödül: ⭐ +450</span>
-                        </div>
-                        <h2 id="orderTitle" class="text-base font-extrabold text-amber-100 tracking-tight">Közde Türk Kahvesi (Lv. 2)</h2>
-                        <p class="text-xs text-amber-200/60 mt-0.5" id="orderDesc">Gerekli: 2x Tekli Çay veya 1x Türk Kahvesi</p>
-                    </div>
-                </div>
-
-                <!-- Teslim Et Butonu -->
-                <button onclick="deliverOrder()" id="deliverBtn" class="relative group overflow-hidden px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 text-coffee-dark font-extrabold text-xs shadow-lg hover:from-amber-400 hover:to-yellow-400 active:scale-95 transition flex flex-col items-center gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span class="flex items-center gap-1 text-coffee-dark">
-                        <i class="fa-solid fa-gift text-sm"></i> Teslim Et
-                    </span>
-                    <span class="text-[9px] text-amber-950 font-bold uppercase tracking-wider">Hemen Gönder</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Üreticiler (Kahve Kutusu ve Hediye Sandığı) -->
-        <div class="grid grid-cols-2 gap-3">
-            <!-- Üretici 1: Kahve Kutusu -->
-            <button onclick="spawnItem('coffee')" class="glass-card p-3.5 rounded-2xl flex items-center gap-3 text-left relative overflow-hidden group active:scale-95">
-                <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition"></div>
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-600/40 to-amber-800/60 border border-amber-500/30 flex items-center justify-center text-amber-300 shadow-inner group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-box-open text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-xs font-bold text-amber-100 group-hover:text-amber-300 transition">Kahve Kutusu</h3>
-                    <p class="text-[11px] text-amber-300/70 font-medium flex items-center gap-1 mt-0.5">
-                        <i class="fa-solid fa-hand-pointer text-[9px]"></i> Üret (Dokun)
-                    </p>
-                </div>
-            </button>
-
-            <!-- Üretici 2: Hediye Sandığı -->
-            <button onclick="spawnItem('gift')" class="glass-card p-3.5 rounded-2xl flex items-center gap-3 text-left relative overflow-hidden group active:scale-95">
-                <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition"></div>
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-600/40 to-rose-900/60 border border-rose-500/30 flex items-center justify-center text-rose-300 shadow-inner group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-gift text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-xs font-bold text-rose-100 group-hover:text-rose-300 transition">Hediye Sandığı</h3>
-                    <p class="text-[11px] text-rose-300/70 font-medium flex items-center gap-1 mt-0.5">
-                        <i class="fa-solid fa-hand-pointer text-[9px]"></i> Üret (Dokun)
-                    </p>
-                </div>
-            </button>
-        </div>
-
-        <!-- İpucu Kartı -->
-        <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 bg-amber-950/30 border-amber-500/20">
-            <div class="w-7 h-7 rounded-full bg-amber-400/20 flex items-center justify-center text-amber-400 shrink-0">
-                <i class="fa-solid fa-lightbulb text-xs animate-bounce"></i>
-            </div>
-            <p class="text-xs text-amber-200/90 font-medium">Aynı seviyedeki iki eşyaya sırayla dokunarak veya sürükleyerek birleştir!</p>
-        </div>
-
-        <!-- Oyun Alanı (Grid) - 4x4 Grid -->
-        <div class="glass-panel p-3.5 rounded-3xl flex-1 flex flex-col justify-center relative shadow-2xl">
-            <div id="gridContainer" class="grid grid-cols-4 gap-2.5 w-full aspect-[4/4]">
-                <!-- Dinamik Grid JavaScript ile doldurulacak -->
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Alt Navigasyon Çubuğu -->
-    <nav class="w-full max-w-md px-6 py-3 z-20 glass-panel border-t border-amber-500/20 flex items-center justify-around rounded-t-3xl shadow-2xl">
-        <button onclick="switchTab('merge')" id="nav-merge" class="flex flex-col items-center gap-1 text-amber-400 transition transform active:scale-95 group">
-            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 flex items-center justify-center shadow-md group-hover:bg-amber-500/30">
-                <i class="fa-solid fa-puzzle-piece text-base"></i>
-            </div>
-            <span class="text-[11px] font-bold tracking-wide">Birleştir</span>
-        </button>
-
-        <button onclick="switchTab('rewards')" id="nav-rewards" class="flex flex-col items-center gap-1 text-amber-200/60 transition transform active:scale-95 group">
-            <div class="w-10 h-10 rounded-2xl bg-transparent flex items-center justify-center group-hover:bg-amber-900/30">
-                <i class="fa-solid fa-trophy text-base"></i>
-            </div>
-            <span class="text-[11px] font-medium tracking-wide">Ödüller</span>
-        </button>
-
-        <button onclick="switchTab('letters')" id="nav-letters" class="flex flex-col items-center gap-1 text-amber-200/60 transition transform active:scale-95 group">
-            <div class="w-10 h-10 rounded-2xl bg-transparent flex items-center justify-center group-hover:bg-amber-900/30">
-                <i class="fa-solid fa-envelope-open-text text-base"></i>
-            </div>
-            <span class="text-[11px] font-medium tracking-wide">Mektuplar</span>
-        </button>
-    </nav>
-
-    <!-- Modal / Bildirim Kutusu -->
-    <div id="customModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="glass-panel p-6 rounded-3xl max-w-xs w-full text-center relative animate-pop glow-gold-lg">
-            <div id="modalIcon" class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 text-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
-                <i class="fa-solid fa-star"></i>
-            </div>
-            <h3 id="modalTitle" class="text-lg font-extrabold text-amber-100 mb-1">Tebrikler!</h3>
-            <p id="modalMessage" class="text-xs text-amber-200/80 mb-5 leading-relaxed">İşleminiz başarıyla gerçekleştirildi.</p>
-            <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-coffee-dark font-extrabold text-xs shadow-lg hover:from-amber-400 hover:to-yellow-400 transition active:scale-95">
-                Harika!
-            </button>
-        </div>
+    <div class="grid" id="grid">
+        <!-- 4x4 Izgara Alanı -->
+        <div class="cell n2">2</div>
+        <div class="cell n4">4</div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell n2">2</div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
     </div>
 
-    <!-- JavaScript Oyun Mantığı ve Etkileşimler -->
     <script>
-        // Oyun Verileri ve Eşya Tanımları
-        const itemTypes = {
-            empty: { name: '', level: 0, icon: '', bg: '', text: '' },
-            tea1: { name: 'Tekli Çay', level: 1, icon: 'fa-mug-saucer', color: 'text-emerald-400', bg: 'from-emerald-950/60 to-emerald-900/30', border: 'border-emerald-500/40' },
-            tea2: { name: 'Çiftli Çay', level: 2, icon: 'fa-mug-hot', color: 'text-emerald-300', bg: 'from-emerald-900/80 to-emerald-800/40', border: 'border-emerald-400/60' },
-            note1: { name: 'Tatlı Not', level: 1, icon: 'fa-envelope', color: 'text-rose-400', bg: 'from-rose-950/60 to-rose-900/30', border: 'border-rose-500/40' },
-            note2: { name: 'Aşk Mektubu', level: 2, icon: 'fa-envelope-open-text', color: 'text-rose-300', bg: 'from-rose-900/80 to-rose-800/40', border: 'border-rose-400/60' },
-            coffee1: { name: 'Türk Kahvesi', level: 2, icon: 'fa-coffee', color: 'text-amber-400', bg: 'from-amber-950/60 to-amber-900/30', border: 'border-amber-500/40' },
-            coffee2: { name: 'Közde Kahve', level: 3, icon: 'fa-fire-burner', color: 'text-amber-300', bg: 'from-amber-900/80 to-amber-800/40', border: 'border-amber-400/60' }
-        };
-
-        // 16 Grid Hücresi (4x4)
-        let gridState = [
-            'tea1', 'note1', 'tea1', 'tea1',
-            'tea1', 'note1', 'note1', 'empty',
-            'empty', 'empty', 'empty', 'empty',
-            'empty', 'empty', 'empty', 'empty'
-        ];
-
-        let selectedSlot = null;
-        let score = 3150;
-        let audioEnabled = true;
-
-        // Grid Render Fonksiyonu
-        function renderGrid() {
-            const container = document.getElementById('gridContainer');
-            container.innerHTML = '';
-
-            gridState.forEach((itemKey, index) => {
-                const item = itemTypes[itemKey] || itemTypes.empty;
-                const isSelected = selectedSlot === index;
-
-                const cell = document.createElement('div');
-                cell.className = `aspect-square rounded-2xl glass-card flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition transform active:scale-95 ${item.border} ${isSelected ? 'ring-2 ring-amber-400 bg-amber-900/40 scale-105 glow-gold' : ''}`;
-                cell.onclick = () => handleSlotClick(index);
-
-                if (itemKey !== 'empty') {
-                    cell.innerHTML = `
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${item.bg} flex items-center justify-center ${item.color} shadow-md mb-1 animate-pop">
-                            <i class="fa-solid ${item.icon} text-lg"></i>
-                        </div>
-                        <span class="text-[10px] font-bold text-amber-100/90 text-center px-1 truncate w-full">${item.name}</span>
-                        <span class="absolute top-1 right-1.5 text-[8px] font-extrabold px-1.5 py-0.2 rounded bg-black/40 text-amber-300/80">Lv.${item.level}</span>
-                    `;
-                } else {
-                    cell.innerHTML = `
-                        <div class="w-8 h-8 rounded-full border border-dashed border-amber-500/20 flex items-center justify-center text-amber-500/20">
-                            <i class="fa-solid fa-plus text-xs"></i>
-                        </div>
-                    `;
-                }
-
-                container.appendChild(cell);
-            });
-        }
-
-        // Hücre Tıklama & Birleştirme Mantığı
-        function handleSlotClick(index) {
-            playSound('click');
-            if (selectedSlot === null) {
-                if (gridState[index] !== 'empty') {
-                    selectedSlot = index;
-                    renderGrid();
-                }
-            } else {
-                if (selectedSlot === index) {
-                    // Aynı yere tıklandıysa seçimi kaldır
-                    selectedSlot = null;
-                } else {
-                    const firstItem = gridState[selectedSlot];
-                    const secondItem = gridState[index];
-
-                    if (firstItem === secondItem) {
-                        // Birleştirme İşlemi!
-                        triggerMergeEffect(index);
-                        if (firstItem === 'tea1') gridState[index] = 'tea2';
-                        else if (firstItem === 'note1') gridState[index] = 'note2';
-                        else if (firstItem === 'tea2') gridState[index] = 'coffee1';
-                        else if (firstItem === 'note2') gridState[index] = 'coffee2';
-                        else {
-                            // Genel üst seviye
-                            gridState[index] = 'coffee2';
-                        }
-                        gridState[selectedSlot] = 'empty';
-                        score += 150;
-                        updateScore();
-                    } else if (secondItem === 'empty') {
-                        // Boş yere taşıma
-                        gridState[index] = firstItem;
-                        gridState[selectedSlot] = 'empty';
-                    } else {
-                        // Yer değiştirme
-                        gridState[selectedSlot] = secondItem;
-                        gridState[index] = firstItem;
-                    }
-                    selectedSlot = null;
-                }
-                renderGrid();
+        // Basit hazır şablon akışı
+        let score = 0;
+        document.addEventListener('keydown', (e) => {
+            if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                score += 2;
+                document.getElementById('score').innerText = score;
             }
-        }
-
-        // Üretici Butonlarına Basıldığında Eşya Üretme
-        function spawnItem(type) {
-            playSound('spawn');
-            const emptyIndices = [];
-            gridState.forEach((item, idx) => {
-                if (item === 'empty') emptyIndices.push(idx);
-            });
-
-            if (emptyIndices.length === 0) {
-                showModal('Alan Dolu!', 'Yeni eşya üretmek için önce bazı eşyaları birleştirmelisin.', 'fa-triangle-exclamation');
-                return;
-            }
-
-            const randomIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
-            gridState[randomIndex] = type === 'coffee' ? 'tea1' : 'note1';
-            
-            // Üretim anında hafif görsel kutlama
-            confetti({
-                particleCount: 15,
-                spread: 40,
-                origin: { y: 0.7 }
-            });
-
-            renderGrid();
-        }
-
-        // Sipariş Teslim Etme
-        function deliverOrder() {
-            playSound('success');
-            score += 450;
-            updateScore();
-            
-            // Konfeti patlat
-            confetti({
-                particleCount: 80,
-                spread: 70,
-                origin: { y: 0.5 }
-            });
-
-            showModal('Sipariş Teslim Edildi!', 'Harika iş! Müşteri kahvesini çok beğendi ve cömertçe bahşiş bıraktı (+450 Puan).', 'fa-gift');
-            
-            // Yeni sipariş simülasyonu
-            document.getElementById('orderTitle').innerText = 'Özel Sütlü Latte (Lv. 3)';
-            document.getElementById('orderDesc').innerText = 'Gerekli: 1x Çiftli Çay veya 1x Közde Kahve';
-        }
-
-        // Birleştirme görsel parıltı efekti
-        function triggerMergeEffect(index) {
-            playSound('merge');
-            confetti({
-                particleCount: 30,
-                spread: 50,
-                origin: { y: 0.6 }
-            });
-        }
-
-        // Puan Güncelleme
-        function updateScore() {
-            document.getElementById('scoreDisplay').innerText = score.toLocaleString();
-        }
-
-        // Sekme Değiştirme
-        function switchTab(tabName) {
-            playSound('click');
-            ['merge', 'rewards', 'letters'].forEach(t => {
-                const btn = document.getElementById(`nav-${t}`);
-                if (t === tabName) {
-                    btn.className = "flex flex-col items-center gap-1 text-amber-400 transition transform active:scale-95 group";
-                    btn.children[0].className = "w-10 h-10 rounded-2xl bg-amber-500/20 flex items-center justify-center shadow-md group-hover:bg-amber-500/30";
-                } else {
-                    btn.className = "flex flex-col items-center gap-1 text-amber-200/60 transition transform active:scale-95 group";
-                    btn.children[0].className = "w-10 h-10 rounded-2xl bg-transparent flex items-center justify-center group-hover:bg-amber-900/30";
-                }
-            });
-
-            if (tabName !== 'merge') {
-                showModal('Çok Yakında!', `${tabName === 'rewards' ? 'Ödüller' : 'Mektuplar'} sekmesi yeni güncelleme ile aktif olacaktır.`, 'fa-person-digging');
-            }
-        }
-
-        // Ayarlar ve Müzik Kontrolü
-        function toggleAudio() {
-            audioEnabled = !audioEnabled;
-            const btn = document.getElementById('audioBtn');
-            const icon = document.getElementById('audioIcon');
-            const text = document.getElementById('audioText');
-            
-            if (audioEnabled) {
-                icon.className = "fa-solid fa-volume-high text-xs";
-                text.innerText = "Müzik Açık";
-                btn.children[0].className = "w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition";
-            } else {
-                icon.className = "fa-solid fa-volume-xmark text-xs";
-                text.innerText = "Müzik Kapalı";
-                btn.children[0].className = "w-7 h-7 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition";
-            }
-        }
-
-        function openSettings() {
-            showModal('Oyun Ayarları', 'Grafik kalitesi: Ultra\nBildirimler: Aktif\nDil: Türkçe (TR)', 'fa-gear');
-        }
-
-        // Modal Yönetimi (Alert alternatifimiz)
-        function showModal(title, message, iconClass) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMessage').innerText = message;
-            document.getElementById('modalIcon').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
-            document.getElementById('customModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('customModal').classList.add('hidden');
-        }
-
-        // Basit Web Audio Efektleri (Opsiyonel & Güvenli)
-        function playSound(type) {
-            if (!audioEnabled) return;
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                if (type === 'click') {
-                    osc.frequency.setValueAtTime(400, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.1);
-                } else if (type === 'spawn' || type === 'merge') {
-                    osc.frequency.setValueAtTime(600, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.15);
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.15);
-                } else if (type === 'success') {
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.3);
-                }
-            } catch (e) {
-                // AudioContext kısıtlamaları için yutulur
-            }
-        }
-
-        // Başlangıçta Grid'i yükle
-        window.onload = function() {
-            renderGrid();
-        }
+        });
     </script>
+
 </body>
 </html>
