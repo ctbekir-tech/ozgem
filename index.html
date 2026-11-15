@@ -1,1059 +1,522 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#100b20">
-    <title>Özge • Birleşen Hatıralar</title>
-    <style>
-        :root {
-            --bg-main: #100b20;
-            --bg-card: #1c1433;
-            --bg-card-light: #281d4a;
-            --gold: #f5c542;
-            --gold-glow: rgba(245, 197, 66, 0.3);
-            --rose: #ff5e8e;
-            --green: #2ed573;
-            --text-white: #ffffff;
-            --text-soft: #dfd8f0;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kafe Sırları: Birleştirme Oyunu</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter & Outfit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Confetti library for celebration effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        coffee: {
+                            dark: '#1e1411',
+                            card: '#2c1e19',
+                            border: '#54382f',
+                            gold: '#f59e0b',
+                            accent: '#d97706',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'steam': 'steam 2s ease-out infinite',
+                        'shimmer': 'shimmer 2.5s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        steam: {
+                            '0%': { transform: 'translateY(0) scale(1)', opacity: '0.8' },
+                            '100%': { transform: 'translateY(-25px) scale(1.4)', opacity: '0' },
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
         }
-
-        * {
-            box-sizing: border-box;
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at 50% 0%, #311c18 0%, #170e0b 60%, #0d0806 100%);
+            color: #f3f4f6;
             user-select: none;
             -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100dvh;
-            background: radial-gradient(circle at 50% 0%, #341f6e 0%, #100b20 80%);
-            color: var(--text-white);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: #54382f; border-radius: 4px; }
+        
+        .glass-panel {
+            background: rgba(44, 30, 25, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
-
-        #app {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100dvh;
-            max-width: 480px;
-            margin: 0 auto;
+        .glass-card {
+            background: rgba(53, 37, 31, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(245, 158, 11, 0.18);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
-        /* TAM EKRAN KAPAKLAR (ŞİFRE & MEKTUP) */
-        .full-overlay {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 50% 15%, #3a2273 0%, #0d081a 90%);
-            z-index: 200;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-y: auto;
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.5);
+            transform: translateY(-2px);
         }
-        .full-overlay.active { display: flex; }
-
-        .modal-card {
-            background: var(--bg-card);
-            border: 2px solid var(--gold);
-            border-radius: 26px;
-            padding: 26px 20px;
-            width: 100%;
-            max-width: 410px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        .glow-gold {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
         }
-
-        .pin-boxes {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 20px 0;
+        .glow-gold-lg {
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.5);
         }
-        .pin-box {
-            width: 54px;
-            height: 62px;
-            border-radius: 16px;
-            background: #120c24;
-            border: 2px solid var(--gold);
-            font-size: 30px;
-            font-weight: 800;
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        @keyframes popIn {
+            0% { transform: scale(0.6); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        .pin-box.filled { background: rgba(245, 197, 66, 0.18); }
-
-        .pin-pad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 290px;
-            margin: 0 auto;
+        .animate-pop {
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .pin-key {
-            height: 52px;
-            border-radius: 14px;
-            background: var(--bg-card-light);
-            border: 1px solid rgba(255,255,255,0.14);
-            color: #fff;
-            font-size: 22px;
-            font-weight: 700;
-            cursor: pointer;
+        @keyframes mergeSparkle {
+            0% { transform: scale(0.8) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.3) rotate(180deg); opacity: 0.9; filter: brightness(1.5); }
+            100% { transform: scale(1.8) rotate(360deg); opacity: 0; }
         }
-        .pin-key:active { background: var(--gold); color: #100b20; transform: scale(0.95); }
-
-        .photo-box {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 2px solid var(--gold);
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, #2b194d, #4a1c40);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .merge-anim {
+            animation: mergeSparkle 0.4s ease-out forwards;
         }
-        .photo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            inset: 0;
-            display: none;
-        }
-
-        .big-btn {
-            background: linear-gradient(135deg, #f5c542, #d49b1f);
-            color: #120c24;
-            border: none;
-            border-radius: 16px;
-            padding: 15px 22px;
-            font-size: 18px;
-            font-weight: 800;
-            width: 100%;
-            cursor: pointer;
-            box-shadow: 0 8px 25px var(--gold-glow);
-        }
-        .big-btn:active { transform: scale(0.97); }
-
-        /* ÜST BİLGİ ÇUBUĞU */
-        #top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 16px;
-            background: rgba(16, 11, 32, 0.92);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .score-badge {
-            background: var(--bg-card-light);
-            border: 2px solid var(--gold);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .music-pill {
-            background: var(--bg-card-light);
-            border: 1.5px solid rgba(255,255,255,0.22);
-            color: #fff;
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .music-pill.playing { border-color: var(--green); background: rgba(46, 213, 115, 0.18); }
-
-        /* EKRAN İÇERİĞİ */
-        #screen-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px 16px;
-            display: flex;
-            flex-direction: column;
-        }
-        .tab-view { display: none; flex-direction: column; flex: 1; }
-        .tab-view.active { display: flex; }
-
-        /* MERGE TAHTASI (SİPARİŞ VE GRID) */
-        .order-banner {
-            background: var(--bg-card);
-            border: 2px solid var(--gold);
-            border-radius: 20px;
-            padding: 14px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-        .order-info { display: flex; align-items: center; gap: 10px; }
-        .order-icon { font-size: 32px; background: rgba(0,0,0,0.3); width: 48px; height: 48px; border-radius: 12px; display:flex; align-items:center; justify-content:center; }
-        .order-text { font-size: 14px; color: var(--text-soft); }
-        .order-title { font-size: 16px; font-weight: 800; color: #fff; }
-
-        .deliver-btn {
-            background: var(--green);
-            color: #0b2916;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(46, 213, 115, 0.4);
-        }
-        .deliver-btn:disabled { background: rgba(255,255,255,0.1); color: #666; cursor: not-allowed; box-shadow: none; }
-
-        /* ÜRETİCİLER PANELİ */
-        .generators-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .gen-card {
-            background: var(--bg-card-light);
-            border: 1.5px solid rgba(255,255,255,0.15);
-            border-radius: 16px;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .gen-card:active { transform: scale(0.96); background: rgba(245, 197, 66, 0.15); border-color: var(--gold); }
-        .gen-icon { font-size: 28px; }
-        .gen-name { font-size: 13px; font-weight: 800; color: #fff; }
-        .gen-sub { font-size: 11px; color: var(--gold); }
-
-        /* 4x4 BİRLEŞTİRME TAHTASI (GRID) */
-        #merge-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            background: var(--bg-card);
-            border: 2px solid rgba(255,255,255,0.14);
-            border-radius: 20px;
-            padding: 10px;
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            max-width: 380px;
-            margin: 0 auto;
-        }
-        .grid-cell {
-            background: #140e26;
-            border: 1.5px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.15s, border-color 0.15s;
-        }
-        .grid-cell.has-item {
-            background: linear-gradient(145deg, #2d2052, #1b1236);
-            border-color: rgba(245, 197, 66, 0.4);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .grid-cell.selected {
-            border-color: var(--gold);
-            box-shadow: 0 0 15px var(--gold-glow);
-            transform: scale(1.05);
-        }
-        .cell-emoji { font-size: 30px; margin-bottom: 2px; }
-        .cell-name { font-size: 9.5px; font-weight: 700; color: var(--text-soft); text-align: center; padding: 0 2px; }
-
-        /* LİSTE KARTLARI (ÖDÜLLER & MEKTUPLAR) */
-        .list-card {
-            background: var(--bg-card);
-            border: 2px solid rgba(255,255,255,0.12);
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .list-card.unlocked {
-            border-color: var(--gold);
-            background: linear-gradient(135deg, rgba(245, 197, 66, 0.1), rgba(28, 20, 51, 0.95));
-        }
-        .card-top { display: flex; align-items: center; gap: 12px; }
-        .card-emoji { font-size: 34px; width: 52px; height: 52px; border-radius: 14px; background: rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .card-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px; }
-        .card-desc { font-size: 14px; line-height: 1.4; color: var(--text-soft); }
-
-        /* ALT GEZİNME ÇUBUĞU */
-        #bottom-bar {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            background: #0c0818;
-            border-top: 1px solid rgba(255,255,255,0.12);
-            padding: 8px 10px;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            padding: 6px 4px;
-            border-radius: 12px;
-            color: #9b92b8;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-        .nav-item span.nav-icon { font-size: 20px; }
-        .nav-item.active { color: var(--gold); background: rgba(245, 197, 66, 0.12); }
     </style>
 </head>
-<body>
+<body class="h-full flex flex-col items-center justify-between font-sans overflow-hidden">
 
-    <input type="file" id="file-photo" accept="image/*" style="display:none" onchange="saveCustomPhoto(event)">
-    <input type="file" id="file-audio" accept="audio/*" style="display:none" onchange="saveCustomAudio(event)">
-
-    <!-- 1. GİRİŞ ŞİFRESİ (1993) -->
-    <div id="screen-lock" class="full-overlay">
-        <div class="modal-card">
-            <div style="font-size: 48px; margin-bottom: 6px;">👑</div>
-            <div style="font-size: 13px; color: var(--gold); font-weight: 800; letter-spacing: 1.5px;">ÖZEL DOĞUM GÜNÜ HEDİYESİ</div>
-            <h1 style="font-size: 26px; margin: 6px 0;">Özge'nin Hatıraları</h1>
-            <p style="font-size: 15px; color: var(--text-soft); margin: 0;">Kapıyı açmak için bizim özel tarihimizi tuşla:</p>
-
-            <div class="pin-boxes">
-                <div class="pin-box" id="pbox-0"></div>
-                <div class="pin-box" id="pbox-1"></div>
-                <div class="pin-box" id="pbox-2"></div>
-                <div class="pin-box" id="pbox-3"></div>
+    <!-- Top Floating Header Bar -->
+    <header class="w-full max-w-md px-4 pt-4 pb-2 z-20 flex items-center justify-between">
+        <!-- Puan Rozeti (Frosted Glass & Parıltılı) -->
+        <div class="glass-panel px-4 py-2 rounded-2xl flex items-center gap-3 glow-gold relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-amber-400/20 to-transparent animate-shimmer pointer-events-none"></div>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-coffee-dark font-black shadow-lg">
+                <i class="fa-solid fa-star text-lg animate-spin" style="animation-duration: 6s;"></i>
             </div>
-
-            <div id="pin-msg" style="color: var(--rose); font-size: 15px; font-weight: 700; min-height: 22px; margin-bottom: 8px;"></div>
-
-            <div class="pin-pad">
-                <button class="pin-key" onclick="tapPin('1')">1</button>
-                <button class="pin-key" onclick="tapPin('2')">2</button>
-                <button class="pin-key" onclick="tapPin('3')">3</button>
-                <button class="pin-key" onclick="tapPin('4')">4</button>
-                <button class="pin-key" onclick="tapPin('5')">5</button>
-                <button class="pin-key" onclick="tapPin('6')">6</button>
-                <button class="pin-key" onclick="tapPin('7')">7</button>
-                <button class="pin-key" onclick="tapPin('8')">8</button>
-                <button class="pin-key" onclick="tapPin('9')">9</button>
-                <button class="pin-key" style="font-size:14px;" onclick="resetPin()">Sil</button>
-                <button class="pin-key" onclick="tapPin('0')">0</button>
-                <button class="pin-key" onclick="backPin()">⌫</button>
+            <div class="flex flex-col">
+                <span class="text-[10px] uppercase font-semibold text-amber-300/80 tracking-wider">Altın Puan</span>
+                <span id="scoreDisplay" class="text-lg font-extrabold text-amber-200 tracking-wide">3,150</span>
             </div>
         </div>
-    </div>
 
-    <!-- 2. DOĞUM GÜNÜ MEKTUBU VE FOTOĞRAF -->
-    <div id="screen-letter" class="full-overlay">
-        <div class="modal-card">
-            <div class="photo-box" onclick="document.getElementById('file-photo').click()">
-                <img id="main-photo" alt="İlk Fotoğrafımız">
-                <div id="photo-placeholder">
-                    <div style="font-size: 42px;">👩‍❤️‍👨</div>
-                    <div style="font-size: 18px; font-weight: 800; color: var(--gold); margin-top: 4px;">ÖZGE • 1993</div>
-                    <div style="font-size: 13px; color: var(--text-soft); margin-top: 4px;">📸 Fotoğrafımızı eklemek için buraya dokun</div>
+        <!-- Ses Kontrol -->
+        <button onclick="toggleAudio()" id="audioBtn" class="glass-panel px-3.5 py-2.5 rounded-2xl flex items-center gap-2 hover:bg-amber-900/40 transition active:scale-95 group">
+            <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition">
+                <i id="audioIcon" class="fa-solid fa-volume-high text-xs"></i>
+            </div>
+            <span id="audioText" class="text-xs font-semibold text-emerald-300">Müzik Açık</span>
+        </button>
+
+        <!-- Ayarlar -->
+        <button onclick="openSettings()" class="glass-panel w-11 h-11 rounded-2xl flex items-center justify-center text-amber-300 hover:bg-amber-900/40 transition active:scale-95">
+            <i class="fa-solid fa-gear text-lg animate-spin" style="animation-duration: 10s;"></i>
+        </button>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full max-w-md flex-1 flex flex-col px-4 py-2 gap-4 overflow-y-auto z-10">
+        
+        <!-- Active Order / Kahve Tepsisi Konsepti -->
+        <div class="glass-panel p-4 rounded-3xl glow-gold-lg relative overflow-hidden">
+            <!-- Arka Plan Kahve Buhar Efekti & İllüstrasyonlar -->
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="flex items-center justify-between relative z-10">
+                <div class="flex items-center gap-3.5">
+                    <!-- Kahve İkonu ve Buhar -->
+                    <div class="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-700/60 to-amber-900/80 border border-amber-500/40 flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-mug-hot text-2xl text-amber-300 animate-float"></i>
+                        <!-- Buhar parçacıkları -->
+                        <div class="absolute -top-3 left-3 w-1.5 h-3 bg-amber-200/40 rounded-full blur-[1px] animate-steam"></div>
+                        <div class="absolute -top-4 right-4 w-1.5 h-3 bg-amber-200/40 rounded-full blur-[1px] animate-steam" style="animation-delay: 0.8s;"></div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400/90 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-500/20">Mevcut Sipariş</span>
+                            <span class="text-[10px] text-amber-300/70 font-medium">Ödül: ⭐ +450</span>
+                        </div>
+                        <h2 id="orderTitle" class="text-base font-extrabold text-amber-100 tracking-tight">Közde Türk Kahvesi (Lv. 2)</h2>
+                        <p class="text-xs text-amber-200/60 mt-0.5" id="orderDesc">Gerekli: 2x Tekli Çay veya 1x Türk Kahvesi</p>
+                    </div>
                 </div>
+
+                <!-- Teslim Et Butonu -->
+                <button onclick="deliverOrder()" id="deliverBtn" class="relative group overflow-hidden px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 text-coffee-dark font-extrabold text-xs shadow-lg hover:from-amber-400 hover:to-yellow-400 active:scale-95 transition flex flex-col items-center gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span class="flex items-center gap-1 text-coffee-dark">
+                        <i class="fa-solid fa-gift text-sm"></i> Teslim Et
+                    </span>
+                    <span class="text-[9px] text-amber-950 font-bold uppercase tracking-wider">Hemen Gönder</span>
+                </button>
             </div>
-
-            <h2 style="font-size: 22px; color: var(--gold); margin: 0 0 10px 0;">İyi ki Doğdun Güzel Eşim!</h2>
-
-            <div style="text-align: left; font-size: 15px; line-height: 1.55; color: #fff; background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border-left: 4px solid var(--gold); margin-bottom: 16px;">
-                Hayatımın tüm kilitli kapılarını güzelliğinle, zekanla ve o harika gülüşünle açtın.<br><br>
-                Sana sıradan bir hediye vermek yerine, tahtadaki eşyaları birleştirerek siparişleri tamamlayacağın, her görevi bitirdiğinde gerçek hayatta benden dilediğin an isteyebileceğin özel ödülleri açacağın bir dünyayı kurdum.<br><br>
-                Sen benim en güzel hediyemsin. İyi ki doğdun kraliçem, seni çok seviyorum!
-            </div>
-
-            <button class="big-btn" onclick="enterGameFromLetter()">Oyuna Başla ve Şarkımızı Çal 🎵</button>
         </div>
-    </div>
 
-    <!-- ANA UYGULAMA -->
-    <div id="app">
-        <!-- ÜST BAR -->
-        <div id="top-header">
-            <div class="score-badge">
-                <span>⭐</span>
-                <span id="ui-stars">250</span>
-            </div>
-
-            <button class="music-pill" id="btn-music" onclick="handleMusicButton()">
-                <span id="music-icon">🎵</span>
-                <span id="music-label">Müzik Aç</span>
+        <!-- Üreticiler (Kahve Kutusu ve Hediye Sandığı) -->
+        <div class="grid grid-cols-2 gap-3">
+            <!-- Üretici 1: Kahve Kutusu -->
+            <button onclick="spawnItem('coffee')" class="glass-card p-3.5 rounded-2xl flex items-center gap-3 text-left relative overflow-hidden group active:scale-95">
+                <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition"></div>
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-600/40 to-amber-800/60 border border-amber-500/30 flex items-center justify-center text-amber-300 shadow-inner group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-box-open text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-xs font-bold text-amber-100 group-hover:text-amber-300 transition">Kahve Kutusu</h3>
+                    <p class="text-[11px] text-amber-300/70 font-medium flex items-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-hand-pointer text-[9px]"></i> Üret (Dokun)
+                    </p>
+                </div>
             </button>
 
-            <button class="music-pill" onclick="openSettingsModal()">
-                ⚙️ Ayarlar
+            <!-- Üretici 2: Hediye Sandığı -->
+            <button onclick="spawnItem('gift')" class="glass-card p-3.5 rounded-2xl flex items-center gap-3 text-left relative overflow-hidden group active:scale-95">
+                <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition"></div>
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-600/40 to-rose-900/60 border border-rose-500/30 flex items-center justify-center text-rose-300 shadow-inner group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-gift text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-xs font-bold text-rose-100 group-hover:text-rose-300 transition">Hediye Sandığı</h3>
+                    <p class="text-[11px] text-rose-300/70 font-medium flex items-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-hand-pointer text-[9px]"></i> Üret (Dokun)
+                    </p>
+                </div>
             </button>
         </div>
 
-        <!-- EKRAN İÇERİĞİ -->
-        <div id="screen-body">
-
-            <!-- SEKME 1: MERGE OYUNU -->
-            <div id="tab-game" class="tab-view active">
-                <!-- SİPARİŞ KARTI -->
-                <div class="order-banner">
-                    <div class="order-info">
-                        <div class="order-icon" id="order-emoji">☕</div>
-                        <div>
-                            <div class="order-text">Mevcut Sipariş:</div>
-                            <div class="order-title" id="order-title">Közde Türk Kahvesi (Lv. 2)</div>
-                        </div>
-                    </div>
-                    <button class="deliver-btn" id="deliver-btn" onclick="deliverOrder()" disabled>Teslim Et 🎁</button>
-                </div>
-
-                <!-- ÜRETİCİLER -->
-                <div class="generators-row">
-                    <div class="gen-card" onclick="tapGenerator('kahve')">
-                        <div class="gen-icon">☕</div>
-                        <div>
-                            <div class="gen-name">Kahve Kutusu</div>
-                            <div class="gen-sub">Üret (Dokun)</div>
-                        </div>
-                    </div>
-                    <div class="gen-card" onclick="tapGenerator('hediye')">
-                        <div class="gen-icon">🎁</div>
-                        <div>
-                            <div class="gen-name">Hediye Sandığı</div>
-                            <div class="gen-sub">Üret (Dokun)</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="font-size: 13px; color: var(--text-soft); text-align: center; margin-bottom: 8px;">
-                    💡 Aynı seviyedeki iki eşyaya sırayla dokunarak birleştir!
-                </div>
-
-                <!-- 4x4 TAHTA -->
-                <div id="merge-grid"></div>
+        <!-- İpucu Kartı -->
+        <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 bg-amber-950/30 border-amber-500/20">
+            <div class="w-7 h-7 rounded-full bg-amber-400/20 flex items-center justify-center text-amber-400 shrink-0">
+                <i class="fa-solid fa-lightbulb text-xs animate-bounce"></i>
             </div>
-
-            <!-- SEKME 2: GERÇEK HAYAT ÖDÜLLERİ (KUPONLAR) -->
-            <div id="tab-rewards" class="tab-view">
-                <h2 style="font-size: 20px; margin: 0 0 6px 0; color: var(--gold);">🎁 Gerçek Hayat Ödül Sandığı</h2>
-                <p style="font-size: 14px; color: var(--text-soft); margin: 0 0 14px 0;">
-                    Siparişleri tamamlayarak kazandığın ⭐ Yıldızlarla bu özel zarfları aç ve gerçek hayatta hemen kullan!
-                </p>
-                <div id="rewards-container"></div>
-            </div>
-
-            <!-- SEKME 3: AÇILAN MEKTUPLAR -->
-            <div id="tab-letters" class="tab-view">
-                <h2 style="font-size: 20px; margin: 0 0 6px 0; color: var(--gold);">💌 Gizli Aşk Mektupların</h2>
-                <p style="font-size: 14px; color: var(--text-soft); margin: 0 0 14px 0;">
-                    Her sipariş teslimatında hikayemiz ilerler ve yeni mühürlü mektupların kilidi açılır!
-                </p>
-                <div id="letters-container"></div>
-            </div>
-
+            <p class="text-xs text-amber-200/90 font-medium">Aynı seviyedeki iki eşyaya sırayla dokunarak veya sürükleyerek birleştir!</p>
         </div>
 
-        <!-- ALT GEZİNME ÇUBUĞU -->
-        <div id="bottom-bar">
-            <div class="nav-item active" onclick="switchMainTab('game', this)">
-                <span class="nav-icon">🧩</span>
-                <span>Birleştir</span>
+        <!-- Oyun Alanı (Grid) - 4x4 Grid -->
+        <div class="glass-panel p-3.5 rounded-3xl flex-1 flex flex-col justify-center relative shadow-2xl">
+            <div id="gridContainer" class="grid grid-cols-4 gap-2.5 w-full aspect-[4/4]">
+                <!-- Dinamik Grid JavaScript ile doldurulacak -->
             </div>
-            <div class="nav-item" onclick="switchMainTab('rewards', this)" style="position:relative;">
-                <span class="nav-icon">🎁</span>
-                <span>Ödüller</span>
+        </div>
+
+    </main>
+
+    <!-- Alt Navigasyon Çubuğu -->
+    <nav class="w-full max-w-md px-6 py-3 z-20 glass-panel border-t border-amber-500/20 flex items-center justify-around rounded-t-3xl shadow-2xl">
+        <button onclick="switchTab('merge')" id="nav-merge" class="flex flex-col items-center gap-1 text-amber-400 transition transform active:scale-95 group">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 flex items-center justify-center shadow-md group-hover:bg-amber-500/30">
+                <i class="fa-solid fa-puzzle-piece text-base"></i>
             </div>
-            <div class="nav-item" onclick="switchMainTab('letters', this)">
-                <span class="nav-icon">💌</span>
-                <span>Mektuplar</span>
+            <span class="text-[11px] font-bold tracking-wide">Birleştir</span>
+        </button>
+
+        <button onclick="switchTab('rewards')" id="nav-rewards" class="flex flex-col items-center gap-1 text-amber-200/60 transition transform active:scale-95 group">
+            <div class="w-10 h-10 rounded-2xl bg-transparent flex items-center justify-center group-hover:bg-amber-900/30">
+                <i class="fa-solid fa-trophy text-base"></i>
             </div>
+            <span class="text-[11px] font-medium tracking-wide">Ödüller</span>
+        </button>
+
+        <button onclick="switchTab('letters')" id="nav-letters" class="flex flex-col items-center gap-1 text-amber-200/60 transition transform active:scale-95 group">
+            <div class="w-10 h-10 rounded-2xl bg-transparent flex items-center justify-center group-hover:bg-amber-900/30">
+                <i class="fa-solid fa-envelope-open-text text-base"></i>
+            </div>
+            <span class="text-[11px] font-medium tracking-wide">Mektuplar</span>
+        </button>
+    </nav>
+
+    <!-- Modal / Bildirim Kutusu -->
+    <div id="customModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel p-6 rounded-3xl max-w-xs w-full text-center relative animate-pop glow-gold-lg">
+            <div id="modalIcon" class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 text-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <h3 id="modalTitle" class="text-lg font-extrabold text-amber-100 mb-1">Tebrikler!</h3>
+            <p id="modalMessage" class="text-xs text-amber-200/80 mb-5 leading-relaxed">İşleminiz başarıyla gerçekleştirildi.</p>
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-coffee-dark font-extrabold text-xs shadow-lg hover:from-amber-400 hover:to-yellow-400 transition active:scale-95">
+                Harika!
+            </button>
         </div>
     </div>
 
-    <!-- GENEL BİLGİ / KUPON MODALI -->
-    <div id="modal-generic" class="full-overlay" style="background: rgba(10, 6, 22, 0.88);">
-        <div class="modal-card">
-            <div style="font-size: 46px; margin-bottom: 6px;" id="gen-icon">🎟️</div>
-            <h2 style="font-size: 22px; color: var(--gold); margin: 4px 0 10px;" id="gen-title">Başlık</h2>
-            <div id="gen-body" style="font-size: 15px; line-height: 1.5; color: #fff; margin-bottom: 18px;"></div>
-            <button class="big-btn" onclick="document.getElementById('modal-generic').classList.remove('aktif')">Tamam</button>
-        </div>
-    </div>
-
+    <!-- JavaScript Oyun Mantığı ve Etkileşimler -->
     <script>
-        /* =========================================================
-           1. MERGE-2 EŞYA ZİNCİRİ (ÖZGE'NİN DÜNYASI)
-           ========================================================= */
-        const ITEMS = {
-            kahve_1: { id: "kahve_1", level: 1, name: "Tekli Çay", emoji: "🍵", gen: "kahve" },
-            kahve_2: { id: "kahve_2", level: 2, name: "Közde Türk Kahvesi", emoji: "☕", gen: "kahve" },
-            kahve_3: { id: "kahve_3", level: 3, name: "Özel Fincan Takımı", emoji: "🫖", gen: "kahve" },
-            kahve_4: { id: "kahve_4", level: 4, name: "Lüks Kahve Keyfi", emoji: "🍰", gen: "kahve" },
-
-            hediye_1: { id: "hediye_1", level: 1, name: "Tatlı Not", emoji: "💌", gen: "hediye" },
-            hediye_2: { id: "hediye_2", level: 2, name: "Taze Çiçek Buketi", emoji: "💐", gen: "hediye" },
-            hediye_3: { id: "hediye_3", level: 3, name: "İlk Fotoğrafımız", emoji: "📸", gen: "hediye" },
-            hediye_4: { id: "hediye_4", level: 4, name: "Kraliçe Tacı", emoji: "👑", gen: "hediye" }
+        // Oyun Verileri ve Eşya Tanımları
+        const itemTypes = {
+            empty: { name: '', level: 0, icon: '', bg: '', text: '' },
+            tea1: { name: 'Tekli Çay', level: 1, icon: 'fa-mug-saucer', color: 'text-emerald-400', bg: 'from-emerald-950/60 to-emerald-900/30', border: 'border-emerald-500/40' },
+            tea2: { name: 'Çiftli Çay', level: 2, icon: 'fa-mug-hot', color: 'text-emerald-300', bg: 'from-emerald-900/80 to-emerald-800/40', border: 'border-emerald-400/60' },
+            note1: { name: 'Tatlı Not', level: 1, icon: 'fa-envelope', color: 'text-rose-400', bg: 'from-rose-950/60 to-rose-900/30', border: 'border-rose-500/40' },
+            note2: { name: 'Aşk Mektubu', level: 2, icon: 'fa-envelope-open-text', color: 'text-rose-300', bg: 'from-rose-900/80 to-rose-800/40', border: 'border-rose-400/60' },
+            coffee1: { name: 'Türk Kahvesi', level: 2, icon: 'fa-coffee', color: 'text-amber-400', bg: 'from-amber-950/60 to-amber-900/30', border: 'border-amber-500/40' },
+            coffee2: { name: 'Közde Kahve', level: 3, icon: 'fa-fire-burner', color: 'text-amber-300', bg: 'from-amber-900/80 to-amber-800/40', border: 'border-amber-400/60' }
         };
 
-        const ORDERS = [
-            { req: "kahve_2", title: "Közde Türk Kahvesi (Lv. 2)", emoji: "☕", reward: 150, text: "Sabah kahvesi kokusuyla başlayan harika bir gün!" },
-            { req: "hediye_2", title: "Taze Çiçek Buketi (Lv. 2)", emoji: "💐", reward: 250, text: "Gülüşün gibi taze ve mis kokulu çiçekler..." },
-            { req: "kahve_3", title: "Özel Fincan Takımı (Lv. 3)", emoji: "🫖", reward: 400, text: "Karşılıklı uzun sohbetlerimizin en tatlı eşlikçisi." },
-            { req: "hediye_3", title: "İlk Fotoğrafımız (Lv. 3)", emoji: "📸", reward: 700, text: "O gün aklımdan geçen tek şey seninle bir ömür geçirmekti." },
-            { req: "kahve_4", title: "Lüks Kahve Keyfi (Lv. 4)", emoji: "🍰", reward: 1200, text: "Dünyanın en tatlı eşiyle paylaşılan en özel an." },
-            { req: "hediye_4", title: "Kraliçe Tacı (Lv. 4)", emoji: "👑", reward: 2500, text: "Kalbimin tek kraliçesi Özge, iyi ki doğdun! Bu dünyadaki en büyük ödülüm sensin." }
+        // 16 Grid Hücresi (4x4)
+        let gridState = [
+            'tea1', 'note1', 'tea1', 'tea1',
+            'tea1', 'note1', 'note1', 'empty',
+            'empty', 'empty', 'empty', 'empty',
+            'empty', 'empty', 'empty', 'empty'
         ];
 
-        const LETTERS_DATA = [
-            { id: 1, title: "1. Mektup: İlk Kıvılcım", reqOrder: 0, text: "Özge'm, senin adınla başlayan her gün benim hayatımın en güzel hediyesi. İyi ki doğdun, iyi ki kalbimin kraliçesi oldun." },
-            { id: 2, title: "2. Mektup: Çerçevedeki Anı", reqOrder: 1, text: "O ilk fotoğrafımıza her baktığımda zaman duruyor ve ben ilk günkü heyecanla sana yeniden aşık oluyorum." },
-            { id: 3, title: "3. Mektup: Sırdaşım ve Eşim", reqOrder: 2, text: "Sen sadece eşim değil; en yakın arkadaşım, akıl hocam ve evimizin neşesisin. Zarafetinle dünyamı güzelleştiriyorsun." },
-            { id: 4, title: "4. Mektup: Kaderimin Yazgısı", reqOrder: 3, text: "Hayatta yaptığım en doğru şey senin elini tutmak oldu. Yıllar geçtikçe sana olan sevgim katlanarak büyüyor." },
-            { id: 5, title: "5. Mektup: Sonsuzluk Sözü", reqOrder: 5, text: "Tüm siparişleri tamamladın sevgilim! Bu oyun sonsuz modda devam ediyor ama bil ki sana olan aşkım buradaki tüm yıldızlardan daha sonsuz!" }
-        ];
+        let selectedSlot = null;
+        let score = 3150;
+        let audioEnabled = true;
 
-        const REWARDS_DATA = [
-            { id: "kahve", icon: "☕", title: "Özel Kahve & Sunum Servisi", desc: "Bu ödülü açtığında eşin sana hemen köpüklü bir kahve hazırlayıp ayağına getirir.", cost: 300 },
-            { id: "tatli", icon: "🍰", title: "Tatlı & Çikolata Paketi", desc: "Canının çektiği en sevdiğin tatlı veya çikolata hemen kapına gelir.", cost: 600 },
-            { id: "masaj", icon: "💆‍♀️", title: "20 Dakika VIP Masaj", desc: "Günün tüm yorgunluğunu silecek 20 dakikalık özel omuz ve ayak masajı.", cost: 1200 },
-            { id: "kumanda", icon: "🎬", title: "Film & Dizi Kraliçesi", desc: "Çerezler hazırlanır ve bu akşam ne izleneceğine %100 Özge karar verir.", cost: 2500 },
-            { id: "yemek", icon: "🕯️", title: "Baş Başa Akşam Yemeği", desc: "İstediğin bir yerde veya menüde romantik akşam yemeği sözü.", cost: 5000 },
-            { id: "kralice", icon: "👑", title: "24 Saat Kraliçe İlanı!", desc: "Tam bir gün boyunca Özge ne derse o olur, hiçbir isteğine hayır denemez!", cost: 10000 }
-        ];
+        // Grid Render Fonksiyonu
+        function renderGrid() {
+            const container = document.getElementById('gridContainer');
+            container.innerHTML = '';
 
-        /* =========================================================
-           2. OYUN HAFIZASI (LOCALSTORAGE)
-           ========================================================= */
-        let state = {
-            pinOpened: false,
-            stars: 250,
-            orderIdx: 0,
-            grid: new Array(16).fill(null), // 16 hücreli 4x4 tahta
-            unlockedRewards: []
-        };
+            gridState.forEach((itemKey, index) => {
+                const item = itemTypes[itemKey] || itemTypes.empty;
+                const isSelected = selectedSlot === index;
 
-        function loadGameState() {
-            try {
-                const raw = localStorage.getItem("ozgeMergeGameV1");
-                if (raw) state = { ...state, ...JSON.parse(raw) };
-            } catch (e) {}
-        }
+                const cell = document.createElement('div');
+                cell.className = `aspect-square rounded-2xl glass-card flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition transform active:scale-95 ${item.border} ${isSelected ? 'ring-2 ring-amber-400 bg-amber-900/40 scale-105 glow-gold' : ''}`;
+                cell.onclick = () => handleSlotClick(index);
 
-        function saveGameState() {
-            try {
-                localStorage.setItem("ozgeMergeGameV1", JSON.stringify(state));
-            } catch (e) {}
-        }
-
-        // IndexedDB Kalıcı Medya
-        function openMediaDB() {
-            return new Promise((resolve) => {
-                const req = indexedDB.open("OzgeMediaDB", 1);
-                req.onupgradeneeded = e => e.target.result.createObjectStore("files");
-                req.onsuccess = e => resolve(e.target.result);
-                req.onerror = () => resolve(null);
-            });
-        }
-
-        async function saveToMediaDB(key, blob) {
-            const db = await openMediaDB();
-            if (!db) return;
-            const tx = db.transaction("files", "readwrite");
-            tx.objectStore("files").put(blob, key);
-        }
-
-        async function loadFromMediaDB(key) {
-            const db = await openMediaDB();
-            if (!db) return null;
-            return new Promise(resolve => {
-                const tx = db.transaction("files", "readonly");
-                const req = tx.objectStore("files").get(key);
-                req.onsuccess = () => resolve(req.result || null);
-                req.onerror = () => resolve(null);
-            });
-        }
-
-        /* =========================================================
-           3. MÜZİK VE SES SİSTEMİ
-           ========================================================= */
-        const bgAudio = new Audio();
-        bgAudio.loop = true;
-        bgAudio.preload = "auto";
-        let isPlayingMusic = false;
-        let audioCtx = null;
-
-        async function setupAudioSource() {
-            const savedBlob = await loadFromMediaDB("customMp3");
-            if (savedBlob) {
-                bgAudio.src = URL.createObjectURL(savedBlob);
-                return;
-            }
-            bgAudio.src = "sarki.mp3";
-        }
-
-        function playTone(freq, dur = 0.2) {
-            try {
-                const AC = window.AudioContext || window.webkitAudioContext;
-                if (!audioCtx && AC) audioCtx = new AC();
-                if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
-                if (!audioCtx) return;
-                const osc = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                osc.type = "triangle";
-                osc.frequency.value = freq;
-                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-                osc.connect(g);
-                g.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + dur);
-            } catch (e) {}
-        }
-
-        function triggerMusicPlaySync() {
-            bgAudio.play().then(() => {
-                isPlayingMusic = true;
-                updateMusicButtonUI();
-            }).catch(() => {
-                isPlayingMusic = false;
-                updateMusicButtonUI();
-            });
-        }
-
-        function handleMusicButton() {
-            if (isPlayingMusic) {
-                bgAudio.pause();
-                isPlayingMusic = false;
-                updateMusicButtonUI();
-            } else {
-                bgAudio.play().then(() => {
-                    isPlayingMusic = true;
-                    updateMusicButtonUI();
-                }).catch(() => {
-                    showGenericModal(
-                        "🎵",
-                        "Şarkı Seçimi",
-                        "GitHub'da <b>sarki.mp3</b> bulunamadıysa telefondan seçebilirsin:<br><br>" +
-                        "<button class='big-btn' onclick=\"document.getElementById('file-audio').click()\">📱 Telefondan MP3 Seç</button>"
-                    );
-                });
-            }
-        }
-
-        function updateMusicButtonUI() {
-            const btn = document.getElementById("btn-music");
-            const label = document.getElementById("music-label");
-            const icon = document.getElementById("music-icon");
-            if (isPlayingMusic) {
-                btn.classList.add("playing");
-                icon.innerText = "🔊";
-                label.innerText = "Çalıyor";
-            } else {
-                btn.classList.remove("playing");
-                icon.innerText = "🎵";
-                label.innerText = "Müzik Aç";
-            }
-        }
-
-        async function saveCustomAudio(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            await saveToMediaDB("customMp3", file);
-            bgAudio.src = URL.createObjectURL(file);
-            document.getElementById("modal-generic").classList.remove("aktif");
-            triggerMusicPlaySync();
-        }
-
-        /* =========================================================
-           4. FOTOĞRAF YÜKLEME
-           ========================================================= */
-        async function setupPhotoSource() {
-            const imgEl = document.getElementById("main-photo");
-            const holder = document.getElementById("photo-placeholder");
-            const savedBlob = await loadFromMediaDB("customPhoto");
-            if (savedBlob) {
-                imgEl.src = URL.createObjectURL(savedBlob);
-                imgEl.style.display = "block";
-                holder.style.display = "none";
-                return;
-            }
-            const names = ["fotograf.jpg", "fotograf.jpeg", "fotograf.JPG", "fotograf.PNG"];
-            for (const name of names) {
-                const ok = await new Promise(r => {
-                    const test = new Image();
-                    test.onload = () => r(true);
-                    test.onerror = () => r(false);
-                    test.src = name;
-                });
-                if (ok) {
-                    imgEl.src = name;
-                    imgEl.style.display = "block";
-                    holder.style.display = "none";
-                    return;
-                }
-            }
-        }
-
-        async function saveCustomPhoto(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            await saveToMediaDB("customPhoto", file);
-            const imgEl = document.getElementById("main-photo");
-            imgEl.src = URL.createObjectURL(file);
-            imgEl.style.display = "block";
-            document.getElementById("photo-placeholder").style.display = "none";
-        }
-
-        /* =========================================================
-           5. GİRİŞ ŞİFRESİ (1993)
-           ========================================================= */
-        let pinValue = "";
-
-        function tapPin(num) {
-            if (pinValue.length >= 4) return;
-            pinValue += num;
-            playTone(450 + pinValue.length * 70, 0.12);
-            renderPinBoxes();
-
-            if (pinValue.length === 4) {
-                if (pinValue === "1993") {
-                    triggerMusicPlaySync();
-                    state.pinOpened = true;
-                    saveGameState();
-                    document.getElementById("screen-lock").classList.remove("active");
-                    document.getElementById("screen-letter").classList.add("active");
-                } else {
-                    document.getElementById("pin-msg").innerText = "Yanlış tarih sevgilim, tekrar dene (1993)";
-                    pinValue = "";
-                    setTimeout(renderPinBoxes, 400);
-                }
-            }
-        }
-
-        function backPin() { pinValue = pinValue.slice(0, -1); renderPinBoxes(); }
-        function resetPin() { pinValue = ""; renderPinBoxes(); }
-
-        function renderPinBoxes() {
-            for (let i = 0; i < 4; i++) {
-                const b = document.getElementById("pbox-" + i);
-                b.innerText = pinValue[i] || "";
-                b.className = "pin-box" + (pinValue[i] ? " filled" : "");
-            }
-        }
-
-        function enterGameFromLetter() {
-            triggerMusicPlaySync();
-            document.getElementById("screen-letter").classList.remove("active");
-            initMergeGame();
-        }
-
-        /* =========================================================
-           6. MERGE-2 OYUN MEKANİĞİ
-           ========================================================= */
-        let selectedCellIdx = null;
-
-        function initMergeGame() {
-            // Eğer tahta tamamen boşsa başlangıç eşyaları ver
-            if (state.grid.every(x => x === null)) {
-                state.grid[0] = "kahve_1";
-                state.grid[1] = "hediye_1";
-            }
-            renderMergeGrid();
-            renderOrderBanner();
-            updateStarUI();
-        }
-
-        function tapGenerator(type) {
-            // Boş hücre bul
-            const emptyIdx = state.grid.findIndex(x => x === null);
-            if (emptyIdx === -1) {
-                showGenericModal("⚠️", "Tahta Dolu!", "Yeni eşya üretmek için aynı seviyedeki eşyaları üst üste birleştirerek yer açmalısın.");
-                return;
-            }
-            state.grid[emptyIdx] = type === 'kahve' ? "kahve_1" : "hediye_1";
-            playTone(520, 0.12);
-            renderMergeGrid();
-            saveGameState();
-        }
-
-        function handleCellClick(idx) {
-            const item = state.grid[idx];
-            if (selectedCellIdx === null) {
-                if (item !== null) {
-                    selectedCellIdx = idx;
-                    playTone(400, 0.08);
-                    renderMergeGrid();
-                }
-            } else {
-                if (selectedCellIdx === idx) {
-                    // Aynı hücreye tekrar basılırsa seçimi kaldır
-                    selectedCellIdx = null;
-                    renderMergeGrid();
-                    return;
-                }
-
-                const sourceItem = state.grid[selectedCellIdx];
-                const targetItem = state.grid[idx];
-
-                if (targetItem === null) {
-                    // Boş yere taşı
-                    state.grid[idx] = sourceItem;
-                    state.grid[selectedCellIdx] = null;
-                    selectedCellIdx = null;
-                    playTone(480, 0.1);
-                } else if (sourceItem === targetItem) {
-                    // İki eşya aynı! Birleştir ve seviye atlat
-                    const currentObj = ITEMS[sourceItem];
-                    const nextLevel = currentObj.level + 1;
-                    const genType = currentObj.gen;
-                    
-                    // Son seviyeden büyük eşya var mı kontrol et
-                    const nextKey = `${genType}_${nextLevel}`;
-                    if (ITEMS[nextKey]) {
-                        state.grid[idx] = nextKey;
-                        state.grid[selectedCellIdx] = null;
-                        playTone(750, 0.25);
-                    } else {
-                        // Maksimum seviye
-                        showGenericModal("✨", "Maksimum Seviye!", "Bu eşyayı daha fazla birleştiremezsin, siparişte teslim edebilirsin!");
-                    }
-                    selectedCellIdx = null;
-                } else {
-                    // Farklı eşyalar, seçimi değiştir
-                    selectedCellIdx = idx;
-                    playTone(400, 0.08);
-                }
-                renderMergeGrid();
-                renderOrderBanner();
-                saveGameState();
-            }
-        }
-
-        function renderMergeGrid() {
-            const container = document.getElementById("merge-grid");
-            container.innerHTML = "";
-
-            state.grid.forEach((itemId, idx) => {
-                const cell = document.createElement("div");
-                cell.className = "grid-cell" + (itemId !== null ? " has-item" : "") + (selectedCellIdx === idx ? " selected" : "");
-                cell.onclick = () => handleCellClick(idx);
-
-                if (itemId !== null && ITEMS[itemId]) {
-                    const obj = ITEMS[itemId];
+                if (itemKey !== 'empty') {
                     cell.innerHTML = `
-                        <div class="cell-emoji">${obj.emoji}</div>
-                        <div class="cell-name">${obj.name}</div>
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${item.bg} flex items-center justify-center ${item.color} shadow-md mb-1 animate-pop">
+                            <i class="fa-solid ${item.icon} text-lg"></i>
+                        </div>
+                        <span class="text-[10px] font-bold text-amber-100/90 text-center px-1 truncate w-full">${item.name}</span>
+                        <span class="absolute top-1 right-1.5 text-[8px] font-extrabold px-1.5 py-0.2 rounded bg-black/40 text-amber-300/80">Lv.${item.level}</span>
+                    `;
+                } else {
+                    cell.innerHTML = `
+                        <div class="w-8 h-8 rounded-full border border-dashed border-amber-500/20 flex items-center justify-center text-amber-500/20">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </div>
                     `;
                 }
+
                 container.appendChild(cell);
             });
         }
 
-        function renderOrderBanner() {
-            const currentOrder = ORDERS[state.orderIdx % ORDERS.length];
-            document.getElementById("order-emoji").innerText = currentOrder.emoji;
-            document.getElementById("order-title").innerText = currentOrder.title;
-
-            // Tahtada bu eşyadan var mı kontrol et
-            const hasItem = state.grid.includes(currentOrder.req);
-            const btn = document.getElementById("deliver-btn");
-            btn.disabled = !hasItem;
-        }
-
-        function deliverOrder() {
-            const currentOrder = ORDERS[state.orderIdx % ORDERS.length];
-            const itemIdx = state.grid.indexOf(currentOrder.req);
-            if (itemIdx === -1) return;
-
-            // Eşyayı tahtadan kaldır
-            state.grid[itemIdx] = null;
-            state.stars += currentOrder.reward;
-            state.orderIdx++;
-
-            playTone(880, 0.4);
-            updateStarUI();
-            renderMergeGrid();
-            renderOrderBanner();
-            saveGameState();
-
-            showGenericModal(
-                "🎉",
-                "Sipariş Teslim Edildi!",
-                `<div style="font-style:italic; color:var(--text-soft); margin-bottom:12px;">"${currentOrder.text}"</div>` +
-                `<strong style="color:var(--gold); font-size:18px;">+${currentOrder.reward} ⭐ Yıldız Kazandın!</strong>`
-            );
-        }
-
-        /* =========================================================
-           7. ÖDÜLLER VE MEKTUPLAR
-           ========================================================= */
-        function renderRewardsList() {
-            const container = document.getElementById("rewards-container");
-            container.innerHTML = "";
-
-            REWARDS_DATA.forEach(r => {
-                const owned = state.unlockedRewards.includes(r.id);
-                const canBuy = state.stars >= r.cost;
-
-                const card = document.createElement("div");
-                card.className = "list-card" + (owned ? " unlocked" : "");
-                card.innerHTML = `
-                    <div class="card-top">
-                        <div class="card-emoji">${r.icon}</div>
-                        <div>
-                            <div class="card-title">${r.title}</div>
-                            <div class="card-desc">${r.desc}</div>
-                        </div>
-                    </div>
-                    ${owned
-                        ? `<button class="big-btn" style="padding:12px;" onclick="showCouponModal('${r.id}')">🎟️ Kuponu Göster ve Kullan</button>`
-                        : `<button class="big-btn" style="padding:12px; opacity:${canBuy ? '1' : '0.45'};" onclick="purchaseReward('${r.id}')">⭐ ${r.cost} Yıldız ile Aç</button>`
-                    }
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function purchaseReward(id) {
-            const r = REWARDS_DATA.find(x => x.id === id);
-            if (!r || state.stars < r.cost) return;
-            state.stars -= r.cost;
-            if (!state.unlockedRewards.includes(id)) state.unlockedRewards.push(id);
-            playTone(880, 0.35);
-            updateStarUI();
-            renderRewardsList();
-            saveGameState();
-            showCouponModal(id);
-        }
-
-        function showCouponModal(id) {
-            const r = REWARDS_DATA.find(x => x.id === id);
-            if (!r) return;
-            showGenericModal(
-                r.icon,
-                r.title,
-                `<div style="border:2px dashed var(--gold); padding:16px; border-radius:16px; background:rgba(0,0,0,0.4);">
-                    <div style="color:var(--gold); font-weight:800; font-size:13px; margin-bottom:6px;">RESMİ ÖDÜL BİLETİ</div>
-                    <div style="font-size:16px; margin-bottom:10px;">${r.desc}</div>
-                    <div style="background:rgba(245,197,66,0.2); color:var(--gold); padding:8px; border-radius:8px; font-weight:800; font-family:monospace;">
-                        KOD: OZGE-1993-${id.toUpperCase()}
-                    </div>
-                    <div style="color:var(--green); font-size:14px; font-weight:700; margin-top:10px;">
-                        📸 Şimdi bu ekranın görüntüsünü alıp eşine WhatsApp'tan gönder!
-                    </div>
-                </div>`
-            );
-        }
-
-        function renderLettersList() {
-            const container = document.getElementById("letters-container");
-            container.innerHTML = "";
-
-            LETTERS_DATA.forEach(item => {
-                const unlocked = state.orderIdx >= item.reqOrder;
-                const card = document.createElement("div");
-                card.className = "list-card" + (unlocked ? " unlocked" : "");
-                card.innerHTML = `
-                    <div class="card-top">
-                        <div class="card-emoji">${unlocked ? "💌" : "🔒"}</div>
-                        <div>
-                            <div class="card-title">${item.title}</div>
-                            <div class="card-desc">
-                                ${unlocked
-                                    ? `"${item.text}"`
-                                    : `Bu mektubu açmak için toplam ${item.reqOrder + 1}. siparişi tamamlamalısın. (Şu an: ${state.orderIdx}. siparistesin)`
-                                }
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function openSettingsModal() {
-            showGenericModal(
-                "⚙️",
-                "Fotoğraf & Müzik Ayarları",
-                `<div style="display:flex; flex-direction:column; gap:10px;">
-                    <button class="big-btn" style="font-size:15px; padding:12px;" onclick="document.getElementById('file-audio').click()">🎵 Telefondan MP3 Seç</button>
-                    <button class="big-btn" style="font-size:15px; padding:12px;" onclick="document.getElementById('file-photo').click()">📸 Galeriden Fotoğraf Seç</button>
-                    <button class="big-btn" style="font-size:15px; padding:12px; background:var(--bg-card-light); color:#fff; border:1px solid var(--gold);" onclick="document.getElementById('modal-generic').classList.remove('aktif'); document.getElementById('screen-letter').classList.add('active');">💌 Doğum Günü Mektubunu Göster</button>
-                </div>`
-            );
-        }
-
-        function updateStarUI() {
-            document.getElementById("ui-stars").innerText = Math.floor(state.stars);
-        }
-
-        function switchMainTab(tab, el) {
-            document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active"));
-            document.getElementById("tab-" + tab).classList.add("active");
-            document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-            el.classList.add("active");
-
-            if (tab === "rewards") renderRewardsList();
-            if (tab === "letters") renderLettersList();
-        }
-
-        function showGenericModal(icon, title, html) {
-            document.getElementById("gen-icon").innerText = icon;
-            document.getElementById("gen-title").innerText = title;
-            document.getElementById("gen-body").innerHTML = html;
-            document.getElementById("modal-generic").classList.add("aktif");
-        }
-
-        /* =========================================================
-           8. BAŞLATMA
-           ========================================================= */
-        window.onload = async () => {
-            loadGameState();
-            await setupAudioSource();
-            await setupPhotoSource();
-
-            if (!state.pinOpened) {
-                document.getElementById("screen-lock").classList.add("active");
+        // Hücre Tıklama & Birleştirme Mantığı
+        function handleSlotClick(index) {
+            playSound('click');
+            if (selectedSlot === null) {
+                if (gridState[index] !== 'empty') {
+                    selectedSlot = index;
+                    renderGrid();
+                }
             } else {
-                initMergeGame();
+                if (selectedSlot === index) {
+                    // Aynı yere tıklandıysa seçimi kaldır
+                    selectedSlot = null;
+                } else {
+                    const firstItem = gridState[selectedSlot];
+                    const secondItem = gridState[index];
+
+                    if (firstItem === secondItem) {
+                        // Birleştirme İşlemi!
+                        triggerMergeEffect(index);
+                        if (firstItem === 'tea1') gridState[index] = 'tea2';
+                        else if (firstItem === 'note1') gridState[index] = 'note2';
+                        else if (firstItem === 'tea2') gridState[index] = 'coffee1';
+                        else if (firstItem === 'note2') gridState[index] = 'coffee2';
+                        else {
+                            // Genel üst seviye
+                            gridState[index] = 'coffee2';
+                        }
+                        gridState[selectedSlot] = 'empty';
+                        score += 150;
+                        updateScore();
+                    } else if (secondItem === 'empty') {
+                        // Boş yere taşıma
+                        gridState[index] = firstItem;
+                        gridState[selectedSlot] = 'empty';
+                    } else {
+                        // Yer değiştirme
+                        gridState[selectedSlot] = secondItem;
+                        gridState[index] = firstItem;
+                    }
+                    selectedSlot = null;
+                }
+                renderGrid();
+            }
+        }
+
+        // Üretici Butonlarına Basıldığında Eşya Üretme
+        function spawnItem(type) {
+            playSound('spawn');
+            const emptyIndices = [];
+            gridState.forEach((item, idx) => {
+                if (item === 'empty') emptyIndices.push(idx);
+            });
+
+            if (emptyIndices.length === 0) {
+                showModal('Alan Dolu!', 'Yeni eşya üretmek için önce bazı eşyaları birleştirmelisin.', 'fa-triangle-exclamation');
+                return;
             }
 
-            const unlockOnce = () => {
-                if (state.pinOpened && !isPlayingMusic) {
-                    triggerMusicPlaySync();
+            const randomIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+            gridState[randomIndex] = type === 'coffee' ? 'tea1' : 'note1';
+            
+            // Üretim anında hafif görsel kutlama
+            confetti({
+                particleCount: 15,
+                spread: 40,
+                origin: { y: 0.7 }
+            });
+
+            renderGrid();
+        }
+
+        // Sipariş Teslim Etme
+        function deliverOrder() {
+            playSound('success');
+            score += 450;
+            updateScore();
+            
+            // Konfeti patlat
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.5 }
+            });
+
+            showModal('Sipariş Teslim Edildi!', 'Harika iş! Müşteri kahvesini çok beğendi ve cömertçe bahşiş bıraktı (+450 Puan).', 'fa-gift');
+            
+            // Yeni sipariş simülasyonu
+            document.getElementById('orderTitle').innerText = 'Özel Sütlü Latte (Lv. 3)';
+            document.getElementById('orderDesc').innerText = 'Gerekli: 1x Çiftli Çay veya 1x Közde Kahve';
+        }
+
+        // Birleştirme görsel parıltı efekti
+        function triggerMergeEffect(index) {
+            playSound('merge');
+            confetti({
+                particleCount: 30,
+                spread: 50,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Puan Güncelleme
+        function updateScore() {
+            document.getElementById('scoreDisplay').innerText = score.toLocaleString();
+        }
+
+        // Sekme Değiştirme
+        function switchTab(tabName) {
+            playSound('click');
+            ['merge', 'rewards', 'letters'].forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                if (t === tabName) {
+                    btn.className = "flex flex-col items-center gap-1 text-amber-400 transition transform active:scale-95 group";
+                    btn.children[0].className = "w-10 h-10 rounded-2xl bg-amber-500/20 flex items-center justify-center shadow-md group-hover:bg-amber-500/30";
+                } else {
+                    btn.className = "flex flex-col items-center gap-1 text-amber-200/60 transition transform active:scale-95 group";
+                    btn.children[0].className = "w-10 h-10 rounded-2xl bg-transparent flex items-center justify-center group-hover:bg-amber-900/30";
                 }
-                window.removeEventListener("touchstart", unlockOnce);
-                window.removeEventListener("click", unlockOnce);
-            };
-            window.addEventListener("touchstart", unlockOnce, { passive: true });
-            window.addEventListener("click", unlockOnce);
-        };
+            });
+
+            if (tabName !== 'merge') {
+                showModal('Çok Yakında!', `${tabName === 'rewards' ? 'Ödüller' : 'Mektuplar'} sekmesi yeni güncelleme ile aktif olacaktır.`, 'fa-person-digging');
+            }
+        }
+
+        // Ayarlar ve Müzik Kontrolü
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('audioBtn');
+            const icon = document.getElementById('audioIcon');
+            const text = document.getElementById('audioText');
+            
+            if (audioEnabled) {
+                icon.className = "fa-solid fa-volume-high text-xs";
+                text.innerText = "Müzik Açık";
+                btn.children[0].className = "w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition";
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-xs";
+                text.innerText = "Müzik Kapalı";
+                btn.children[0].className = "w-7 h-7 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition";
+            }
+        }
+
+        function openSettings() {
+            showModal('Oyun Ayarları', 'Grafik kalitesi: Ultra\nBildirimler: Aktif\nDil: Türkçe (TR)', 'fa-gear');
+        }
+
+        // Modal Yönetimi (Alert alternatifimiz)
+        function showModal(title, message, iconClass) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalIcon').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        // Basit Web Audio Efektleri (Opsiyonel & Güvenli)
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
+                } else if (type === 'spawn' || type === 'merge') {
+                    osc.frequency.setValueAtTime(600, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.15);
+                } else if (type === 'success') {
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {
+                // AudioContext kısıtlamaları için yutulur
+            }
+        }
+
+        // Başlangıçta Grid'i yükle
+        window.onload = function() {
+            renderGrid();
+        }
     </script>
 </body>
 </html>
