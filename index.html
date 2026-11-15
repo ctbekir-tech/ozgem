@@ -1,206 +1,479 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MumcularPost Eşleştirme Oyunu</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #f9f3e7, #ffe5ec);
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    header {
-      background-color: #ffb3c6;
-      padding: 1rem;
-      font-size: 1.5rem;
-      color: #fff;
-      position: relative;
-    }
-    .creator {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: #fff;
-      color: #ff4d6d;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-    #intro {
-      margin: 2rem;
-      font-size: 1.2rem;
-    }
-    #startBtn {
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      background: #ff4d6d;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    #gameContainer {
-      display: none;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      padding: 2rem;
-    }
-    .card {
-      width: 100px;
-      height: 100px;
-      background: #fff;
-      border: 2px solid #ff4d6d;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      cursor: pointer;
-      user-select: none;
-    }
-    .card.flipped, .card.matched {
-      background: #ff4d6d;
-      color: #fff;
-    }
-    #status {
-      font-size: 1.5rem;
-      margin-top: 2rem;
-      font-weight: bold;
-      color: #ff4d6d;
-    }
-    #timer {
-      font-size: 1.2rem;
-      margin-top: 1rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>abimin doğum günüsü 🎂</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            background: #87CEEB;
+            border: 3px solid #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+
+        .control-btn:active {
+            transform: scale(0.9);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .celebration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .celebration-text {
+            color: #FFD700;
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-20px); }
+        }
+
+        .firework {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: firework 2s ease-out infinite;
+        }
+
+        @keyframes firework {
+            0% {
+                opacity: 1;
+                transform: scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1) rotate(360deg);
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    MumcularPost Eşleştirme Oyunu
-    <div class="creator">Oyunun Kurucusu: YASİN</div>
-  </header>  <div id="intro">
-    <p>Merhaba! Bu oyunda isim kartlarını eşleştirmeye çalışacaksınız. Aynı ismi 2 kartta bulduğunuzda eşleşme gerçekleşir. <br>
-    <strong>Toplam 10 dakika süreniz var.</strong><br><br>
-    Tüm kartları doğru eşleştirirseniz, ödül kazanabilirsiniz. Bazen sürpriz yazılar da çıkacak :)<br><br>
-    Hazır mısın?</p>
-    <button id="startBtn">MumcularPost Oyununa Başla</button>
-  </div>  <div id="timer"></div>
-  <div id="gameContainer"></div>
-  <div id="status"></div>  <script>
-    const names = [
-      "yasin", "tanem", "emir", "resul", "ilkay", "berat", "umut", "nehir", "ezgi", "emre",
-      "admin", "göktuğ", "nisa", "eylül", "demokan", "selim", "nilsu", "ibrahim", "hira", "aras",
-      "ece", "bade", "buse", "muhammet", "hakan", "şervan", "sarp", "erenosman", "hümeyra", "gülsen", "mustafa"
-    ];
+    <div class="ui">
+        <div>Level: <span id="level">1</span></div>
+        <div>Can: <span id="lives">3</span> ❤️</div>
+        <div>Hedef:abimin zehirli doğum günü pastası! 🎂</div>
+    </div>
 
-    let cards = [];
-    let flipped = [];
-    let matchedCount = 0;
-    let startTime;
-    let timerInterval;
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-    const gameContainer = document.getElementById("gameContainer");
-    const startBtn = document.getElementById("startBtn");
-    const intro = document.getElementById("intro");
-    const timerDisplay = document.getElementById("timer");
-    const statusDisplay = document.getElementById("status");
+    <div class="controls">
+        <button class="control-btn" id="leftBtn">←</button>
+        <button class="control-btn" id="jumpBtn">↑</button>
+        <button class="control-btn" id="rightBtn">→</button>
+    </div>
 
-    startBtn.addEventListener("click", startGame);
+    <div class="celebration" id="celebration">
+        <div class="celebration-text">
+            🎉 MUTLU DOĞUM GÜNÜLER ABİCİM (şuan sistemine giriyorum şaka şaka)  🎂
+            <br>
+            <span style="font-size: 24px;">Doğum günün kutlu olsun! Canım abim harıkasın lan sen varya mükemmel abisin 🎈🎁</span>
+        </div>
+    </div>
 
-    function startGame() {
-      intro.style.display = "none";
-      gameContainer.style.display = "flex";
-      statusDisplay.textContent = "";
-      matchedCount = 0;
-      cards = shuffle([...names, ...names]);
-      gameContainer.innerHTML = "";
-      cards.forEach(name => {
-        const card = document.createElement("div");
-        card.classList.add("card");
-        card.dataset.name = name;
-        card.addEventListener("click", handleCardClick);
-        gameContainer.appendChild(card);
-      });
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-      startTime = Date.now();
-      updateTimer();
-      timerInterval = setInterval(updateTimer, 1000);
-    }
+        // Oyun durumu
+        let gameState = {
+            level: 1,
+            lives: 3,
+            completed: false
+        };
 
-    function handleCardClick(e) {
-      const card = e.currentTarget;
-      if (card.classList.contains("flipped") || card.classList.contains("matched") || flipped.length === 2) return;
+        // Oyuncu
+        const player = {
+            x: 50,
+            y: 400,
+            width: 30,
+            height: 40,
+            velocityY: 0,
+            velocityX: 0,
+            grounded: false,
+            color: '#FF6B6B'
+        };
 
-      card.textContent = card.dataset.name;
-      card.classList.add("flipped");
-      flipped.push(card);
+        // Kontroller
+        const keys = {
+            left: false,
+            right: false,
+            up: false
+        };
 
-      if (flipped.length === 2) {
-        setTimeout(checkMatch, 800);
-      }
-    }
+        // Level tasarımları
+        const levels = {
+            1: {
+                platforms: [
+                    {x: 0, y: 550, width: 200, height: 50},
+                    {x: 250, y: 450, width: 100, height: 20},
+                    {x: 400, y: 350, width: 100, height: 20},
+                    {x: 550, y: 250, width: 100, height: 20},
+                    {x: 700, y: 150, width: 100, height: 20}
+                ],
+                enemies: [
+                    {x: 300, y: 430, width: 20, height: 20, speed: 1, direction: 1, range: 80},
+                    {x: 450, y: 330, width: 20, height: 20, speed: 1.5, direction: -1, range: 80}
+                ],
+                goal: {x: 750, y: 100, width: 30, height: 50}
+            },
+            2: {
+                platforms: [
+                    {x: 0, y: 550, width: 150, height: 50},
+                    {x: 200, y: 480, width: 80, height: 20},
+                    {x: 320, y: 400, width: 80, height: 20},
+                    {x: 450, y: 320, width: 80, height: 20},
+                    {x: 580, y: 240, width: 80, height: 20},
+                    {x: 700, y: 160, width: 100, height: 20}
+                ],
+                enemies: [
+                    {x: 220, y: 460, width: 20, height: 20, speed: 2, direction: 1, range: 60},
+                    {x: 340, y: 380, width: 20, height: 20, speed: 1.5, direction: -1, range: 60},
+                    {x: 600, y: 220, width: 20, height: 20, speed: 2.5, direction: 1, range: 60}
+                ],
+                goal: {x: 750, y: 110, width: 30, height: 50}
+            }
+        };
 
-    function checkMatch() {
-      const [card1, card2] = flipped;
-      if (card1.dataset.name === card2.dataset.name) {
-        card1.classList.add("matched");
-        card2.classList.add("matched");
-        matchedCount++;
-        if (matchedCount === names.length) {
-          clearInterval(timerInterval);
-          statusDisplay.textContent = "Tebrikler! Adminle görüş ve ödülünü al!";
-        } else {
-          maybeShowMessage();
+        let currentLevel = levels[gameState.level];
+        let enemies = [...currentLevel.enemies];
+
+        // Event listeners
+        document.getElementById('leftBtn').addEventListener('touchstart', () => keys.left = true);
+        document.getElementById('leftBtn').addEventListener('touchend', () => keys.left = false);
+        document.getElementById('rightBtn').addEventListener('touchstart', () => keys.right = true);
+        document.getElementById('rightBtn').addEventListener('touchend', () => keys.right = false);
+        document.getElementById('jumpBtn').addEventListener('touchstart', () => keys.up = true);
+        document.getElementById('jumpBtn').addEventListener('touchend', () => keys.up = false);
+
+        // Klavye kontrolleri
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+            if (e.code === 'ArrowUp' || e.code === 'Space') keys.up = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+            if (e.code === 'ArrowUp' || e.code === 'Space') keys.up = false;
+        });
+
+        function updatePlayer() {
+            // Yatay hareket
+            if (keys.left) {
+                player.velocityX = -5;
+            } else if (keys.right) {
+                player.velocityX = 5;
+            } else {
+                player.velocityX *= 0.8;
+            }
+
+            // Zıplama
+            if (keys.up && player.grounded) {
+                player.velocityY = -15;
+                player.grounded = false;
+            }
+
+            // Yerçekimi
+            player.velocityY += 0.8;
+
+            // Pozisyon güncelleme
+            player.x += player.velocityX;
+            player.y += player.velocityY;
+
+            // Sınırlar
+            if (player.x < 0) player.x = 0;
+            if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+
+            // Platform çarpışması
+            player.grounded = false;
+            for (let platform of currentLevel.platforms) {
+                if (player.x < platform.x + platform.width &&
+                    player.x + player.width > platform.x &&
+                    player.y < platform.y + platform.height &&
+                    player.y + player.height > platform.y) {
+                    
+                    if (player.velocityY > 0 && player.y < platform.y) {
+                        player.y = platform.y - player.height;
+                        player.velocityY = 0;
+                        player.grounded = true;
+                    }
+                }
+            }
+
+            // Düşme kontrolü
+            if (player.y > canvas.height) {
+                resetPlayer();
+                gameState.lives--;
+                updateUI();
+            }
+
+            // Hedef kontrolü
+            if (player.x < currentLevel.goal.x + currentLevel.goal.width &&
+                player.x + player.width > currentLevel.goal.x &&
+                player.y < currentLevel.goal.y + currentLevel.goal.height &&
+                player.y + player.height > currentLevel.goal.y) {
+                
+                if (gameState.level < 2) {
+                    nextLevel();
+                } else {
+                    showCelebration();
+                }
+            }
         }
-      } else {
-        card1.textContent = "";
-        card2.textContent = "";
-        card1.classList.remove("flipped");
-        card2.classList.remove("flipped");
-      }
-      flipped = [];
-    }
 
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
+        function updateEnemies() {
+            for (let enemy of enemies) {
+                enemy.x += enemy.speed * enemy.direction;
+                
+                // Sınırlarda geri dönme
+                if (enemy.x <= enemy.x - enemy.range/2 || enemy.x >= enemy.x + enemy.range/2) {
+                    enemy.direction *= -1;
+                }
 
-    function updateTimer() {
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      const remaining = 600 - elapsed;
-      const minutes = Math.floor(remaining / 60);
-      const seconds = remaining % 60;
-      timerDisplay.textContent = `Süre: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                // Oyuncu çarpışması
+                if (player.x < enemy.x + enemy.width &&
+                    player.x + player.width > enemy.x &&
+                    player.y < enemy.y + enemy.height &&
+                    player.y + player.height > enemy.y) {
+                    
+                    resetPlayer();
+                    gameState.lives--;
+                    updateUI();
+                }
+            }
+        }
 
-      if (remaining <= 0) {
-        clearInterval(timerInterval);
-        gameContainer.style.display = "none";
-        statusDisplay.textContent = "Süre bitti! Kaybettin!";
-      }
-    }
+        function resetPlayer() {
+            player.x = 50;
+            player.y = 400;
+            player.velocityX = 0;
+            player.velocityY = 0;
+            
+            if (gameState.lives <= 0) {
+                gameState.lives = 3;
+                gameState.level = 1;
+                currentLevel = levels[gameState.level];
+                enemies = [...currentLevel.enemies];
+                updateUI();
+            }
+        }
 
-    function maybeShowMessage() {
-      const messages = [
-        "Hadi ama, bitir ve kazan!",
-        "Oyunu kuran kişi: YASİN",
-        "Hepsini eşleştirene ödül var!"
-      ];
-      if (Math.random() < 0.3) {
-        statusDisplay.textContent = messages[Math.floor(Math.random() * messages.length)];
-        setTimeout(() => {
-          statusDisplay.textContent = "";
-        }, 3000);
-      }
-    }
-  </script></body>
+        function nextLevel() {
+            gameState.level++;
+            currentLevel = levels[gameState.level];
+            enemies = [...currentLevel.enemies];
+            resetPlayer();
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('lives').textContent = gameState.lives;
+        }
+
+        function showCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.style.display = 'flex';
+            
+            // Havai fişek efekti
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    createFirework();
+                }, i * 200);
+            }
+            
+            gameState.completed = true;
+        }
+
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+            firework.style.left = Math.random() * window.innerWidth + 'px';
+            firework.style.top = Math.random() * window.innerHeight + 'px';
+            
+            document.body.appendChild(firework);
+            
+            setTimeout(() => {
+                document.body.removeChild(firework);
+            }, 2000);
+        }
+
+        function drawPlayer() {
+            // Gövde
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Kafa
+            ctx.beginPath();
+            ctx.arc(player.x + 15, player.y - 5, 12, 0, Math.PI * 2);
+            ctx.fillStyle = '#FDBCB4';
+            ctx.fill();
+            
+            // Gözler
+            ctx.fillStyle = '#000';
+            ctx.fillRect(player.x + 10, player.y - 8, 3, 3);
+            ctx.fillRect(player.x + 17, player.y - 8, 3, 3);
+            
+            // Gülümseme
+            ctx.beginPath();
+            ctx.arc(player.x + 15, player.y - 2, 5, 0, Math.PI);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function drawPlatforms() {
+            ctx.fillStyle = '#8B4513';
+            for (let platform of currentLevel.platforms) {
+                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            }
+        }
+
+        function drawEnemies() {
+            ctx.fillStyle = '#FF4444';
+            for (let enemy of enemies) {
+                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+                
+                // Düşman gözleri
+                ctx.fillStyle = '#FFF';
+                ctx.fillRect(enemy.x + 3, enemy.y + 3, 4, 4);
+                ctx.fillRect(enemy.x + 13, enemy.y + 3, 4, 4);
+            }
+        }
+
+        function drawGoal() {
+            // Doğum günü pastası
+            ctx.fillStyle = '#FFB6C1';
+            ctx.fillRect(currentLevel.goal.x, currentLevel.goal.y + 30, currentLevel.goal.width, 20);
+            
+            ctx.fillStyle = '#FFF';
+            ctx.fillRect(currentLevel.goal.x, currentLevel.goal.y + 15, currentLevel.goal.width, 15);
+            
+            ctx.fillStyle = '#FFB6C1';
+            ctx.fillRect(currentLevel.goal.x, currentLevel.goal.y, currentLevel.goal.width, 15);
+            
+            // Mum
+            ctx.fillStyle = '#FFFF00';
+            ctx.fillRect(currentLevel.goal.x + 12, currentLevel.goal.y - 10, 3, 10);
+            
+            // Alev
+            ctx.fillStyle = '#FF4500';
+            ctx.beginPath();
+            ctx.arc(currentLevel.goal.x + 13.5, currentLevel.goal.y - 12, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function draw() {
+            // Arka plan
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(1, '#98FB98');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Bulutlar
+            ctx.fillStyle = '#FFF';
+            ctx.globalAlpha = 0.7;
+            ctx.beginPath();
+            ctx.arc(150, 100, 30, 0, Math.PI * 2);
+            ctx.arc(170, 100, 40, 0, Math.PI * 2);
+            ctx.arc(190, 100, 30, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(500, 80, 25, 0, Math.PI * 2);
+            ctx.arc(520, 80, 35, 0, Math.PI * 2);
+            ctx.arc(540, 80, 25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            
+            drawPlatforms();
+            drawEnemies();
+            drawGoal();
+            drawPlayer();
+        }
+
+        function gameLoop() {
+            if (!gameState.completed) {
+                updatePlayer();
+                updateEnemies();
+            }
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Oyunu başlat
+        updateUI();
+        gameLoop();
+    </script>
+</body>
 </html>
