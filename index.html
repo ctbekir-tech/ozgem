@@ -494,9 +494,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v11";
-      const KEY_LEVEL = "ozgem_saved_level_v11";
-      const KEY_SCORE = "ozgem_saved_score_v11";
+      const KEY_BEST = "ozgem_best_v12";
+      const KEY_LEVEL = "ozgem_saved_level_v12";
+      const KEY_SCORE = "ozgem_saved_score_v12";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -840,7 +840,7 @@
         const def = FRUITS[currentType];
         const r = def.radius;
         const pad = Math.max(14, r);
-        const nudge = dropDir * 9;
+        const nudge = dropDir * 8;
         dropDir = -dropDir;
         const x = Math.max(pad, Math.min(width - pad, dropX + nudge));
 
@@ -849,8 +849,8 @@
           type: currentType,
           x,
           y: SPAWN_Y,
-          vx: nudge * 4.5,
-          vy: 26,
+          vx: nudge * 3.5,
+          vy: 24,
           radius: r,
           scaleX: 0.96,
           scaleY: 1.04,
@@ -924,15 +924,12 @@
         }
 
         const gravity = getDifficultyInfo(level).gravity;
-        const damping = 0.992;
+        const damping = 0.985;
         const floorY = height - 10;
 
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
           f.age = (f.age || 0) + dt;
-
-          const weightFactor = 1 - Math.min(0.65, f.type * 0.06);
-          const bounce = 0.14 * weightFactor + 0.03;
 
           if (f.spawnScale < 1) {
             f.spawnScale = Math.min(1, f.spawnScale + dt * 8);
@@ -950,23 +947,19 @@
 
           if (f.x - f.radius < 8) {
             f.x = 8 + f.radius;
-            f.vx = Math.abs(f.vx) * bounce;
+            if (f.vx < 0) f.vx = -f.vx * 0.08;
           } else if (f.x + f.radius > width - 8) {
             f.x = width - 8 - f.radius;
-            f.vx = -Math.abs(f.vx) * bounce;
+            if (f.vx > 0) f.vx = -f.vx * 0.08;
           }
 
           if (f.y + f.radius > floorY) {
-            const impactVy = f.vy;
             f.y = floorY - f.radius;
             if (f.vy > 0) {
-              f.vy = impactVy > 85 ? -f.vy * bounce : 0;
-              if (impactVy > 230) {
-                f.scaleX = 1.06;
-                f.scaleY = 0.94;
-              }
+              f.vy = 0;
             }
-            f.vx *= 0.92;
+            f.vx *= 0.8;
+            if (Math.abs(f.vx) < 6) f.vx = 0;
           }
         }
 
@@ -1010,11 +1003,11 @@
                     type: nextTypeIdx,
                     x: mx,
                     y: my,
-                    vx: (a.vx + b.vx) * 0.15 + (mx < width / 2 ? -24 : 24),
-                    vy: -75,
+                    vx: (mx < width / 2 ? -18 : 18),
+                    vy: -45,
                     radius: nextDef.radius,
-                    scaleX: 1.09,
-                    scaleY: 0.91,
+                    scaleX: 1.08,
+                    scaleY: 0.92,
                     merged: false,
                     spawnScale: 0.75,
                     age: 0.5
@@ -1059,6 +1052,7 @@
                 const ny = dy / dist;
                 const overlap = minDist - dist;
 
+                // Tam dikey üst üste binmelerde yana kaymayı tetikleyerek kuleleşmeyi önle
                 let adjNx = nx;
                 if (Math.abs(nx) < 0.12 && Math.abs(ny) > 0.88) {
                   adjNx = (a.id % 2 === 0 ? 1 : -1) * 0.28;
@@ -1067,36 +1061,38 @@
                 const massA = Math.pow(a.radius, 1.35);
                 const massB = Math.pow(b.radius, 1.35);
                 const totalMass = massA + massB;
-                const moveA = (massB / totalMass) * 0.9;
-                const moveB = (massA / totalMass) * 0.9;
+                const moveA = (massB / totalMass) * 0.88;
+                const moveB = (massA / totalMass) * 0.88;
 
                 a.x -= adjNx * overlap * moveA;
                 a.y -= ny * overlap * moveA;
                 b.x += adjNx * overlap * moveB;
                 b.y += ny * overlap * moveB;
 
-                // Üstteki meyveyi yatay eğime göre yana doğru kaydırarak kuleleşmeyi önle
+                // Üstteki meyveyi yalnızca yatay eğime göre yana kaydır (zıplama itmesi vermeden)
                 if (a.y < b.y) {
                   const sign = Math.abs(dx) < 2 ? (a.id % 2 === 0 ? -1 : 1) : (dx > 0 ? -1 : 1);
-                  a.vx += sign * Math.max(14, overlap * 26);
+                  a.vx += sign * Math.min(36, overlap * 18);
+                  if (a.vy > 0 && ny > 0.45) {
+                    a.vy *= 0.65;
+                  }
                 } else {
                   const sign = Math.abs(dx) < 2 ? (b.id % 2 === 0 ? 1 : -1) : (dx > 0 ? 1 : -1);
-                  b.vx += sign * Math.max(14, overlap * 26);
-                }
-
-                const rvx = b.vx - a.vx;
-                const rvy = b.vy - a.vy;
-                const velAlongNormal = rvx * nx + rvy * ny;
-                if (velAlongNormal < 0) {
-                  const impulse = -(1 + 0.08) * velAlongNormal * 0.5;
-                  a.vx -= impulse * nx * (massB / totalMass) * 1.25;
-                  a.vy -= impulse * ny * (massB / totalMass) * 1.25;
-                  b.vx += impulse * nx * (massA / totalMass) * 1.25;
-                  b.vy += impulse * ny * (massA / totalMass) * 1.25;
+                  b.vx += sign * Math.min(36, overlap * 18);
+                  if (b.vy > 0 && ny < -0.45) {
+                    b.vy *= 0.65;
+                  }
                 }
               }
             }
           }
+        }
+
+        // Yerleşmiş meyvelerdeki mikro titremeleri temizle
+        for (let i = 0; i < fruits.length; i++) {
+          const f = fruits[i];
+          if (Math.abs(f.vx) < 5) f.vx = 0;
+          if (Math.abs(f.vy) < 5) f.vy = 0;
         }
 
         if (toRemove.size > 0 || toAdd.length > 0) {
