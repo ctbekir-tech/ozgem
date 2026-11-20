@@ -9,12 +9,18 @@
   <meta name="theme-color" content="#fdf3e7" />
   <title>Özgem</title>
   <link id="apple-icon" rel="apple-touch-icon" href="" />
+  <!-- İnternet varsa CDN'den, internet yoksa aynı klasördeki matter.min.js dosyasından yükler -->
   <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+  <script>
+    if (typeof window.Matter === "undefined") {
+      document.write('<script src="matter.min.js"><\/script>');
+    }
+  </script>
   <style>
     :root {
       --bg: #fdf3e7;
       --bg-grad: linear-gradient(165deg, #fff9f2 0%, #fbead8 100%);
-      --surface: rgba(255, 253, 249, 0.92);
+      --surface: rgba(255, 253, 249, 0.94);
       --card: #ffffff;
       --ink: #2b1e16;
       --muted: #7e6656;
@@ -22,7 +28,6 @@
       --accent-dark: #b92540;
       --accent-soft: #fde6ea;
       --border: #ead5bf;
-      --gold: #f59e0b;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -146,7 +151,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 135px;
+      max-width: 142px;
+      padding: 1px 0;
     }
 
     .radio-dot {
@@ -625,7 +631,7 @@
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
           </div>
-          <div class="radio-subpill" id="radioStatusPill" title="Radyo kanalını değiştirmek için dokun">
+          <div class="radio-subpill" id="radioStatusPill" title="Şarkı / Türkçe Radyo değiştirmek için dokun">
             <span class="radio-dot" id="radioDot"></span>
             <span id="radioStatusText">Özel Şarkımız</span>
           </div>
@@ -642,7 +648,7 @@
           <div class="stat-value" id="bestEl">0</div>
         </div>
 
-        <!-- Kutuyu Salla Butonu (Özel SVG) -->
+        <!-- Kutuyu Salla Butonu -->
         <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla" aria-label="Kutuyu Salla">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="6" y="5" width="12" height="14" rx="3" fill="#fde6ea" stroke="#df3b57"/>
@@ -654,7 +660,7 @@
           <span class="badge" id="shakeBadge">2</span>
         </button>
 
-        <!-- Sevgi Mektubu Albümü Butonu (Özel SVG) -->
+        <!-- Sevgi Mektubu Albümü Butonu -->
         <button class="icon-btn" id="noteBtn" title="Sevgi Notları Albümü" aria-label="Sevgi Notları Albümü">
           <svg viewBox="0 0 24 24" fill="none">
             <rect x="2.5" y="5.5" width="19" height="14" rx="3" fill="#fff0f3" stroke="#df3b57" stroke-width="1.8"/>
@@ -664,7 +670,7 @@
           <span class="badge" id="noteBadge">1</span>
         </button>
 
-        <!-- Ses ve Radyo Butonu (Özel SVG) -->
+        <!-- Ses ve Radyo Butonu -->
         <button class="icon-btn" id="soundBtn" title="Ses Aç / Kapat" aria-label="Ses Aç / Kapat">
           <svg id="soundSvgOn" viewBox="0 0 24 24" fill="none" stroke="#df3b57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#fde6ea"/>
@@ -787,14 +793,18 @@
     </div>
   </div>
 
-  <!-- İlk şarkı (sarki.mp3) bittiğinde kesintisiz Türkçe Romantik Radyo yayınına geçer -->
+  <!-- İlk şarkı (sarki.mp3) bittiğinde internet varsa Türkçe Romantik Radyoya geçer, internet yoksa sarki.mp3 devam eder -->
   <audio id="bgMusic" src="sarki.mp3" preload="auto" playsinline></audio>
 
   <script>
     (function () {
+      if (typeof window.Matter === "undefined") {
+        alert("Fizik motoru (matter.min.js) yüklenemedi. Lütfen ilk açılışta internet bağlantınızı kontrol edin veya matter.min.js dosyasını aynı klasöre ekleyin.");
+        return;
+      }
+
       const { Engine, World, Bodies, Body, Events } = Matter;
 
-      // iOS Ana Ekran İkonu (Özel Vektör Kalp & Çilek Tasarımı)
       function setCustomAppleIcon() {
         const c = document.createElement("canvas");
         c.width = 180;
@@ -1200,7 +1210,7 @@
       const bgMusic = document.getElementById("bgMusic");
 
       // ============================================================================
-      // SIKI KONTROLLÜ TÜRKÇE ROMANTİK / SLOW RADYO SİSTEMİ (iOS Safari Uyumlu)
+      // ÇEVRİMDIŞI KORUMALI (OFFLINE-SAFE) TÜRKÇE ROMANTİK RADYO & ŞARKI SİSTEMİ
       // ============================================================================
       const TURKISH_ROMANTIC_RADIOS = [
         { name: "JoyTürk Akustik", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK2.mp3" },
@@ -1213,6 +1223,8 @@
       let isRadioMode = false;
       let currentRadioIndex = 0;
       let radioWatchdogTimer = null;
+      let consecutiveRadioFailures = 0;
+      let isSwitchingAudio = false;
       let soundEnabled = true;
 
       function clearRadioWatchdog() {
@@ -1237,8 +1249,45 @@
         }
       }
 
+      // İnternet yoksa veya tüm radyolar ulaşılamazsa sarki.mp3'e kesintisiz geri döner
+      function playLocalSpecialSong(loopIfOffline) {
+        clearRadioWatchdog();
+        isSwitchingAudio = true;
+        isRadioMode = false;
+        consecutiveRadioFailures = 0;
+        updateRadioStatusUI();
+
+        try {
+          bgMusic.pause();
+          bgMusic.loop = Boolean(loopIfOffline);
+          bgMusic.src = "sarki.mp3";
+          bgMusic.load();
+          if (soundEnabled) {
+            bgMusic.play().catch(() => {});
+          }
+        } catch (_) {}
+
+        setTimeout(() => {
+          isSwitchingAudio = false;
+        }, 300);
+      }
+
       function connectTurkishRadio(stationIdx) {
         clearRadioWatchdog();
+
+        // Çevrimdışı (İnternetsiz) Kontrolü: İnternet yoksa hiç susmadan sarki.mp3'ü tekrar çal
+        if (navigator.onLine === false) {
+          playLocalSpecialSong(true);
+          return;
+        }
+
+        // Eğer 5 Türkçe radyo kanalının tamamı denendi ve hiçbiri açılmadıysa sarki.mp3'e dön
+        if (consecutiveRadioFailures >= TURKISH_ROMANTIC_RADIOS.length) {
+          playLocalSpecialSong(true);
+          return;
+        }
+
+        isSwitchingAudio = true;
         isRadioMode = true;
         currentRadioIndex = stationIdx % TURKISH_ROMANTIC_RADIOS.length;
         const station = TURKISH_ROMANTIC_RADIOS[currentRadioIndex];
@@ -1249,92 +1298,158 @@
           bgMusic.pause();
           bgMusic.loop = false;
           bgMusic.src = station.url;
-          // iOS Safari'de dinamik src değişiminden sonra .load() çağrılması şarttır
           bgMusic.load();
 
           if (soundEnabled) {
             const playPromise = bgMusic.play();
             if (playPromise && typeof playPromise.catch === "function") {
               playPromise.catch(() => {
-                scheduleNextRadioFallback();
+                handleRadioStreamFailure();
               });
             }
           }
         } catch (_) {
-          scheduleNextRadioFallback();
+          handleRadioStreamFailure();
         }
 
-        // 4.5 saniye içinde radyo akışı ses vermeye başlamazsa otomatik diğer Türkçe radyoya geç
+        setTimeout(() => {
+          isSwitchingAudio = false;
+        }, 300);
+
         if (soundEnabled) {
+          // 7 saniye içinde canlı yayın akışı başlamazsa sıradaki Türkçe radyoya geç
           radioWatchdogTimer = setTimeout(() => {
             radioWatchdogTimer = null;
             if (isRadioMode && soundEnabled && (bgMusic.paused || bgMusic.readyState < 2)) {
-              connectTurkishRadio(currentRadioIndex + 1);
+              handleRadioStreamFailure();
             }
-          }, 4500);
+          }, 7000);
         }
       }
 
-      function scheduleNextRadioFallback() {
+      function handleRadioStreamFailure() {
         clearRadioWatchdog();
+        if (navigator.onLine === false) {
+          playLocalSpecialSong(true);
+          return;
+        }
+        consecutiveRadioFailures += 1;
+        if (consecutiveRadioFailures >= TURKISH_ROMANTIC_RADIOS.length) {
+          playLocalSpecialSong(true);
+          return;
+        }
         radioWatchdogTimer = setTimeout(() => {
           radioWatchdogTimer = null;
           if (soundEnabled) {
             connectTurkishRadio(currentRadioIndex + 1);
           }
-        }, 1200);
+        }, 1000);
       }
 
-      // 1. Kontrol: Şarkı normal bittiğinde Türkçe radyoya geç
+      // 1. Şarkı normal bittiğinde: İnternet varsa Türkçe radyoya geç, yoksa sarki.mp3 devam etsin
       bgMusic.addEventListener("ended", () => {
+        if (isSwitchingAudio) return;
         if (!isRadioMode) {
-          connectTurkishRadio(0);
+          if (navigator.onLine === false) {
+            playLocalSpecialSong(true);
+          } else {
+            consecutiveRadioFailures = 0;
+            connectTurkishRadio(0);
+          }
         } else {
           connectTurkishRadio(currentRadioIndex + 1);
         }
       });
 
-      // 2. Kontrol (iOS VBR MP3 Koruması): Şarkının bitimine 0.35 sn kala takılırsa beklemeden radyoya geç
+      // 2. iOS Safari VBR MP3 son saniye takılma koruması
       bgMusic.addEventListener("timeupdate", () => {
-        if (!isRadioMode && bgMusic.duration > 1 && Number.isFinite(bgMusic.duration)) {
+        if (isSwitchingAudio) return;
+        if (!isRadioMode && !bgMusic.loop && bgMusic.duration > 1 && Number.isFinite(bgMusic.duration)) {
           if (bgMusic.currentTime >= bgMusic.duration - 0.35) {
-            connectTurkishRadio(0);
+            if (navigator.onLine === false) {
+              bgMusic.currentTime = 0;
+              bgMusic.play().catch(() => {});
+            } else {
+              consecutiveRadioFailures = 0;
+              connectTurkishRadio(0);
+            }
           }
         }
       });
 
-      // 3. Kontrol: Radyo yayınında kopma veya sarki.mp3 yükleme hatası olursa anında Türkçe radyoya geç
+      // 3. Hata durumunda yedek radyoya veya çevrimdışı şarkıya geçiş
       bgMusic.addEventListener("error", () => {
+        if (isSwitchingAudio) return;
         if (!isRadioMode) {
-          connectTurkishRadio(0);
+          if (navigator.onLine !== false) {
+            consecutiveRadioFailures = 0;
+            connectTurkishRadio(0);
+          }
         } else {
-          scheduleNextRadioFallback();
+          handleRadioStreamFailure();
         }
       });
 
+      // Canlı yayın başarıyla çalmaya başladığında hata sayacını sıfırla
       bgMusic.addEventListener("playing", () => {
         clearRadioWatchdog();
+        if (isRadioMode) {
+          consecutiveRadioFailures = 0;
+        }
         updateRadioStatusUI();
       });
 
-      // Üstteki radyo yazısına dokununca hemen Türkçe radyoya geçer veya radyo kanalını değiştirir
+      // İnternet bağlantısı kesilirse veya geri gelirse akıllı geçiş yap
+      window.addEventListener("offline", () => {
+        if (isRadioMode) {
+          playLocalSpecialSong(true);
+        }
+      });
+
+      window.addEventListener("online", () => {
+        if (!isRadioMode) {
+          bgMusic.loop = false;
+        }
+      });
+
+      // Üstteki radyo göstergesine dokununca: Özel Şarkımız -> 5 Türkçe Radyo -> Özel Şarkımız döngüsü
       radioStatusPill.addEventListener("click", (e) => {
         e.stopPropagation();
         if (!soundEnabled) {
           soundEnabled = true;
           updateSoundIconUI();
         }
+
+        if (navigator.onLine === false) {
+          playLocalSpecialSong(true);
+          if (gameState === "playing") {
+            popups.push({
+              x: width / 2,
+              y: TOP_LINE_Y + 18,
+              text: "Çevrimdışı Mod: Özel Şarkımız",
+              alpha: 1.2
+            });
+          }
+          return;
+        }
+
+        consecutiveRadioFailures = 0;
         if (!isRadioMode) {
           connectTurkishRadio(0);
-        } else {
+        } else if (currentRadioIndex + 1 < TURKISH_ROMANTIC_RADIOS.length) {
           connectTurkishRadio(currentRadioIndex + 1);
+        } else {
+          playLocalSpecialSong(false);
         }
+
         if (gameState === "playing") {
-          const st = TURKISH_ROMANTIC_RADIOS[currentRadioIndex];
+          const label = !isRadioMode
+            ? "Özel Şarkımız"
+            : `Radyo: ${TURKISH_ROMANTIC_RADIOS[currentRadioIndex].name}`;
           popups.push({
             x: width / 2,
             y: TOP_LINE_Y + 18,
-            text: `Radyo: ${st.name}`,
+            text: label,
             alpha: 1.2
           });
         }
@@ -1439,7 +1554,7 @@
         if (p && typeof p.catch === "function") {
           p.catch(() => {
             if (isRadioMode) {
-              scheduleNextRadioFallback();
+              handleRadioStreamFailure();
             }
           });
         }
@@ -1519,6 +1634,7 @@
       let nextType = 1;
       let dropCooldown = 0;
       let isPointerDown = false;
+      let activePointerId = null;
       let dangerTimer = 0;
       let shakeTime = 0;
       let shakeIntensity = 0;
@@ -1769,10 +1885,11 @@
           const b = fruitEntries[i].body;
           const dir = i % 2 === 0 ? 1 : -1;
           Body.setVelocity(b, {
-            x: b.velocity.x + dir * (3.6 + Math.random() * 2.2),
-            y: b.velocity.y - (2.6 + Math.random() * 2.0)
+            x: b.velocity.x + dir * (3.5 + Math.random() * 2.1),
+            y: b.velocity.y - (2.5 + Math.random() * 1.9)
           });
         }
+        clampExistingFruitsToBounds();
         saveBoardState();
       }
 
@@ -1811,7 +1928,10 @@
           const cy = Math.min(maxY, item.body.position.y);
           if (cx !== item.body.position.x || cy !== item.body.position.y) {
             Body.setPosition(item.body, { x: cx, y: cy });
-            Body.setVelocity(item.body, { x: 0, y: 0 });
+            Body.setVelocity(item.body, {
+              x: cx !== item.body.position.x ? 0 : item.body.velocity.x,
+              y: cy !== item.body.position.y ? 0 : item.body.velocity.y
+            });
           }
         }
       }
@@ -1952,6 +2072,7 @@
         dropCooldown = 0;
         shakeTime = 0;
         isPointerDown = false;
+        activePointerId = null;
 
         score = Math.max(0, saved.score || 0);
         nextNoteScoreTarget = Math.max(
@@ -2001,6 +2122,7 @@
         dropCooldown = 0;
         shakeTime = 0;
         isPointerDown = false;
+        activePointerId = null;
 
         currentType = pickSpawnFruit();
         nextType = pickSpawnFruit();
@@ -2042,6 +2164,8 @@
 
       function openSurpriseCard(index, isManualView) {
         clearPendingSurpriseTimer();
+        isPointerDown = false;
+        activePointerId = null;
         gameState = "paused";
         renderSurpriseModalContent(index, isManualView);
 
@@ -2103,6 +2227,8 @@
         clearPendingSurpriseTimer();
         clearSavedBoardState();
         pendingMerges = [];
+        isPointerDown = false;
+        activePointerId = null;
         gameState = "gameover";
         document.getElementById("gameOverSub").textContent =
           `Toplam Puanın: ${score} · En Yüksek Rekorun: ${bestScore} · Açılan Sevgi Mektubu: ${unlockedSurprises}`;
@@ -2257,23 +2383,27 @@
         }
       }
 
+      // iPhone 11 Çoklu Dokunma (Avuç İçi) Korumalı Nişan ve Bırakma
       canvas.addEventListener("pointerdown", (e) => {
         if (gameState !== "playing") return;
+        if (isPointerDown && activePointerId !== null) return;
         canvasLeft = canvas.getBoundingClientRect().left;
         isPointerDown = true;
+        activePointerId = e.pointerId;
         dropX = clientToX(e.clientX);
       });
 
       canvas.addEventListener("pointermove", (e) => {
         if (gameState !== "playing") return;
-        if (e.pointerType === "mouse" || isPointerDown) {
+        if (e.pointerType === "mouse" || (isPointerDown && e.pointerId === activePointerId)) {
           dropX = clientToX(e.clientX);
         }
       });
 
       window.addEventListener("pointerup", (e) => {
-        if (!isPointerDown) return;
+        if (!isPointerDown || (activePointerId !== null && e.pointerId !== activePointerId)) return;
         isPointerDown = false;
+        activePointerId = null;
         if (gameState === "playing") {
           const finalX = clientToX(e.clientX);
           dropX = finalX;
@@ -2281,8 +2411,11 @@
         }
       });
 
-      window.addEventListener("pointercancel", () => {
-        isPointerDown = false;
+      window.addEventListener("pointercancel", (e) => {
+        if (activePointerId === null || e.pointerId === activePointerId) {
+          isPointerDown = false;
+          activePointerId = null;
+        }
       });
 
       startBtn.addEventListener("click", () => {
@@ -2344,6 +2477,7 @@
 
         let anyAbove = false;
         const settleSpeedSq = SETTLE_SPEED * SETTLE_SPEED;
+        const floorY = height - FLOOR_Y_OFFSET;
 
         for (let i = 0; i < fruitEntries.length; i++) {
           const item = fruitEntries[i];
@@ -2355,6 +2489,15 @@
           item.scaleY += (1 - item.scaleY) * Math.min(1, clampedDt * 14);
 
           const r = FRUITS[item.type].radius;
+          const pos = item.body.position;
+
+          // Sınır dışına taşma koruması
+          if (pos.x < 8 + r || pos.x > width - 8 - r || pos.y > floorY - r + 4) {
+            const cx = Math.max(8 + r, Math.min(width - 8 - r, pos.x));
+            const cy = Math.min(floorY - r, pos.y);
+            Body.setPosition(item.body, { x: cx, y: cy });
+          }
+
           const vx = item.body.velocity.x;
           const vy = item.body.velocity.y;
           if (item.age > 1.0 && (vx * vx + vy * vy) < settleSpeedSq && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
@@ -2430,9 +2573,16 @@
           ctx.translate(dx, dy);
         }
 
+        // Tehlike anında üst çizgi uyarı efekti
+        if (dangerTimer > 0.25) {
+          const pulseAlpha = 0.12 + 0.1 * Math.sin(performance.now() * 0.012);
+          ctx.fillStyle = `rgba(223, 59, 87, ${pulseAlpha})`;
+          ctx.fillRect(0, 0, width, TOP_LINE_Y);
+        }
+
         ctx.setLineDash([6, 6]);
-        ctx.lineWidth = 1.6;
-        ctx.strokeStyle = dangerTimer > 0.1 ? "rgba(223, 59, 87, 0.92)" : "rgba(180, 145, 120, 0.45)";
+        ctx.lineWidth = dangerTimer > 0.25 ? 2.2 : 1.6;
+        ctx.strokeStyle = dangerTimer > 0.1 ? "rgba(223, 59, 87, 0.95)" : "rgba(180, 145, 120, 0.45)";
         ctx.beginPath();
         ctx.moveTo(12, TOP_LINE_Y);
         ctx.lineTo(width - 12, TOP_LINE_Y);
