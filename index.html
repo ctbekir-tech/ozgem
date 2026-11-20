@@ -99,7 +99,7 @@
       border-radius: 12px;
       padding: 4px 9px;
       text-align: center;
-      min-width: 56px;
+      min-width: 54px;
     }
 
     .stat-label {
@@ -119,22 +119,28 @@
     }
 
     .icon-btn {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--ink);
-      font-size: 16px;
+      font-size: 15px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      position: relative;
     }
 
     .icon-btn:active {
       transform: scale(0.95);
+    }
+
+    .icon-btn.used {
+      opacity: 0.42;
+      cursor: default;
     }
 
     .level-bar {
@@ -393,6 +399,7 @@
           <div class="stat-label">Rekor</div>
           <div class="stat-value" id="bestEl">0</div>
         </div>
+        <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla (Bölüm Başına 1 Hak)" aria-label="Kutuyu Salla">🔀</button>
         <button class="icon-btn" id="noteBtn" title="Doğum Günü Notu" aria-label="Doğum Günü Notu">💌</button>
         <button class="icon-btn" id="soundBtn" title="Müzik ve Ses" aria-label="Müzik ve Ses">🔊</button>
       </div>
@@ -416,7 +423,7 @@
       <div class="hero-emoji">🍓</div>
       <h1 class="modal-title">Güzel Karım Özgem</h1>
       <p class="modal-sub" id="startSub">
-        İyi ki doğdun sevgilim. Kaldığın yerden meyveleri birleştirip 🍉 Karpuz'a ulaş!
+        İyi ki doğdun sevgilim. İlk bölüm doğum günü sürprizi için çok kolay hazırlandı; meyveleri birleştirip 🍉 Karpuz'a ulaş!
       </p>
       <button class="btn-primary" id="startBtn">Devam Et</button>
     </div>
@@ -434,8 +441,8 @@
       </div>
 
       <div class="love-letter" id="birthdayLetter">
-        <strong>İyi ki doğdun güzel karım Özgem ❤️</strong>
-        Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!
+        <strong id="letterHeading">İyi ki doğdun güzel karım Özgem ❤️</strong>
+        <span id="letterBody">Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!</span>
       </div>
 
       <button class="btn-primary" id="nextLevelBtn">2. Bölüme Geç</button>
@@ -497,6 +504,29 @@
         "resim5.jpg"
       ];
 
+      const LEVEL_NOTES = [
+        {
+          heading: "İyi ki doğdun güzel karım Özgem ❤️",
+          body: "Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!"
+        },
+        {
+          heading: "2. Bölüm · Birlikte Her Mevsim 🌸",
+          body: "Yanımda olduğun her gün daha güzel. Yeni bölüme geçtik; sakin ve keyifli birleştirmelerle karpuza bir adım daha yaklaşalım sevgilim."
+        },
+        {
+          heading: "3. Bölüm · Gülüşünün Rengi ✨",
+          body: "Gülüşün en sevdiğim manzara. Birlikte nice güzel anılar biriktireceğimiz uzun yıllarımız olsun."
+        },
+        {
+          heading: "4. Bölüm · Kalbimin Huzuru 🍓",
+          body: "En yoğun günlerde bile tek bir bakışınla içimi ısıtıyorsun. Bu bölümde de keyfini çıkararak ilerleyelim."
+        },
+        {
+          heading: "5. Bölüm · Sonsuz Sevgimle 💖",
+          body: "Her yeni yaşın sana sağlık, mutluluk ve dilediğin tüm güzellikleri getirsin güzel karım."
+        }
+      ];
+
       const KEY_BEST = "ozgem_best";
       const KEY_LEVEL = "ozgem_saved_level";
       const KEY_SCORE = "ozgem_saved_score";
@@ -539,6 +569,7 @@
       const nextLevelBtn = document.getElementById("nextLevelBtn");
       const closeLetterBtn = document.getElementById("closeLetterBtn");
       const retryLevelBtn = document.getElementById("retryLevelBtn");
+      const shakeBtn = document.getElementById("shakeBtn");
       const soundBtn = document.getElementById("soundBtn");
       const noteBtn = document.getElementById("noteBtn");
 
@@ -548,6 +579,8 @@
       const levelPhotoFrame = document.getElementById("levelPhotoFrame");
       const levelPhotoImg = document.getElementById("levelPhotoImg");
       const birthdayLetter = document.getElementById("birthdayLetter");
+      const letterHeading = document.getElementById("letterHeading");
+      const letterBody = document.getElementById("letterBody");
       const bgMusic = document.getElementById("bgMusic");
 
       let soundEnabled = true;
@@ -618,6 +651,7 @@
       let levelCompleted = false;
       let gameState = "start";
       let levelCardTimer = null;
+      let shakeCharges = 1;
 
       const engine = Engine.create({
         positionIterations: 8,
@@ -656,12 +690,43 @@
         shakeTime = Math.max(shakeTime, duration);
       }
 
+      function updateShakeButtonUI() {
+        shakeBtn.classList.toggle("used", shakeCharges <= 0);
+        shakeBtn.title = shakeCharges > 0
+          ? "Kutuyu Salla (1 hak kaldı)"
+          : "Kutuyu Salla (Bu bölümde kullanıldı)";
+      }
+
+      function triggerGentleBoxShake() {
+        if (gameState !== "playing" || shakeCharges <= 0) return;
+        shakeCharges -= 1;
+        updateShakeButtonUI();
+        addScreenShake(4.5, 0.22);
+
+        for (let i = 0; i < fruitEntries.length; i++) {
+          const b = fruitEntries[i].body;
+          const dir = i % 2 === 0 ? 1 : -1;
+          Body.setVelocity(b, {
+            x: b.velocity.x + dir * (1.8 + Math.random() * 1.4),
+            y: b.velocity.y - (1.2 + Math.random() * 1.3)
+          });
+        }
+      }
+
+      shakeBtn.addEventListener("click", triggerGentleBoxShake);
+
+      // 1. bölüm hediye/sürpriz için çok kolay; sonraki bölümler düzenli ve kademeli
       function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Çok Kolay", gravityY: 1.05 };
-        if (lvl === 2) return { tag: "Kolay", gravityY: 1.12 };
-        if (lvl === 3) return { tag: "Orta", gravityY: 1.18 };
-        if (lvl === 4) return { tag: "Zorlayıcı", gravityY: 1.24 };
-        return { tag: `Zor (${lvl}. Bölüm)`, gravityY: Math.min(1.4, 1.24 + (lvl - 4) * 0.03) };
+        if (lvl === 1) return { tag: "Sürpriz · Çok Kolay", gravityY: 0.98, dangerLimit: 1.85, bonus: 150 };
+        if (lvl === 2) return { tag: "Rahat · Kolay", gravityY: 1.06, dangerLimit: 1.5, bonus: 250 };
+        if (lvl === 3) return { tag: "Düzenli · Orta", gravityY: 1.13, dangerLimit: 1.35, bonus: 400 };
+        if (lvl === 4) return { tag: "Akıcı · Zorlayıcı", gravityY: 1.19, dangerLimit: 1.25, bonus: 600 };
+        return {
+          tag: `Uzun Soluklu (${lvl}. Bölüm)`,
+          gravityY: Math.min(1.34, 1.19 + (lvl - 4) * 0.025),
+          dangerLimit: 1.2,
+          bonus: 600 + (lvl - 4) * 200
+        };
       }
 
       function updateHUD() {
@@ -807,26 +872,27 @@
         pendingMerges = [];
       }
 
+      // 1. bölümde büyük/orta meyvelerle hızlı birleşmeler sağlayan çok kolay havuz
       function pickSpawnFruit() {
         if (level === 1) {
-          const pool = [1, 2, 2, 3, 3, 4, 4];
+          const pool = [2, 2, 3, 3, 4, 4];
           return pool[Math.floor(Math.random() * pool.length)];
         }
         if (level === 2) {
-          const pool = [0, 1, 2, 3, 4, 4];
+          const pool = [1, 2, 2, 3, 3, 4];
           return pool[Math.floor(Math.random() * pool.length)];
         }
         if (level === 3) {
-          const pool = [0, 1, 2, 3, 4, 5];
+          const pool = [0, 1, 2, 3, 4, 4];
           return pool[Math.floor(Math.random() * pool.length)];
         }
-        const pool = [0, 1, 2, 3, 4, 5, 5];
+        const pool = [0, 1, 2, 3, 4, 5];
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
       function seedInitialFruits(lvl) {
         if (lvl <= 1) return;
-        const count = Math.min(5, lvl + 1);
+        const count = Math.min(4, Math.floor((lvl + 1) / 2) + 1);
         const floorY = height - FLOOR_Y_OFFSET;
         const usableW = Math.max(80, width - 36);
         for (let i = 0; i < count; i++) {
@@ -864,6 +930,8 @@
         persistProgress(level, score);
 
         levelCompleted = false;
+        shakeCharges = 1;
+        updateShakeButtonUI();
         clearAllFruits();
         popups = [];
         sparks = [];
@@ -885,6 +953,12 @@
         gameOverOverlay.classList.remove("active");
       }
 
+      function applyNoteForLevel(targetLevel) {
+        const note = LEVEL_NOTES[(targetLevel - 1) % LEVEL_NOTES.length];
+        letterHeading.textContent = note.heading;
+        letterBody.textContent = note.body;
+      }
+
       function openLevelCard(completedLevel, isManualLetterView) {
         clearPendingLevelTimer();
         gameState = "paused";
@@ -902,14 +976,16 @@
         if (isManualLetterView) {
           levelModalEmoji.textContent = "🎂";
           levelModalTitle.textContent = "Güzel Karım Özgem'e";
-          levelModalSub.textContent = "Doğum günün kutlu olsun sevgilim.";
+          levelModalSub.textContent = `${completedLevel}. bölüm anı kartı ve doğum günü notun.`;
+          applyNoteForLevel(completedLevel);
           birthdayLetter.style.display = "block";
           nextLevelBtn.style.display = "none";
           closeLetterBtn.style.display = "block";
         } else if (completedLevel === 1) {
           levelModalEmoji.textContent = "🎉";
-          levelModalTitle.textContent = "1. Bölüm Tamamlandı!";
+          levelModalTitle.textContent = "1. Bölüm Sürprizi Tamamlandı!";
           levelModalSub.textContent = "İlk karpuzunu yaptın! Doğum günün kutlu olsun güzel karım.";
+          applyNoteForLevel(1);
           birthdayLetter.style.display = "block";
           nextLevelBtn.style.display = "block";
           nextLevelBtn.textContent = "2. Bölüme Geç";
@@ -919,7 +995,8 @@
           levelModalEmoji.textContent = "🍉";
           levelModalTitle.textContent = `${completedLevel}. Bölüm Tamamlandı`;
           levelModalSub.textContent = `Sıradaki bölüm hazır: ${getDifficultyInfo(completedLevel + 1).tag}.`;
-          birthdayLetter.style.display = "none";
+          applyNoteForLevel(completedLevel);
+          birthdayLetter.style.display = "block";
           nextLevelBtn.style.display = "block";
           nextLevelBtn.textContent = `${completedLevel + 1}. Bölüme Geç`;
           closeLetterBtn.style.display = "none";
@@ -959,10 +1036,9 @@
 
         currentType = nextType;
         nextType = pickSpawnFruit();
-        dropCooldown = 0.28;
+        dropCooldown = 0.25;
       }
 
-      // Çarpışma anında dünyayı değiştirmeyip birleşecek çiftleri kuyruğa al
       Events.on(engine, "collisionStart", (event) => {
         if (gameState !== "playing") return;
         const watermelonIndex = FRUITS.length - 1;
@@ -1003,6 +1079,7 @@
         if (pendingMerges.length === 0) return;
         const watermelonIndex = FRUITS.length - 1;
         const batch = pendingMerges.splice(0, pendingMerges.length);
+        const diff = getDifficultyInfo(level);
 
         for (let i = 0; i < batch.length; i++) {
           const { aEntry, bEntry, mx, my, nextTypeIdx } = batch[i];
@@ -1014,7 +1091,8 @@
 
           createFruitBody(nextTypeIdx, mx, my, 0.75, 0.65, 1.08, 0.92);
 
-          const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
+          const isWatermelon = nextTypeIdx === watermelonIndex;
+          const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15)) + (isWatermelon ? diff.bonus : 0);
           score += gained;
           persistProgress(level, score);
           updateHUD();
@@ -1025,11 +1103,11 @@
           popups.push({
             x: mx,
             y: my - 12,
-            text: `+${gained}`,
+            text: isWatermelon ? `+${gained} 🎉` : `+${gained}`,
             alpha: 1
           });
 
-          if (!levelCompleted && nextTypeIdx === watermelonIndex) {
+          if (!levelCompleted && isWatermelon) {
             levelCompleted = true;
             const completedLvl = level;
             const nextSavedLvl = completedLvl + 1;
@@ -1123,14 +1201,15 @@
 
           const r = FRUITS[item.type].radius;
           const speed = Math.hypot(item.body.velocity.x, item.body.velocity.y);
-          if (item.age > 0.85 && speed < 3.2 && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
+          if (item.age > 0.9 && speed < 3.0 && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
             anyAbove = true;
           }
         }
 
+        const dangerLimit = getDifficultyInfo(level).dangerLimit;
         if (anyAbove) {
           dangerTimer += clampedDt;
-          if (dangerTimer > 1.2) {
+          if (dangerTimer > dangerLimit) {
             triggerGameOver();
           }
         } else {
@@ -1393,6 +1472,7 @@
         requestAnimationFrame(renderConfetti);
       }
 
+      updateShakeButtonUI();
       updateHUD();
       requestAnimationFrame(loop);
       requestAnimationFrame(renderConfetti);
