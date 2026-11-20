@@ -494,9 +494,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v14";
-      const KEY_LEVEL = "ozgem_saved_level_v14";
-      const KEY_SCORE = "ozgem_saved_score_v14";
+      const KEY_BEST = "ozgem_best_v15";
+      const KEY_LEVEL = "ozgem_saved_level_v15";
+      const KEY_SCORE = "ozgem_saved_score_v15";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -581,6 +581,8 @@
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible" && soundEnabled && gameState === "playing") {
           bgMusic.play().catch(() => {});
+        } else if (document.visibilityState === "hidden") {
+          bgMusic.pause();
         }
       });
 
@@ -590,7 +592,9 @@
       });
 
       noteBtn.addEventListener("click", () => {
-        openLevelCard(1, true);
+        if (gameState === "playing" || gameState === "paused") {
+          openLevelCard(level, true);
+        }
       });
 
       let width = 360;
@@ -601,6 +605,7 @@
       let level = savedLevel;
       let levelCompleted = false;
       let gameState = "start";
+      let levelCardTimer = null;
 
       let fruits = [];
       let popups = [];
@@ -618,17 +623,24 @@
       const SPAWN_Y = 52;
       const TOP_LINE_Y = 108;
 
+      function clearPendingLevelTimer() {
+        if (levelCardTimer !== null) {
+          clearTimeout(levelCardTimer);
+          levelCardTimer = null;
+        }
+      }
+
       function addScreenShake(intensity, duration) {
         shakeIntensity = Math.max(shakeIntensity, intensity);
         shakeTime = Math.max(shakeTime, duration);
       }
 
       function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Çok Kolay", gravity: 980 };
-        if (lvl === 2) return { tag: "Kolay", gravity: 1040 };
-        if (lvl === 3) return { tag: "Orta", gravity: 1100 };
-        if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1160 };
-        return { tag: `Zor (${lvl}. Bölüm)`, gravity: Math.min(1280, 1160 + (lvl - 4) * 30) };
+        if (lvl === 1) return { tag: "Çok Kolay", gravity: 960 };
+        if (lvl === 2) return { tag: "Kolay", gravity: 1020 };
+        if (lvl === 3) return { tag: "Orta", gravity: 1080 };
+        if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1140 };
+        return { tag: `Zor (${lvl}. Bölüm)`, gravity: Math.min(1260, 1140 + (lvl - 4) * 28) };
       }
 
       function updateHUD() {
@@ -710,22 +722,22 @@
 
       function seedInitialFruits(lvl) {
         if (lvl <= 1) return;
-        const count = Math.min(7, lvl + 1);
+        const count = Math.min(6, lvl + 1);
         const floorY = height - 10;
+        const usableW = Math.max(80, width - 32);
         for (let i = 0; i < count; i++) {
           const t = Math.min(4, ((i * 2 + lvl) % 5));
           const def = FRUITS[t];
-          const span = width - 56;
-          const x = 28 + ((i + 0.5) / count) * span;
+          const x = 16 + ((i + 0.5) / count) * usableW;
           fruits.push({
             id: nextBodyId++,
             type: t,
             x,
-            y: floorY - def.radius - i * 4,
+            y: floorY - def.radius,
             vx: 0,
             vy: 0,
             radius: def.radius,
-            rotation: 0,
+            rotation: (Math.random() - 0.5) * 0.25,
             vr: 0,
             scaleX: 1,
             scaleY: 1,
@@ -754,6 +766,7 @@
       }
 
       function startLevel(lvl, keepScore) {
+        clearPendingLevelTimer();
         resizeCanvas(true);
         level = lvl;
         if (!keepScore) {
@@ -768,6 +781,7 @@
         dangerTimer = 0;
         dropCooldown = 0;
         shakeTime = 0;
+        isPointerDown = false;
         seedInitialFruits(level);
         currentType = pickSpawnFruit();
         nextType = pickSpawnFruit();
@@ -781,6 +795,7 @@
       }
 
       function openLevelCard(completedLevel, isManualLetterView) {
+        clearPendingLevelTimer();
         gameState = "paused";
         const photoFile = PHOTOS[(completedLevel - 1) % PHOTOS.length];
 
@@ -825,6 +840,7 @@
 
       function triggerGameOver() {
         if (gameState === "gameover") return;
+        clearPendingLevelTimer();
         gameState = "gameover";
         persistProgress(level, score);
         document.getElementById("gameOverSub").textContent =
@@ -839,7 +855,6 @@
         return Math.max(pad, Math.min(width - pad, clientX - rect.left));
       }
 
-      // Bırakılan noktadan tam dikey düşüş başlatır
       function dropFruitAt(xPos) {
         if (gameState !== "playing" || dropCooldown > 0) return;
         const def = FRUITS[currentType];
@@ -853,21 +868,20 @@
           x,
           y: SPAWN_Y,
           vx: 0,
-          vy: 20,
+          vy: 45,
           radius: r,
           rotation: 0,
           vr: 0,
-          scaleX: 0.97,
-          scaleY: 1.03,
+          scaleX: 0.96,
+          scaleY: 1.04,
           merged: false,
-          spawnScale: 0.78,
-          age: 0,
-          freeFall: true
+          spawnScale: 0.85,
+          age: 0
         });
 
         currentType = nextType;
         nextType = pickSpawnFruit();
-        dropCooldown = 0.26;
+        dropCooldown = 0.28;
       }
 
       canvas.addEventListener("pointerdown", (e) => {
@@ -891,6 +905,10 @@
           dropX = finalX;
           dropFruitAt(finalX);
         }
+      });
+
+      window.addEventListener("pointercancel", () => {
+        isPointerDown = false;
       });
 
       startBtn.addEventListener("click", () => {
@@ -931,60 +949,67 @@
         }
 
         const gravity = getDifficultyInfo(level).gravity;
-        const damping = 0.986;
         const floorY = height - 10;
+        const leftWall = 8;
+        const rightWall = width - 8;
 
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
           f.age = (f.age || 0) + dt;
 
           if (f.spawnScale < 1) {
-            f.spawnScale = Math.min(1, f.spawnScale + dt * 8);
+            f.spawnScale = Math.min(1, f.spawnScale + dt * 7.5);
           }
 
-          f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 16);
-          f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 16);
-
-          // İlk serbest düşüşte tam düz inmesini sağla
-          if (f.freeFall) {
-            f.vx = 0;
-            f.vr = 0;
-          } else {
-            f.vx *= damping;
-          }
+          f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 15);
+          f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 15);
 
           f.vy += gravity * dt;
-          f.vy *= damping;
+
+          // Hafif hava direnci
+          f.vx *= Math.pow(0.92, dt * 60);
+          f.vy *= Math.pow(0.992, dt * 60);
 
           f.x += f.vx * dt;
           f.y += f.vy * dt;
 
-          const targetVr = !f.freeFall && Math.abs(f.vx) > 10 ? (f.vx / Math.max(22, f.radius)) * 0.45 : 0;
-          f.vr += (targetVr - f.vr) * Math.min(1, dt * 10);
-          if (Math.abs(f.vx) < 8) {
-            f.vr *= 0.8;
-            if (Math.abs(f.vr) < 0.02) f.vr = 0;
-          }
+          // Yuvarlanma dönüşü: yatay hız ve zemin/temas sürtünmesiyle uyumlu
+          const rollFromVx = f.vx / Math.max(18, f.radius);
+          f.vr += (rollFromVx - f.vr) * Math.min(1, dt * 12);
+          f.vr *= Math.pow(0.9, dt * 60);
+          if (Math.abs(f.vr) < 0.015) f.vr = 0;
           f.rotation = (f.rotation || 0) + f.vr * dt;
 
-          if (f.x - f.radius < 8) {
-            f.x = 8 + f.radius;
-            f.freeFall = false;
-            if (f.vx < 0) f.vx = -f.vx * 0.14;
-          } else if (f.x + f.radius > width - 8) {
-            f.x = width - 8 - f.radius;
-            f.freeFall = false;
-            if (f.vx > 0) f.vx = -f.vx * 0.14;
+          // Sol & sağ duvar çarpışması
+          if (f.x - f.radius < leftWall) {
+            f.x = leftWall + f.radius;
+            if (f.vx < 0) {
+              f.vx = -f.vx * 0.18;
+              f.scaleX = 0.92;
+              f.scaleY = 1.07;
+            }
+          } else if (f.x + f.radius > rightWall) {
+            f.x = rightWall - f.radius;
+            if (f.vx > 0) {
+              f.vx = -f.vx * 0.18;
+              f.scaleX = 0.92;
+              f.scaleY = 1.07;
+            }
           }
 
+          // Zemin çarpışması
           if (f.y + f.radius > floorY) {
             f.y = floorY - f.radius;
-            f.freeFall = false;
-            if (f.vy > 0) {
+            if (f.vy > 60) {
+              f.scaleX = 1.08;
+              f.scaleY = 0.92;
+              f.vy = -f.vy * 0.12;
+              if (Math.abs(f.vy) < 12) f.vy = 0;
+            } else {
               f.vy = 0;
             }
-            f.vx *= 0.86;
-            if (Math.abs(f.vx) < 6) f.vx = 0;
+            f.vx *= Math.pow(0.78, dt * 60);
+            if (Math.abs(f.vx) < 3) f.vx = 0;
           }
         }
 
@@ -992,7 +1017,9 @@
         const toRemove = new Set();
         const watermelonIndex = FRUITS.length - 1;
 
-        for (let iter = 0; iter < 5; iter++) {
+        // Çarpışma ve birleşme çözümü
+        const iterations = 6;
+        for (let iter = 0; iter < iterations; iter++) {
           for (let i = 0; i < fruits.length; i++) {
             if (toRemove.has(fruits[i].id)) continue;
             for (let j = i + 1; j < fruits.length; j++) {
@@ -1006,9 +1033,6 @@
               const distSq = dx * dx + dy * dy;
 
               if (distSq < minDist * minDist) {
-                a.freeFall = false;
-                b.freeFall = false;
-
                 if (
                   iter === 0 &&
                   a.type === b.type &&
@@ -1023,25 +1047,25 @@
 
                   const nextTypeIdx = a.type + 1;
                   const nextDef = FRUITS[nextTypeIdx];
-                  const mx = (a.x + b.x) / 2;
-                  const my = (a.y + b.y) / 2;
+                  const mx = (a.x + b.x) * 0.5;
+                  const my = (a.y + b.y) * 0.5;
+                  const avgVx = (a.vx + b.vx) * 0.25;
 
                   toAdd.push({
                     id: nextBodyId++,
                     type: nextTypeIdx,
                     x: mx,
                     y: my,
-                    vx: 0,
-                    vy: -35,
+                    vx: avgVx,
+                    vy: -18,
                     radius: nextDef.radius,
                     rotation: 0,
-                    vr: 0,
-                    scaleX: 1.07,
-                    scaleY: 0.93,
+                    vr: avgVx / Math.max(20, nextDef.radius),
+                    scaleX: 1.09,
+                    scaleY: 0.91,
                     merged: false,
-                    spawnScale: 0.78,
-                    age: 0.5,
-                    freeFall: false
+                    spawnScale: 0.72,
+                    age: 0.6
                   });
 
                   const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
@@ -1052,7 +1076,7 @@
                   updateHUD();
                   playMergeTone(nextTypeIdx);
                   spawnMergeSparks(mx, my, nextDef.base);
-                  addScreenShake(Math.min(4.5, 1.4 + nextTypeIdx * 0.28), 0.13);
+                  addScreenShake(Math.min(4.2, 1.2 + nextTypeIdx * 0.25), 0.12);
 
                   popups.push({
                     x: mx,
@@ -1068,51 +1092,95 @@
                     persistProgress(nextSavedLvl, score);
                     savedLevel = nextSavedLvl;
                     savedScore = score;
-                    addScreenShake(5.5, 0.24);
-                    setTimeout(() => {
+                    addScreenShake(5.0, 0.22);
+                    levelCardTimer = setTimeout(() => {
+                      levelCardTimer = null;
                       if (gameState === "playing") {
                         openLevelCard(completedLvl, false);
                       }
-                    }, 480);
+                    }, 520);
                   }
                   continue;
                 }
 
-                const dist = Math.sqrt(distSq) || 0.001;
+                const dist = Math.sqrt(distSq) || 0.0001;
                 const nx = dx / dist;
                 const ny = dy / dist;
                 const overlap = minDist - dist;
 
-                let adjNx = nx;
-                if (Math.abs(nx) < 0.08 && Math.abs(ny) > 0.92) {
-                  adjNx = (a.id % 2 === 0 ? 1 : -1) * 0.18;
-                }
-
-                const massA = Math.pow(a.radius, 1.4);
-                const massB = Math.pow(b.radius, 1.4);
+                const massA = Math.pow(a.radius, 1.5);
+                const massB = Math.pow(b.radius, 1.5);
                 const totalMass = massA + massB;
-                const moveA = (massB / totalMass) * 0.88;
-                const moveB = (massA / totalMass) * 0.88;
+                const ratioA = massB / totalMass;
+                const ratioB = massA / totalMass;
 
-                a.x -= adjNx * overlap * moveA;
-                a.y -= ny * overlap * moveA;
-                b.x += adjNx * overlap * moveB;
-                b.y += ny * overlap * moveB;
+                // Pozisyon düzeltmesi (iterasyon başına yumuşak dağıtım)
+                const corrPercent = 0.75;
+                const corrX = nx * overlap * corrPercent;
+                const corrY = ny * overlap * corrPercent;
 
-                if (a.y < b.y && Math.abs(adjNx) > 0.14) {
-                  a.vx += -adjNx * Math.min(24, overlap * 12);
-                } else if (b.y < a.y && Math.abs(adjNx) > 0.14) {
-                  b.vx += adjNx * Math.min(24, overlap * 12);
+                a.x -= corrX * ratioA;
+                a.y -= corrY * ratioA;
+                b.x += corrX * ratioB;
+                b.y += corrY * ratioB;
+
+                // Göreceli hız normal bileşeni (sadece ilk iterasyonda impulse uygula)
+                if (iter === 0) {
+                  const rvx = b.vx - a.vx;
+                  const rvy = b.vy - a.vy;
+                  const velAlongNormal = rvx * nx + rvy * ny;
+
+                  if (velAlongNormal < 0) {
+                    const restitution = 0.14;
+                    const jImpulse = (-(1 + restitution) * velAlongNormal) / (1 / massA + 1 / massB);
+                    const impulseX = jImpulse * nx;
+                    const impulseY = jImpulse * ny;
+
+                    a.vx -= impulseX / massA;
+                    a.vy -= impulseY / massA;
+                    b.vx += impulseX / massB;
+                    b.vy += impulseY / massB;
+
+                    // Teğetsel sürtünme ve kayma hissi
+                    const tx = -ny;
+                    const ty = nx;
+                    const velAlongTangent = rvx * tx + rvy * ty;
+                    const friction = 0.18;
+                    const jt = (-velAlongTangent * friction) / (1 / massA + 1 / massB);
+
+                    a.vx -= (jt * tx) / massA;
+                    a.vy -= (jt * ty) / massA;
+                    b.vx += (jt * tx) / massB;
+                    b.vy += (jt * ty) / massB;
+
+                    // Eğimli yüzeyden doğal yuvarlanma eğilimi
+                    if (Math.abs(nx) > 0.25 && ny < 0.7) {
+                      a.vr -= nx * 1.4;
+                      b.vr += nx * 1.4;
+                    }
+                  }
                 }
               }
             }
           }
         }
 
+        // Son iterasyondan sonra duvar/zemin sınırlarını tekrar güvenceye al
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
-          if (Math.abs(f.vx) < 4) f.vx = 0;
-          if (Math.abs(f.vy) < 4) f.vy = 0;
+          if (f.x - f.radius < leftWall) {
+            f.x = leftWall + f.radius;
+            if (f.vx < 0) f.vx = 0;
+          } else if (f.x + f.radius > rightWall) {
+            f.x = rightWall - f.radius;
+            if (f.vx > 0) f.vx = 0;
+          }
+          if (f.y + f.radius > floorY) {
+            f.y = floorY - f.radius;
+            if (f.vy > 0) f.vy = 0;
+          }
+          if (Math.abs(f.vx) < 2) f.vx = 0;
+          if (Math.abs(f.vy) < 2) f.vy = 0;
         }
 
         if (toRemove.size > 0 || toAdd.length > 0) {
@@ -1138,10 +1206,12 @@
           }
         }
 
+        // Üst sınır çizgisi kontrolü (yerleşmiş/yavaşlamış meyveler için)
         let anyAbove = false;
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
-          if ((f.age || 0) > 0.55 && f.y - f.radius * 0.65 < TOP_LINE_Y) {
+          const speed = Math.hypot(f.vx, f.vy);
+          if ((f.age || 0) > 0.75 && speed < 140 && f.y - f.radius * 0.65 < TOP_LINE_Y) {
             anyAbove = true;
             break;
           }
@@ -1149,7 +1219,7 @@
 
         if (anyAbove) {
           dangerTimer += dt;
-          if (dangerTimer > 1.15) {
+          if (dangerTimer > 1.2) {
             triggerGameOver();
           }
         } else {
