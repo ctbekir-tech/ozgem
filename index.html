@@ -1,331 +1,1162 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sürpriz Doğum Günü!</title>
-    <!-- Konfeti animasyonu için CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a2e;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            text-align: center;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Özgem" />
+  <meta name="theme-color" content="#fdf6ee" />
+  <title>Özgem</title>
+  <link id="apple-icon" rel="apple-touch-icon" href="" />
+  <style>
+    :root {
+      --bg: #fdf6ee;
+      --surface: #fffdf9;
+      --card: #ffffff;
+      --ink: #2b211b;
+      --muted: #7c685a;
+      --accent: #e14b64;
+      --accent-soft: #fde8ec;
+      --border: #ead9c8;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
 
-        /* --- Link Oluşturma Ekranı (Form) --- */
-        #setup-screen {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            width: 300px;
-        }
-        input, textarea, button {
-            width: 100%;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #e94560;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover { background-color: #d63d56; }
-        #link-output {
-            word-wrap: break-word;
-            font-size: 12px;
-            color: #4caf50;
-            margin-top: 10px;
-        }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
 
-        /* --- Kutlama Ekranı --- */
-        #celebration-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .instruction {
-            margin-bottom: 40px;
-            font-size: 1.2rem;
-            color: #f39c12;
-            animation: pulse 1.5s infinite;
-        }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    }
 
-        /* Pasta Tasarımı */
-        .cake {
-            position: relative;
-            width: 200px;
-            height: 80px;
-            background: #ffb6b9;
-            border-radius: 10px 10px 0 0;
-            border-bottom: 10px solid #fae3d9;
-            box-shadow: inset 0 -20px #ff9a9e;
-        }
-        .cake::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: -20px;
-            width: 240px;
-            height: 20px;
-            background: #fff;
-            border-radius: 10px;
-        }
+    .app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(var(--safe-top) + 8px);
+      padding-bottom: calc(var(--safe-bottom) + 10px);
+      padding-left: 14px;
+      padding-right: 14px;
+      gap: 8px;
+    }
 
-        /* Mumlar */
-        .candles-container {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: flex-end;
-            height: 40px;
-        }
-        .candle {
-            width: 10px;
-            height: 35px;
-            background: #fff;
-            border-radius: 3px;
-            position: relative;
-            background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, #ff4757 5px, #ff4757 10px);
-        }
-        .flame {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 12px;
-            height: 15px;
-            background: #ffa502;
-            border-radius: 50% 50% 20% 20%;
-            box-shadow: 0 0 10px #ffa502, 0 0 20px #ff7f50;
-            animation: flicker 0.5s infinite alternate;
-            transition: opacity 0.3s;
-        }
-        .candle.blown-out .flame {
-            opacity: 0;
-            animation: none;
-        }
+    /* Üst Bilgi Çubuğu */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
 
-        /* Doğum Günü Mesajı */
-        #final-message {
-            display: none;
-            margin-top: 50px;
-            z-index: 10;
-        }
-        #final-message h1 {
-            color: #ff4757;
-            font-size: 3rem;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            margin: 0;
-        }
-        #final-message p {
-            font-size: 1.5rem;
-            color: #f1f2f6;
-            max-width: 600px;
-            margin-top: 15px;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
 
-        /* Animasyonlar */
-        @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1); }
-            100% { transform: translateX(-50%) scale(1.1); box-shadow: 0 0 15px #ffa502, 0 0 25px #ff7f50; }
-        }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+    .brand-emoji {
+      font-size: 24px;
+      line-height: 1;
+    }
 
-        /* CSS Balonlar */
-        .balloon {
-            width: 40px;
-            height: 50px;
-            background: red;
-            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-            position: absolute;
-            bottom: -100px;
-            opacity: 0;
-            animation: floatUp 5s ease-in infinite;
-        }
-        .balloon::before {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0; height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-bottom: 8px solid inherit;
-        }
-        .balloon::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            width: 1px;
-            height: 30px;
-            background: white;
-        }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(-5deg); opacity: 1; }
-            50% { transform: translateY(-50vh) rotate(5deg); }
-            100% { transform: translateY(-120vh) rotate(-5deg); opacity: 0; }
-        }
-    </style>
+    .stats {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 5px 10px;
+      text-align: center;
+      min-width: 62px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--muted);
+      line-height: 1.1;
+    }
+
+    .stat-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Bölüm Hedef Bandı */
+    .level-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 7px 12px;
+      font-size: 13px;
+      flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .level-pill {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .goal-text {
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .goal-text strong {
+      color: var(--ink);
+    }
+
+    /* Oyun Alanı */
+    .stage-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#gameCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 22px;
+      background: #fffaf3;
+      border: 2px solid var(--border);
+      box-shadow: 0 10px 28px rgba(66, 42, 24, 0.08);
+      touch-action: none;
+    }
+
+    /* Alt Meyve Sırası (Sade ve Okunaklı) */
+    .chain-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 6px 8px;
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+
+    .chain-item {
+      font-size: 16px;
+      line-height: 1;
+      padding: 3px 4px;
+      border-radius: 8px;
+      opacity: 0.72;
+    }
+
+    .chain-item.target {
+      opacity: 1;
+      background: var(--accent-soft);
+      transform: scale(1.12);
+    }
+
+    .chain-arrow {
+      font-size: 10px;
+      color: var(--muted);
+      opacity: 0.55;
+    }
+
+    /* Katmanlar (Açılış, Doğum Günü / Bölüm Kartı, Oyun Bitti) */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(43, 33, 27, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--safe-top) + 18px) 18px calc(var(--safe-bottom) + 18px);
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 410px;
+      max-height: 100%;
+      overflow-y: auto;
+      background: var(--card);
+      border-radius: 26px;
+      padding: 22px 20px;
+      box-shadow: 0 20px 50px rgba(32, 18, 10, 0.24);
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .hero-emoji {
+      font-size: 48px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      margin: 0 0 6px;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+
+    .modal-sub {
+      margin: 0 0 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .photo-frame {
+      width: 100%;
+      max-height: 220px;
+      border-radius: 18px;
+      overflow: hidden;
+      margin: 0 auto 14px;
+      border: 2px solid var(--border);
+      background: #faf2e8;
+      display: none;
+    }
+
+    .photo-frame.has-photo {
+      display: block;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .love-letter {
+      background: #fff7f8;
+      border: 1px solid #fad3da;
+      border-radius: 18px;
+      padding: 14px 15px;
+      margin-bottom: 16px;
+      text-align: left;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #3a2629;
+    }
+
+    .love-letter strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 14px 18px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(225, 75, 100, 0.28);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 16px;
+      cursor: pointer;
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 40;
+    }
+  </style>
 </head>
 <body>
+  <canvas id="confettiCanvas"></canvas>
 
-    <!-- Link Oluşturma Ekranı (Parametre yoksa görünür) -->
-    <div id="setup-screen">
-        <h2>🎉 Sürpriz Hazırla</h2>
-        <input type="text" id="nameInput" placeholder="Kişinin Adı (Örn: Emirhan)" required>
-        <input type="number" id="ageInput" placeholder="Yaş (Örn: 20)" min="1" max="100" required>
-        <textarea id="msgInput" rows="3" placeholder="Özel Doğum Günü Mesajın..." required></textarea>
-        <button onclick="generateLink()">Paylaşma Linki Oluştur</button>
-        <div id="link-output"></div>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-emoji">🍓</span>
+        <span class="brand-title">Güzel Karım Özgem</span>
+      </div>
+      <div class="stats">
+        <div class="stat-box">
+          <div class="stat-label">Puan</div>
+          <div class="stat-value" id="scoreEl">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Rekor</div>
+          <div class="stat-value" id="bestEl">0</div>
+        </div>
+        <button class="icon-btn" id="noteBtn" title="Doğum Günü Notu" aria-label="Doğum Günü Notu">💌</button>
+        <button class="icon-btn" id="soundBtn" title="Müzik ve Ses" aria-label="Müzik ve Ses">🔊</button>
+      </div>
+    </header>
+
+    <div class="level-bar">
+      <span class="level-pill" id="levelPill">1. Bölüm</span>
+      <span class="goal-text" id="goalText">Hedef: <strong>🍊 Mandalina</strong> yap</span>
     </div>
 
-    <!-- Kutlama Ekranı (Linkten girilince görünür) -->
-    <div id="celebration-screen">
-        <div class="instruction" id="instruction-text">Mumları söndürmek için ekrana tıkla! 💨</div>
-        
-        <div class="cake">
-            <div class="candles-container" id="candles-container">
-                <!-- Mumlar buraya JS ile eklenecek -->
-            </div>
-        </div>
-
-        <div id="final-message">
-            <h1 id="bday-name"></h1>
-            <p id="bday-msg"></p>
-        </div>
+    <div class="stage-wrap">
+      <canvas id="gameCanvas"></canvas>
     </div>
 
-    <script>
-        // URL'den parametreleri al
-        const urlParams = new URLSearchParams(window.location.search);
-        const bdayName = urlParams.get('isim');
-        const bdayAge = parseInt(urlParams.get('yas'));
-        const bdayMsg = urlParams.get('mesaj');
+    <div class="chain-strip" id="chainStrip" aria-hidden="true"></div>
+  </div>
 
-        const setupScreen = document.getElementById('setup-screen');
-        const celebrationScreen = document.getElementById('celebration-screen');
-        let unblownCandles = bdayAge;
+  <!-- Açılış Ekranı -->
+  <div class="overlay active" id="startOverlay">
+    <div class="modal-card">
+      <div class="hero-emoji">🍓</div>
+      <h1 class="modal-title">Güzel Karım Özgem</h1>
+      <p class="modal-sub">
+        İyi ki doğdun sevgilim. Meyveleri birleştir, bölümleri geç ve her anın tadını çıkar.
+      </p>
+      <button class="btn-primary" id="startBtn">Oyuna Başla</button>
+    </div>
+  </div>
 
-        // Link oluşturma fonksiyonu
-        function generateLink() {
-            const name = document.getElementById('nameInput').value;
-            const age = document.getElementById('ageInput').value;
-            const msg = document.getElementById('msgInput').value;
+  <!-- Bölüm Geçiş / Doğum Günü Sürpriz Kartı -->
+  <div class="overlay" id="levelOverlay">
+    <div class="modal-card">
+      <div class="hero-emoji" id="levelModalEmoji">🎂</div>
+      <h2 class="modal-title" id="levelModalTitle">1. Bölüm Tamamlandı!</h2>
+      <p class="modal-sub" id="levelModalSub">Doğum günün kutlu olsun güzel karım.</p>
 
-            if(!name || !age || !msg) {
-                alert("Lütfen tüm alanları doldur!");
-                return;
-            }
+      <div class="photo-frame" id="levelPhotoFrame">
+        <img id="levelPhotoImg" src="" alt="Anı fotoğrafı" />
+      </div>
 
-            const currentUrl = window.location.origin + window.location.pathname;
-            const shareUrl = `${currentUrl}?isim=${encodeURIComponent(name)}&yas=${encodeURIComponent(age)}&mesaj=${encodeURIComponent(msg)}`;
-            
-            document.getElementById('link-output').innerHTML = `
-                <p>Linkin hazır! Kopyalayıp gönderebilirsin:</p>
-                <a href="${shareUrl}" target="_blank" style="color:#4caf50; word-break: break-all;">${shareUrl}</a>
-            `;
+      <div class="love-letter" id="birthdayLetter">
+        <strong>İyi ki doğdun güzel karım Özgem ❤️</strong>
+        Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!
+      </div>
+
+      <button class="btn-primary" id="nextLevelBtn">Sonraki Bölüme Geç</button>
+      <button class="btn-secondary" id="closeLetterBtn" style="display: none;">Kapat</button>
+    </div>
+  </div>
+
+  <!-- Oyun Bitti Kartı -->
+  <div class="overlay" id="gameOverOverlay">
+    <div class="modal-card">
+      <div class="hero-emoji">🍓</div>
+      <h2 class="modal-title">Kutu Doldu!</h2>
+      <p class="modal-sub" id="gameOverSub">Harika oynadın Özgem. İstersen bu bölümden ya da baştan devam edebilirsin.</p>
+      <button class="btn-primary" id="retryLevelBtn">Bu Bölümü Tekrar Oyna</button>
+      <button class="btn-secondary" id="restartAllBtn">1. Bölümden Başla</button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" src="sarki.mp3" loop preload="auto"></audio>
+
+  <script>
+    (function () {
+      // Çilek uygulama ikonu (iPhone Ana Ekrana Ekle için)
+      function setStrawberryIcon() {
+        const c = document.createElement("canvas");
+        c.width = 180;
+        c.height = 180;
+        const ctx = c.getContext("2d");
+        ctx.fillStyle = "#fde8ec";
+        ctx.fillRect(0, 0, 180, 180);
+        ctx.font = "112px -apple-system, Apple Color Emoji, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("🍓", 90, 98);
+        const link = document.getElementById("apple-icon");
+        if (link) link.href = c.toDataURL("image/png");
+      }
+      setStrawberryIcon();
+
+      // Meyve Zinciri (Büyük ve okunaklı boyutlar)
+      const FRUITS = [
+        { name: "Kiraz",    emoji: "🍒", radius: 18, color: "#e63950", bg: "#ffe5ea", score: 2 },
+        { name: "Çilek",    emoji: "🍓", radius: 24, color: "#ef476f", bg: "#ffe3ea", score: 4 },
+        { name: "Üzüm",     emoji: "🍇", radius: 30, color: "#7b2cbf", bg: "#f3e8ff", score: 8 },
+        { name: "Mandalina",emoji: "🍊", radius: 37, color: "#f77f00", bg: "#fff0db", score: 16 },
+        { name: "Portakal", emoji: "🟠", radius: 44, color: "#fb8500", bg: "#ffedd5", score: 32 },
+        { name: "Elma",     emoji: "🍎", radius: 52, color: "#d62828", bg: "#fee2e2", score: 64 },
+        { name: "Armut",    emoji: "🍐", radius: 60, color: "#8ac926", bg: "#ecfccb", score: 128 },
+        { name: "Şeftali",  emoji: "🍑", radius: 68, color: "#ff9ebb", bg: "#fce7f3", score: 256 },
+        { name: "Ananas",   emoji: "🍍", radius: 77, color: "#eab308", bg: "#fef9c3", score: 512 },
+        { name: "Kavun",    emoji: "🍈", radius: 86, color: "#65a30d", bg: "#ecfccb", score: 1024 },
+        { name: "Karpuz",   emoji: "🍉", radius: 96, color: "#16a34a", bg: "#dcfce7", score: 2048 }
+      ];
+
+      // Bölüm hedefleri (1. bölüm doğum günü sürprizi için tatlı ve ulaşılabilir)
+      const LEVEL_GOALS = [
+        { fruitIndex: 3, label: "🍊 Mandalina" },   // 1. Bölüm: Doğum günü sürprizi
+        { fruitIndex: 5, label: "🍎 Elma" },        // 2. Bölüm
+        { fruitIndex: 7, label: "🍑 Şeftali" },     // 3. Bölüm
+        { fruitIndex: 9, label: "🍈 Kavun" },       // 4. Bölüm
+        { fruitIndex: 10, label: "🍉 Karpuz" }      // 5. Bölüm ve sonrası
+      ];
+
+      const PHOTOS = [
+        "resim1.jpg",
+        "resim2.jpg",
+        "resim3.jpg",
+        "resim4.jpg",
+        "resim5.jpg"
+      ];
+
+      const STORAGE_BEST = "ozgem_oyun_rekor_v1";
+      let bestScore = parseInt(localStorage.getItem(STORAGE_BEST) || "0", 10) || 0;
+
+      // DOM Referansları
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      const scoreEl = document.getElementById("scoreEl");
+      const bestEl = document.getElementById("bestEl");
+      const levelPill = document.getElementById("levelPill");
+      const goalText = document.getElementById("goalText");
+      const chainStrip = document.getElementById("chainStrip");
+
+      const startOverlay = document.getElementById("startOverlay");
+      const levelOverlay = document.getElementById("levelOverlay");
+      const gameOverOverlay = document.getElementById("gameOverOverlay");
+
+      const startBtn = document.getElementById("startBtn");
+      const nextLevelBtn = document.getElementById("nextLevelBtn");
+      const closeLetterBtn = document.getElementById("closeLetterBtn");
+      const retryLevelBtn = document.getElementById("retryLevelBtn");
+      const restartAllBtn = document.getElementById("restartAllBtn");
+      const soundBtn = document.getElementById("soundBtn");
+      const noteBtn = document.getElementById("noteBtn");
+
+      const levelModalEmoji = document.getElementById("levelModalEmoji");
+      const levelModalTitle = document.getElementById("levelModalTitle");
+      const levelModalSub = document.getElementById("levelModalSub");
+      const levelPhotoFrame = document.getElementById("levelPhotoFrame");
+      const levelPhotoImg = document.getElementById("levelPhotoImg");
+      const birthdayLetter = document.getElementById("birthdayLetter");
+
+      const bgMusic = document.getElementById("bgMusic");
+
+      // Ses Durumu (Web Audio ile hafif birleşme tınısı + sarki.mp3)
+      let soundEnabled = true;
+      let audioCtx = null;
+
+      function playMergeTone(tier) {
+        if (!soundEnabled) return;
+        try {
+          if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (audioCtx.state === "suspended") {
+            audioCtx.resume();
+          }
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "sine";
+          const baseFreq = 320 + tier * 38;
+          osc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.28, audioCtx.currentTime + 0.11);
+
+          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.13);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.14);
+        } catch (_) {}
+      }
+
+      function syncMusic() {
+        if (!soundEnabled) {
+          bgMusic.pause();
+          soundBtn.textContent = "🔇";
+          return;
+        }
+        soundBtn.textContent = "🔊";
+        bgMusic.play().catch(() => {});
+      }
+
+      soundBtn.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        syncMusic();
+      });
+
+      noteBtn.addEventListener("click", () => {
+        openLevelCard(1, true);
+      });
+
+      // Oyun Durumu
+      let width = 360;
+      let height = 560;
+      let dpr = 1;
+
+      let score = 0;
+      let level = 1;
+      let levelCompleted = false;
+      let gameState = "start"; // "start" | "playing" | "paused" | "gameover"
+
+      let fruits = [];
+      let popups = [];
+      let dropX = 180;
+      let currentType = 0;
+      let nextType = 1;
+      let dropCooldown = 0;
+      let isPointerDown = false;
+      let dangerTimer = 0;
+      let nextBodyId = 1;
+
+      const TOP_LINE_Y = 76;
+
+      function getLevelGoal(lvl) {
+        if (lvl <= LEVEL_GOALS.length) {
+          return LEVEL_GOALS[lvl - 1];
+        }
+        return { fruitIndex: 10, label: "🍉 Karpuz" };
+      }
+
+      function updateHUD() {
+        scoreEl.textContent = score;
+        if (score > bestScore) {
+          bestScore = score;
+          localStorage.setItem(STORAGE_BEST, String(bestScore));
+        }
+        bestEl.textContent = bestScore;
+
+        const goal = getLevelGoal(level);
+        levelPill.textContent = `${level}. Bölüm`;
+        goalText.innerHTML = `Hedef: <strong>${goal.label}</strong> yap`;
+
+        chainStrip.innerHTML = "";
+        FRUITS.forEach((f, idx) => {
+          const span = document.createElement("span");
+          span.className = "chain-item" + (idx === goal.fruitIndex ? " target" : "");
+          span.textContent = f.emoji;
+          chainStrip.appendChild(span);
+
+          if (idx < FRUITS.length - 1) {
+            const arrow = document.createElement("span");
+            arrow.className = "chain-arrow";
+            arrow.textContent = "›";
+            chainStrip.appendChild(arrow);
+          }
+        });
+      }
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = rect.width;
+        height = rect.height;
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        dropX = Math.max(36, Math.min(width - 36, dropX || width / 2));
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      function pickSpawnFruit() {
+        const maxPool = level === 1 ? 3 : 4; // İlk 4 meyveden (Kiraz..Mandalina) düşer
+        return Math.floor(Math.random() * maxPool);
+      }
+
+      function startLevel(lvl, resetScore) {
+        level = lvl;
+        if (resetScore) {
+          score = 0;
+        }
+        levelCompleted = false;
+        fruits = [];
+        popups = [];
+        dangerTimer = 0;
+        dropCooldown = 0;
+        currentType = pickSpawnFruit();
+        nextType = pickSpawnFruit();
+        dropX = width / 2;
+        gameState = "playing";
+        updateHUD();
+
+        startOverlay.classList.remove("active");
+        levelOverlay.classList.remove("active");
+        gameOverOverlay.classList.remove("active");
+      }
+
+      function openLevelCard(completedLevel, isManualLetterView) {
+        gameState = "paused";
+        const photoFile = PHOTOS[(completedLevel - 1) % PHOTOS.length];
+
+        levelPhotoImg.onload = () => {
+          levelPhotoFrame.classList.add("has-photo");
+        };
+        levelPhotoImg.onerror = () => {
+          levelPhotoFrame.classList.remove("has-photo");
+        };
+        levelPhotoFrame.classList.remove("has-photo");
+        levelPhotoImg.src = photoFile;
+
+        if (isManualLetterView) {
+          levelModalEmoji.textContent = "🎂";
+          levelModalTitle.textContent = "Güzel Karım Özgem'e";
+          levelModalSub.textContent = "Doğum günün kutlu olsun sevgilim.";
+          birthdayLetter.style.display = "block";
+          nextLevelBtn.style.display = "none";
+          closeLetterBtn.style.display = "block";
+        } else if (completedLevel === 1) {
+          levelModalEmoji.textContent = "🎉";
+          levelModalTitle.textContent = "1. Bölüm Tamamlandı!";
+          levelModalSub.textContent = "İlk sürpriz kutun açıldı güzel karım.";
+          birthdayLetter.style.display = "block";
+          nextLevelBtn.style.display = "block";
+          nextLevelBtn.textContent = "2. Bölüme Geç";
+          closeLetterBtn.style.display = "none";
+          launchConfetti();
+        } else {
+          levelModalEmoji.textContent = "✨";
+          levelModalTitle.textContent = `${completedLevel}. Bölüm Geçildi!`;
+          levelModalSub.textContent = `Harika gidiyorsun Özgem! Sıradaki hedef: ${getLevelGoal(completedLevel + 1).label}.`;
+          birthdayLetter.style.display = "none";
+          nextLevelBtn.style.display = "block";
+          nextLevelBtn.textContent = `${completedLevel + 1}. Bölüme Geç`;
+          closeLetterBtn.style.display = "none";
+          launchConfetti();
         }
 
-        // Eğer URL'de parametre varsa kutlama ekranını göster
-        if (bdayName && bdayAge && bdayMsg) {
-            setupScreen.style.display = 'none';
-            celebrationScreen.style.display = 'flex';
-            
-            // Mumları ekrana yerleştir
-            const container = document.getElementById('candles-container');
-            for(let i=0; i < bdayAge; i++) {
-                const candle = document.createElement('div');
-                candle.className = 'candle';
-                const flame = document.createElement('div');
-                flame.className = 'flame';
-                candle.appendChild(flame);
-                container.appendChild(candle);
-            }
+        levelOverlay.classList.add("active");
+      }
 
-            // İsim ve Mesajı ayarla
-            document.getElementById('bday-name').innerText = `İyi ki Doğdun ${bdayName}! 🎂`;
-            document.getElementById('bday-msg').innerText = bdayMsg;
+      function triggerGameOver() {
+        if (gameState === "gameover") return;
+        gameState = "gameover";
+        document.getElementById("gameOverSub").textContent =
+          `${level}. bölümde ${score} puana ulaştın Özgem. Dilediğin yerden devam edebilirsin.`;
+        gameOverOverlay.classList.add("active");
+      }
 
-            // Ekrana tıklayınca mum söndürme mantığı
-            document.addEventListener('click', () => {
-                if(unblownCandles > 0) {
-                    const allCandles = document.querySelectorAll('.candle:not(.blown-out)');
-                    if(allCandles.length > 0) {
-                        // Rastgele bir mumu söndür
-                        const randomIndex = Math.floor(Math.random() * allCandles.length);
-                        allCandles[randomIndex].classList.add('blown-out');
-                        unblownCandles--;
+      // Meyve Bırakma Kontrolü
+      function clientToX(clientX) {
+        const rect = canvas.getBoundingClientRect();
+        const r = FRUITS[currentType].radius;
+        const pad = Math.max(14, r * 0.65);
+        return Math.max(pad, Math.min(width - pad, clientX - rect.left));
+      }
 
-                        // Tüm mumlar söndüğünde
-                        if(unblownCandles === 0) {
-                            document.getElementById('instruction-text').style.display = 'none';
-                            document.getElementById('final-message').style.display = 'block';
-                            startParty();
-                        }
-                    }
+      function dropFruit() {
+        if (gameState !== "playing" || dropCooldown > 0) return;
+        const def = FRUITS[currentType];
+        const r = def.radius * 0.68;
+        const pad = Math.max(14, r);
+        const x = Math.max(pad, Math.min(width - pad, dropX));
+        const y = TOP_LINE_Y - 26;
+
+        fruits.push({
+          id: nextBodyId++,
+          type: currentType,
+          x,
+          y,
+          vx: 0,
+          vy: 1.5,
+          radius: r,
+          merged: false,
+          spawnScale: 0.35
+        });
+
+        currentType = nextType;
+        nextType = pickSpawnFruit();
+        dropCooldown = 0.42;
+      }
+
+      canvas.addEventListener("pointerdown", (e) => {
+        if (gameState !== "playing") return;
+        isPointerDown = true;
+        dropX = clientToX(e.clientX);
+      });
+
+      canvas.addEventListener("pointermove", (e) => {
+        if (gameState !== "playing") return;
+        if (e.pointerType === "mouse" || isPointerDown) {
+          dropX = clientToX(e.clientX);
+        }
+      });
+
+      window.addEventListener("pointerup", (e) => {
+        if (!isPointerDown) return;
+        isPointerDown = false;
+        if (gameState === "playing") {
+          dropX = clientToX(e.clientX);
+          dropFruit();
+        }
+      });
+
+      // Buton Olayları
+      startBtn.addEventListener("click", () => {
+        syncMusic();
+        startLevel(1, true);
+      });
+
+      nextLevelBtn.addEventListener("click", () => {
+        syncMusic();
+        startLevel(level + 1, false);
+      });
+
+      closeLetterBtn.addEventListener("click", () => {
+        levelOverlay.classList.remove("active");
+        if (gameState === "paused") {
+          gameState = "playing";
+        }
+      });
+
+      retryLevelBtn.addEventListener("click", () => {
+        syncMusic();
+        startLevel(level, false);
+      });
+
+      restartAllBtn.addEventListener("click", () => {
+        syncMusic();
+        startLevel(1, true);
+      });
+
+      // Fizik ve Birleştirme Döngüsü
+      function stepPhysics(dt) {
+        if (gameState !== "playing") return;
+
+        if (dropCooldown > 0) {
+          dropCooldown = Math.max(0, dropCooldown - dt);
+        }
+
+        const gravity = 920; // px/s^2
+        const damping = 0.992;
+        const bounce = 0.25;
+        const floorY = height - 10;
+
+        for (let i = 0; i < fruits.length; i++) {
+          const f = fruits[i];
+          if (f.spawnScale < 1) {
+            f.spawnScale = Math.min(1, f.spawnScale + dt * 5);
+          }
+
+          f.vy += gravity * dt;
+          f.vx *= damping;
+          f.vy *= damping;
+
+          f.x += f.vx * dt;
+          f.y += f.vy * dt;
+
+          // Sol ve sağ duvar
+          if (f.x - f.radius < 8) {
+            f.x = 8 + f.radius;
+            f.vx = Math.abs(f.vx) * bounce;
+          } else if (f.x + f.radius > width - 8) {
+            f.x = width - 8 - f.radius;
+            f.vx = -Math.abs(f.vx) * bounce;
+          }
+
+          // Alt zemin
+          if (f.y + f.radius > floorY) {
+            f.y = floorY - f.radius;
+            if (f.vy > 0) f.vy = -f.vy * bounce;
+            f.vx *= 0.88;
+          }
+        }
+
+        // Çarpışma ve Birleştirme (birkaç iterasyon ile yığılma kararlılığı)
+        const toAdd = [];
+        const toRemove = new Set();
+
+        for (let iter = 0; iter < 3; iter++) {
+          for (let i = 0; i < fruits.length; i++) {
+            if (toRemove.has(fruits[i].id)) continue;
+            for (let j = i + 1; j < fruits.length; j++) {
+              if (toRemove.has(fruits[j].id)) continue;
+
+              const a = fruits[i];
+              const b = fruits[j];
+              const dx = b.x - a.x;
+              const dy = b.y - a.y;
+              const minDist = a.radius + b.radius;
+              const distSq = dx * dx + dy * dy;
+
+              if (distSq < minDist * minDist) {
+                // Aynı tür meyvelerse ve henüz birleşmediyse
+                if (
+                  iter === 0 &&
+                  a.type === b.type &&
+                  !a.merged &&
+                  !b.merged &&
+                  a.type < FRUITS.length - 1
+                ) {
+                  a.merged = true;
+                  b.merged = true;
+                  toRemove.add(a.id);
+                  toRemove.add(b.id);
+
+                  const nextTypeIdx = a.type + 1;
+                  const nextDef = FRUITS[nextTypeIdx];
+                  const mx = (a.x + b.x) / 2;
+                  const my = (a.y + b.y) / 2;
+
+                  toAdd.push({
+                    id: nextBodyId++,
+                    type: nextTypeIdx,
+                    x: mx,
+                    y: my,
+                    vx: (a.vx + b.vx) * 0.2,
+                    vy: -60,
+                    radius: nextDef.radius * 0.68,
+                    merged: false,
+                    spawnScale: 0.55
+                  });
+
+                  score += nextDef.score;
+                  updateHUD();
+                  playMergeTone(nextTypeIdx);
+
+                  popups.push({
+                    x: mx,
+                    y: my - 10,
+                    text: `+${nextDef.score}`,
+                    alpha: 1
+                  });
+
+                  // Bölüm hedefi kontrolü
+                  const goal = getLevelGoal(level);
+                  if (!levelCompleted && nextTypeIdx >= goal.fruitIndex) {
+                    levelCompleted = true;
+                    setTimeout(() => {
+                      if (gameState === "playing") {
+                        openLevelCard(level, false);
+                      }
+                    }, 360);
+                  }
+                  continue;
                 }
-            });
-        }
 
-        // Konfeti ve Balon animasyonlarını başlatan fonksiyon
-        function startParty() {
-            // JS Konfeti kütüphanesini tetikle
-            var duration = 5 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+                const dist = Math.sqrt(distSq) || 0.001;
+                const nx = dx / dist;
+                const ny = dy / dist;
+                const overlap = minDist - dist;
 
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
+                const totalR = a.radius + b.radius;
+                const ratioA = b.radius / totalR;
+                const ratioB = a.radius / totalR;
+
+                a.x -= nx * overlap * ratioA * 0.85;
+                a.y -= ny * overlap * ratioA * 0.85;
+                b.x += nx * overlap * ratioB * 0.85;
+                b.y += ny * overlap * ratioB * 0.85;
+
+                // Hız ayrımı
+                const rvx = b.vx - a.vx;
+                const rvy = b.vy - a.vy;
+                const velAlongNormal = rvx * nx + rvy * ny;
+                if (velAlongNormal < 0) {
+                  const impulse = -(1 + 0.15) * velAlongNormal * 0.5;
+                  a.vx -= impulse * nx;
+                  a.vy -= impulse * ny;
+                  b.vx += impulse * nx;
+                  b.vy += impulse * ny;
                 }
-                var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
-            }, 250);
-
-            // CSS Balonlarını oluştur
-            const colors = ['#ff4757', '#1e90ff', '#2ed573', '#ffa502', '#ff69b4'];
-            for(let i=0; i<15; i++) {
-                setTimeout(() => {
-                    const balloon = document.createElement('div');
-                    balloon.className = 'balloon';
-                    balloon.style.left = Math.random() * 90 + 'vw';
-                    balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    balloon.style.borderBottomColor = balloon.style.backgroundColor; // ip rengini uydur
-                    celebrationScreen.appendChild(balloon);
-                }, i * 300);
+              }
             }
+          }
         }
-    </script>
+
+        if (toRemove.size > 0 || toAdd.length > 0) {
+          fruits = fruits.filter((f) => !toRemove.has(f.id)).concat(toAdd);
+        }
+
+        // Puan baloncukları
+        for (let i = popups.length - 1; i >= 0; i--) {
+          popups[i].y -= 34 * dt;
+          popups[i].alpha -= dt * 1.3;
+          if (popups[i].alpha <= 0) {
+            popups.splice(i, 1);
+          }
+        }
+
+        // Üst sınır taşma kontrolü (yerleşmiş meyveler çizgiyi geçerse)
+        let anyAbove = false;
+        for (let i = 0; i < fruits.length; i++) {
+          const f = fruits[i];
+          const settled = Math.hypot(f.vx, f.vy) < 55 && f.spawnScale >= 0.95;
+          if (settled && f.y - f.radius < TOP_LINE_Y) {
+            anyAbove = true;
+            break;
+          }
+        }
+
+        if (anyAbove) {
+          dangerTimer += dt;
+          if (dangerTimer > 1.35) {
+            triggerGameOver();
+          }
+        } else {
+          dangerTimer = Math.max(0, dangerTimer - dt * 2);
+        }
+      }
+
+      // Çizim Döngüsü
+      function drawFruit(f) {
+        const def = FRUITS[f.type];
+        const r = f.radius * f.spawnScale;
+        if (r <= 1) return;
+
+        ctx.save();
+        ctx.translate(f.x, f.y);
+
+        // Yumuşak meyve dairesi
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = def.bg;
+        ctx.fill();
+        ctx.lineWidth = 2.2;
+        ctx.strokeStyle = def.color;
+        ctx.stroke();
+
+        // Emoji büyük ve net
+        const fontSize = Math.round(r * 1.28);
+        ctx.font = `${fontSize}px -apple-system, Apple Color Emoji, "Segoe UI Emoji", sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(def.emoji, 0, 1);
+
+        ctx.restore();
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Üst sınır çizgisi
+        ctx.save();
+        ctx.setLineDash([6, 6]);
+        ctx.lineWidth = 1.6;
+        ctx.strokeStyle = dangerTimer > 0.2 ? "rgba(225, 75, 100, 0.75)" : "rgba(180, 145, 120, 0.45)";
+        ctx.beginPath();
+        ctx.moveTo(12, TOP_LINE_Y);
+        ctx.lineTo(width - 12, TOP_LINE_Y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Sıradaki meyve göstergesi (sol üst köşe)
+        const nextDef = FRUITS[nextType];
+        ctx.fillStyle = "#7c685a";
+        ctx.font = "700 11px -apple-system, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("SIRADAKİ", 14, 24);
+        ctx.font = "24px -apple-system, Apple Color Emoji, sans-serif";
+        ctx.fillText(nextDef.emoji, 14, 48);
+
+        // Aktif düşecek meyve ve dikey rehber
+        if (gameState === "playing") {
+          const curDef = FRUITS[currentType];
+          const curR = curDef.radius * 0.68;
+          const previewY = TOP_LINE_Y - 26;
+
+          ctx.strokeStyle = "rgba(180, 145, 120, 0.28)";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 6]);
+          ctx.beginPath();
+          ctx.moveTo(dropX, previewY + curR);
+          ctx.lineTo(dropX, height - 12);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          drawFruit({
+            x: dropX,
+            y: previewY,
+            radius: curR,
+            type: currentType,
+            spawnScale: dropCooldown > 0 ? 0.65 : 1
+          });
+        }
+
+        // Tahtadaki meyveler
+        for (let i = 0; i < fruits.length; i++) {
+          drawFruit(fruits[i]);
+        }
+
+        // Puan artış yazıları
+        for (let i = 0; i < popups.length; i++) {
+          const p = popups[i];
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.font = "800 16px -apple-system, sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillStyle = "#e14b64";
+          ctx.fillText(p.text, p.x, p.y);
+        }
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      }
+
+      let lastTime = performance.now();
+      function loop(now) {
+        const dt = Math.min(0.033, (now - lastTime) / 1000);
+        lastTime = now;
+        stepPhysics(dt);
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      // Hafif Konfeti Efekti
+      const confettiCanvas = document.getElementById("confettiCanvas");
+      const cCtx = confettiCanvas.getContext("2d");
+      let particles = [];
+
+      function resizeConfetti() {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeConfetti);
+      resizeConfetti();
+
+      function launchConfetti() {
+        const colors = ["#e14b64", "#f59e0b", "#10b981", "#ec4899", "#fb7185"];
+        particles = [];
+        for (let i = 0; i < 65; i++) {
+          particles.push({
+            x: Math.random() * confettiCanvas.width,
+            y: -20 - Math.random() * 140,
+            w: 6 + Math.random() * 6,
+            h: 8 + Math.random() * 8,
+            vx: (Math.random() - 0.5) * 3,
+            vy: 2.5 + Math.random() * 4,
+            rot: Math.random() * Math.PI * 2,
+            vr: (Math.random() - 0.5) * 0.16,
+            color: colors[i % colors.length],
+            life: 1
+          });
+        }
+      }
+
+      function renderConfetti() {
+        cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          if (p.y > confettiCanvas.height - 80) {
+            p.life -= 0.04;
+          }
+          if (p.life <= 0 || p.y > confettiCanvas.height + 30) {
+            particles.splice(i, 1);
+            continue;
+          }
+          cCtx.save();
+          cCtx.globalAlpha = Math.max(0, p.life);
+          cCtx.translate(p.x, p.y);
+          cCtx.rotate(p.rot);
+          cCtx.fillStyle = p.color;
+          cCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          cCtx.restore();
+        }
+        requestAnimationFrame(renderConfetti);
+      }
+
+      updateHUD();
+      requestAnimationFrame(loop);
+      requestAnimationFrame(renderConfetti);
+    })();
+  </script>
 </body>
 </html>
