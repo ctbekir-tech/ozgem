@@ -627,6 +627,7 @@
 
       let walls = [];
       let fruitEntries = [];
+      let pendingMerges = [];
       let popups = [];
       let sparks = [];
       let dropX = 180;
@@ -803,6 +804,7 @@
           World.remove(world, fruitEntries[i].body);
         }
         fruitEntries = [];
+        pendingMerges = [];
       }
 
       function pickSpawnFruit() {
@@ -930,6 +932,7 @@
       function triggerGameOver() {
         if (gameState === "gameover") return;
         clearPendingLevelTimer();
+        pendingMerges = [];
         gameState = "gameover";
         persistProgress(level, score);
         document.getElementById("gameOverSub").textContent =
@@ -959,6 +962,7 @@
         dropCooldown = 0.28;
       }
 
+      // Çarpışma anında dünyayı değiştirmeyip birleşecek çiftleri kuyruğa al
       Events.on(engine, "collisionStart", (event) => {
         if (gameState !== "playing") return;
         const watermelonIndex = FRUITS.length - 1;
@@ -985,9 +989,23 @@
           aEntry.merged = true;
           bEntry.merged = true;
 
-          const mx = (aEntry.body.position.x + bEntry.body.position.x) * 0.5;
-          const my = (aEntry.body.position.y + bEntry.body.position.y) * 0.5;
-          const nextTypeIdx = aEntry.type + 1;
+          pendingMerges.push({
+            aEntry,
+            bEntry,
+            mx: (aEntry.body.position.x + bEntry.body.position.x) * 0.5,
+            my: (aEntry.body.position.y + bEntry.body.position.y) * 0.5,
+            nextTypeIdx: aEntry.type + 1
+          });
+        }
+      });
+
+      function flushPendingMerges() {
+        if (pendingMerges.length === 0) return;
+        const watermelonIndex = FRUITS.length - 1;
+        const batch = pendingMerges.splice(0, pendingMerges.length);
+
+        for (let i = 0; i < batch.length; i++) {
+          const { aEntry, bEntry, mx, my, nextTypeIdx } = batch[i];
           const nextDef = FRUITS[nextTypeIdx];
 
           World.remove(world, aEntry.body);
@@ -1025,7 +1043,7 @@
             }, 520);
           }
         }
-      });
+      }
 
       canvas.addEventListener("pointerdown", (e) => {
         if (gameState !== "playing") return;
@@ -1091,6 +1109,7 @@
 
         const clampedDt = Math.min(dt, 0.025);
         Engine.update(engine, clampedDt * 1000);
+        flushPendingMerges();
 
         let anyAbove = false;
         for (let i = 0; i < fruitEntries.length; i++) {
