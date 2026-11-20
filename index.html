@@ -34,7 +34,7 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      height: 100dvh;
       overflow: hidden;
       background: var(--bg);
       color: var(--ink);
@@ -44,7 +44,7 @@
     .app {
       position: relative;
       width: 100%;
-      height: 100%;
+      height: 100dvh;
       max-width: 520px;
       margin: 0 auto;
       display: flex;
@@ -175,12 +175,12 @@
       position: relative;
       flex: 1;
       min-height: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 100%;
     }
 
     canvas#gameCanvas {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       display: block;
@@ -456,7 +456,6 @@
 
   <script>
     (function () {
-      // Çilek uygulama ikonu (iPhone Ana Ekrana Ekle)
       function setStrawberryIcon() {
         const c = document.createElement("canvas");
         c.width = 180;
@@ -473,19 +472,18 @@
       }
       setStrawberryIcon();
 
-      // Ardışık meyvelerin renkleri asla birbirine karışmayacak şekilde net ve canlı seçildi
       const FRUITS = [
-        { name: "Kiraz",     radius: 20, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },   // Canlı Vişne-Kırmızı
-        { name: "Çilek",     radius: 27, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },   // Taze Fıstık Yeşili (çilek yaprağı/canlı ton ayrımı)
-        { name: "Üzüm",      radius: 35, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },   // Derin Mor
-        { name: "Mandalina", radius: 44, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },  // Parlak Turuncu
-        { name: "Portakal",  radius: 53, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },  // Güneş Sarısı
-        { name: "Elma",      radius: 63, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },  // Ferah Turkuaz/Mavi-Yeşil ayrımı
-        { name: "Armut",     radius: 73, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 }, // Mercan Pembe-Kırmızı
-        { name: "Şeftali",   radius: 84, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 }, // Tatlı Orkide/Eflatun
-        { name: "Ananas",    radius: 95, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 }, // Altın Kehribar
-        { name: "Kavun",     radius: 107, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },// Zümrüt Yeşili
-        { name: "Karpuz",    radius: 119, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }// Koyu Karpuz Yeşili + Şerit
+        { name: "Kiraz",     radius: 20, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
+        { name: "Çilek",     radius: 27, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
+        { name: "Üzüm",      radius: 35, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
+        { name: "Mandalina", radius: 44, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
+        { name: "Portakal",  radius: 53, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
+        { name: "Elma",      radius: 63, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
+        { name: "Armut",     radius: 73, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
+        { name: "Şeftali",   radius: 84, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
+        { name: "Ananas",    radius: 95, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
+        { name: "Kavun",     radius: 107, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
+        { name: "Karpuz",    radius: 119, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
       ];
 
       const PHOTOS = [
@@ -661,20 +659,32 @@
         });
       }
 
-      function resizeCanvas() {
+      // Her zaman birebir CSS piksel oranı ve karesel (1:1) çizim ekseni sağlar
+      function resizeCanvas(forceReset) {
         const rect = canvas.getBoundingClientRect();
-        if (!rect.width || !rect.height) return;
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        width = rect.width;
-        height = rect.height;
+        const w = Math.round(rect.width);
+        const h = Math.round(rect.height);
+        if (w <= 0 || h <= 0) return;
+
+        const nextDpr = Math.min(window.devicePixelRatio || 1, 2);
+        if (!forceReset && w === width && h === height && nextDpr === dpr) return;
+
+        width = w;
+        height = h;
+        dpr = nextDpr;
+
         canvas.width = Math.round(width * dpr);
         canvas.height = Math.round(height * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+
         dropX = Math.max(36, Math.min(width - 36, dropX || width / 2));
       }
 
-      window.addEventListener("resize", resizeCanvas);
-      resizeCanvas();
+      window.addEventListener("resize", () => resizeCanvas(true));
+      window.addEventListener("orientationchange", () => setTimeout(() => resizeCanvas(true), 120));
+      resizeCanvas(true);
 
       function pickSpawnFruit() {
         if (level === 1) {
@@ -734,6 +744,7 @@
       }
 
       function startLevel(lvl, resetScore) {
+        resizeCanvas(true);
         level = lvl;
         if (resetScore) {
           score = 0;
@@ -836,8 +847,8 @@
           radius: r,
           rotation: 0,
           vr: (Math.random() - 0.5) * 1.4,
-          scaleX: 0.92,
-          scaleY: 1.09,
+          scaleX: 0.94,
+          scaleY: 1.06,
           merged: false,
           spawnScale: 0.65
         });
@@ -927,7 +938,6 @@
             f.spawnScale = Math.min(1, f.spawnScale + dt * 7);
           }
 
-          // Yumuşak esneme toparlanması
           f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 14);
           f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 14);
 
@@ -944,13 +954,13 @@
           if (f.x - f.radius < 8) {
             f.x = 8 + f.radius;
             f.vx = Math.abs(f.vx) * bounce;
-            f.scaleX = 0.88;
-            f.scaleY = 1.1;
+            f.scaleX = 0.92;
+            f.scaleY = 1.06;
           } else if (f.x + f.radius > width - 8) {
             f.x = width - 8 - f.radius;
             f.vx = -Math.abs(f.vx) * bounce;
-            f.scaleX = 0.88;
-            f.scaleY = 1.1;
+            f.scaleX = 0.92;
+            f.scaleY = 1.06;
           }
 
           if (f.y + f.radius > floorY) {
@@ -959,8 +969,8 @@
             if (f.vy > 0) {
               f.vy = -f.vy * bounce;
               if (impactVy > 180) {
-                f.scaleX = 1.13;
-                f.scaleY = 0.86;
+                f.scaleX = 1.08;
+                f.scaleY = 0.92;
               }
             }
             f.vx *= 0.9;
@@ -1012,8 +1022,8 @@
                     radius: nextDef.radius,
                     rotation: 0,
                     vr: (Math.random() - 0.5) * 1.8,
-                    scaleX: 1.18,
-                    scaleY: 0.84,
+                    scaleX: 1.1,
+                    scaleY: 0.9,
                     merged: false,
                     spawnScale: 0.68
                   });
@@ -1026,7 +1036,7 @@
                   updateHUD();
                   playMergeTone(nextTypeIdx);
                   spawnMergeSparks(mx, my, nextDef.base);
-                  addScreenShake(Math.min(5, 1.5 + nextTypeIdx * 0.35), 0.14);
+                  addScreenShake(Math.min(4, 1.2 + nextTypeIdx * 0.25), 0.12);
 
                   popups.push({
                     x: mx,
@@ -1042,7 +1052,7 @@
                     persistProgress(nextSavedLvl, score);
                     savedLevel = nextSavedLvl;
                     savedScore = score;
-                    addScreenShake(6, 0.25);
+                    addScreenShake(5, 0.22);
                     setTimeout(() => {
                       if (gameState === "playing") {
                         openLevelCard(completedLvl, false);
@@ -1205,6 +1215,7 @@
       }
 
       function render() {
+        resizeCanvas(false);
         ctx.clearRect(0, 0, width, height);
 
         ctx.save();
