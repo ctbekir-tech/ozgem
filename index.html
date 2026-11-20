@@ -143,7 +143,7 @@
       cursor: default;
     }
 
-    .level-bar {
+    .status-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -156,7 +156,7 @@
       gap: 8px;
     }
 
-    .level-pill {
+    .status-pill {
       background: var(--accent-soft);
       color: var(--accent);
       font-weight: 800;
@@ -354,23 +354,6 @@
       transform: scale(0.98);
     }
 
-    .btn-secondary {
-      width: 100%;
-      margin-top: 8px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: var(--surface);
-      color: var(--ink);
-      font-size: 14px;
-      font-weight: 700;
-      padding: 12px 16px;
-      cursor: pointer;
-    }
-
-    .btn-secondary:active {
-      transform: scale(0.98);
-    }
-
     #confettiCanvas {
       position: fixed;
       inset: 0;
@@ -399,15 +382,15 @@
           <div class="stat-label">Rekor</div>
           <div class="stat-value" id="bestEl">0</div>
         </div>
-        <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla (Bölüm Başına 1 Hak)" aria-label="Kutuyu Salla">🔀</button>
+        <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla" aria-label="Kutuyu Salla">🔀</button>
         <button class="icon-btn" id="noteBtn" title="Doğum Günü Notu" aria-label="Doğum Günü Notu">💌</button>
         <button class="icon-btn" id="soundBtn" title="Müzik ve Ses" aria-label="Müzik ve Ses">🔊</button>
       </div>
     </header>
 
-    <div class="level-bar">
-      <span class="level-pill" id="levelPill">1. Bölüm</span>
-      <span class="goal-text" id="goalText">Hedef: <strong>🍉 Karpuz</strong> yap</span>
+    <div class="status-bar">
+      <span class="status-pill" id="melonPill">🍉 Karpuz: 0</span>
+      <span class="goal-text" id="goalText">Sürpriz: <strong>1.000 puan</strong> veya <strong>🍉 Karpuz</strong></span>
     </div>
 
     <div class="stage-wrap">
@@ -422,22 +405,22 @@
     <div class="modal-card">
       <div class="hero-emoji">🍓</div>
       <h1 class="modal-title">Güzel Karım Özgem</h1>
-      <p class="modal-sub" id="startSub">
-        İyi ki doğdun sevgilim. İlk bölüm doğum günü sürprizi için çok kolay hazırlandı; meyveleri birleştirip 🍉 Karpuz'a ulaş!
+      <p class="modal-sub">
+        İyi ki doğdun sevgilim. Aynı meyveleri birleştirip puan topladıkça ve 🍉 Karpuz yaptıkça doğum günü sürprizlerin açılır!
       </p>
-      <button class="btn-primary" id="startBtn">Devam Et</button>
+      <button class="btn-primary" id="startBtn">Oyuna Başla</button>
     </div>
   </div>
 
-  <!-- Bölüm Geçiş / Doğum Günü Sürpriz Kartı -->
-  <div class="overlay" id="levelOverlay">
+  <!-- Doğum Günü Sürpriz / Anı Kartı -->
+  <div class="overlay" id="surpriseOverlay">
     <div class="modal-card">
-      <div class="hero-emoji" id="levelModalEmoji">🍉</div>
-      <h2 class="modal-title" id="levelModalTitle">1. Bölüm Tamamlandı!</h2>
-      <p class="modal-sub" id="levelModalSub">Karpuzu yaptın güzel karım, doğum günün kutlu olsun!</p>
+      <div class="hero-emoji" id="surpriseEmoji">🎉</div>
+      <h2 class="modal-title" id="surpriseTitle">Doğum Günün Kutlu Olsun!</h2>
+      <p class="modal-sub" id="surpriseSub">Yeni bir sürpriz anı kartı açıldı güzel karım!</p>
 
-      <div class="photo-frame" id="levelPhotoFrame">
-        <img id="levelPhotoImg" src="" alt="Anı fotoğrafı" />
+      <div class="photo-frame" id="surprisePhotoFrame">
+        <img id="surprisePhotoImg" src="" alt="Anı fotoğrafı" />
       </div>
 
       <div class="love-letter" id="birthdayLetter">
@@ -445,8 +428,7 @@
         <span id="letterBody">Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!</span>
       </div>
 
-      <button class="btn-primary" id="nextLevelBtn">2. Bölüme Geç</button>
-      <button class="btn-secondary" id="closeLetterBtn" style="display: none;">Kapat</button>
+      <button class="btn-primary" id="continueGameBtn">Kutudan Devam Et</button>
     </div>
   </div>
 
@@ -456,7 +438,7 @@
       <div class="hero-emoji">🍉</div>
       <h2 class="modal-title">Kutu Doldu!</h2>
       <p class="modal-sub" id="gameOverSub">Kutu sınır çizgisini geçti Özgem.</p>
-      <button class="btn-primary" id="retryLevelBtn">Bu Bölümü Tekrar Oyna</button>
+      <button class="btn-primary" id="retryGameBtn">Yeniden Başla</button>
     </div>
   </div>
 
@@ -504,31 +486,47 @@
         "resim5.jpg"
       ];
 
-      const LEVEL_NOTES = [
+      const SCORE_MILESTONES = [1000, 3000, 6000, 10000, 15000];
+
+      const SURPRISES = [
         {
+          emoji: "🎉",
+          title: "Doğum Günü Sürprizi!",
+          sub: "İyi ki doğdun güzel karım Özgem! İlk sürpriz kartın açıldı.",
           heading: "İyi ki doğdun güzel karım Özgem ❤️",
           body: "Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!"
         },
         {
-          heading: "2. Bölüm · Birlikte Her Mevsim 🌸",
-          body: "Yanımda olduğun her gün daha güzel. Yeni bölüme geçtik; sakin ve keyifli birleştirmelerle karpuza bir adım daha yaklaşalım sevgilim."
+          emoji: "🌸",
+          title: "Birlikte Her Mevsim",
+          sub: "Harika ilerliyorsun sevgilim, sıradaki anı kartın burada!",
+          heading: "Seninle Her An Daha Güzel 🌸",
+          body: "Elini tuttuğum her an kalbim ilk günkü gibi çarpıyor. Birlikte nice güzel anılar biriktireceğimiz uzun yıllarımız olsun."
         },
         {
-          heading: "3. Bölüm · Gülüşünün Rengi ✨",
-          body: "Gülüşün en sevdiğim manzara. Birlikte nice güzel anılar biriktireceğimiz uzun yıllarımız olsun."
+          emoji: "✨",
+          title: "Gülüşünün Rengi",
+          sub: "Bir sürpriz daha açıldı! Oyuna kaldığın yerden devam edebilirsin.",
+          heading: "Gülüşün En Sevdiğim Manzara ✨",
+          body: "En sade günleri bile gülüşünle bayrama çeviriyorsun. Mutluluğun hiç eksilmesin güzel karım."
         },
         {
-          heading: "4. Bölüm · Kalbimin Huzuru 🍓",
-          body: "En yoğun günlerde bile tek bir bakışınla içimi ısıtıyorsun. Bu bölümde de keyfini çıkararak ilerleyelim."
+          emoji: "🍓",
+          title: "Kalbimin Huzuru",
+          sub: "Yeni bir kilometre taşına daha ulaştın güzel karım!",
+          heading: "Kalbimin Huzuru 🍓",
+          body: "Hayatın koşturmacasında en güvenli limanım sensin. İyi ki benimlesin, iyi ki varsın."
         },
         {
-          heading: "5. Bölüm · Sonsuz Sevgimle 💖",
-          body: "Her yeni yaşın sana sağlık, mutluluk ve dilediğin tüm güzellikleri getirsin güzel karım."
+          emoji: "💖",
+          title: "Sonsuz Sevgimle",
+          sub: "Tüm anı kartları açıldı; dilediğin kadar yüksek puan toplayabilirsin!",
+          heading: "Sonsuz Sevgimle 💖",
+          body: "Her yeni yaşın sana sağlık, huzur ve dilediğin tüm güzellikleri getirsin. Seni her şeyden çok seviyorum!"
         }
       ];
 
       const KEY_BEST = "ozgem_best";
-      const KEY_LEVEL = "ozgem_saved_level";
       const KEY_SCORE = "ozgem_saved_score";
 
       function readStoredInt(key, fallback, minVal) {
@@ -539,13 +537,10 @@
       }
 
       let bestScore = readStoredInt(KEY_BEST, 0, 0);
-      let savedLevel = readStoredInt(KEY_LEVEL, 1, 1);
       let savedScore = readStoredInt(KEY_SCORE, 0, 0);
 
-      function persistProgress(lvl, scr) {
-        savedLevel = Math.max(1, lvl);
+      function persistScore(scr) {
         savedScore = Math.max(0, scr);
-        localStorage.setItem(KEY_LEVEL, String(savedLevel));
         localStorage.setItem(KEY_SCORE, String(savedScore));
         if (savedScore > bestScore) {
           bestScore = savedScore;
@@ -557,28 +552,26 @@
       const ctx = canvas.getContext("2d");
       const scoreEl = document.getElementById("scoreEl");
       const bestEl = document.getElementById("bestEl");
-      const levelPill = document.getElementById("levelPill");
+      const melonPill = document.getElementById("melonPill");
       const goalText = document.getElementById("goalText");
       const chainStrip = document.getElementById("chainStrip");
 
       const startOverlay = document.getElementById("startOverlay");
-      const levelOverlay = document.getElementById("levelOverlay");
+      const surpriseOverlay = document.getElementById("surpriseOverlay");
       const gameOverOverlay = document.getElementById("gameOverOverlay");
 
       const startBtn = document.getElementById("startBtn");
-      const nextLevelBtn = document.getElementById("nextLevelBtn");
-      const closeLetterBtn = document.getElementById("closeLetterBtn");
-      const retryLevelBtn = document.getElementById("retryLevelBtn");
+      const continueGameBtn = document.getElementById("continueGameBtn");
+      const retryGameBtn = document.getElementById("retryGameBtn");
       const shakeBtn = document.getElementById("shakeBtn");
       const soundBtn = document.getElementById("soundBtn");
       const noteBtn = document.getElementById("noteBtn");
 
-      const levelModalEmoji = document.getElementById("levelModalEmoji");
-      const levelModalTitle = document.getElementById("levelModalTitle");
-      const levelModalSub = document.getElementById("levelModalSub");
-      const levelPhotoFrame = document.getElementById("levelPhotoFrame");
-      const levelPhotoImg = document.getElementById("levelPhotoImg");
-      const birthdayLetter = document.getElementById("birthdayLetter");
+      const surpriseEmoji = document.getElementById("surpriseEmoji");
+      const surpriseTitle = document.getElementById("surpriseTitle");
+      const surpriseSub = document.getElementById("surpriseSub");
+      const surprisePhotoFrame = document.getElementById("surprisePhotoFrame");
+      const surprisePhotoImg = document.getElementById("surprisePhotoImg");
       const letterHeading = document.getElementById("letterHeading");
       const letterBody = document.getElementById("letterBody");
       const bgMusic = document.getElementById("bgMusic");
@@ -638,7 +631,8 @@
 
       noteBtn.addEventListener("click", () => {
         if (gameState === "playing" || gameState === "paused") {
-          openLevelCard(level, true);
+          const idx = Math.max(0, Math.min(SURPRISES.length - 1, unlockedSurprises - 1));
+          openSurpriseCard(idx, true);
         }
       });
 
@@ -647,17 +641,18 @@
       let dpr = 1;
 
       let score = savedScore;
-      let level = savedLevel;
-      let levelCompleted = false;
+      let watermelonCount = 0;
+      let unlockedSurprises = 0;
       let gameState = "start";
-      let levelCardTimer = null;
-      let shakeCharges = 1;
+      let surpriseTimer = null;
+      let shakeCharges = 2;
 
       const engine = Engine.create({
         positionIterations: 8,
         velocityIterations: 6
       });
       const world = engine.world;
+      engine.gravity.y = 1.02;
 
       let walls = [];
       let fruitEntries = [];
@@ -674,14 +669,16 @@
       let shakeIntensity = 0;
 
       const SPAWN_Y = 48;
-      const TOP_LINE_Y = 86;
+      const TOP_LINE_Y = 88;
       const WALL_THICKNESS = 48;
       const FLOOR_Y_OFFSET = 10;
+      const DANGER_LIMIT = 2.6;
+      const SETTLE_SPEED = 2.4;
 
-      function clearPendingLevelTimer() {
-        if (levelCardTimer !== null) {
-          clearTimeout(levelCardTimer);
-          levelCardTimer = null;
+      function clearPendingSurpriseTimer() {
+        if (surpriseTimer !== null) {
+          clearTimeout(surpriseTimer);
+          surpriseTimer = null;
         }
       }
 
@@ -693,40 +690,35 @@
       function updateShakeButtonUI() {
         shakeBtn.classList.toggle("used", shakeCharges <= 0);
         shakeBtn.title = shakeCharges > 0
-          ? "Kutuyu Salla (1 hak kaldı)"
-          : "Kutuyu Salla (Bu bölümde kullanıldı)";
+          ? `Kutuyu Salla (${shakeCharges} hak kaldı)`
+          : "Kutuyu Salla (Hak bitti)";
       }
 
       function triggerGentleBoxShake() {
         if (gameState !== "playing" || shakeCharges <= 0) return;
         shakeCharges -= 1;
         updateShakeButtonUI();
-        addScreenShake(4.5, 0.22);
+        addScreenShake(4.8, 0.24);
 
         for (let i = 0; i < fruitEntries.length; i++) {
           const b = fruitEntries[i].body;
           const dir = i % 2 === 0 ? 1 : -1;
           Body.setVelocity(b, {
-            x: b.velocity.x + dir * (1.8 + Math.random() * 1.4),
-            y: b.velocity.y - (1.2 + Math.random() * 1.3)
+            x: b.velocity.x + dir * (2.2 + Math.random() * 1.6),
+            y: b.velocity.y - (1.5 + Math.random() * 1.4)
           });
         }
       }
 
       shakeBtn.addEventListener("click", triggerGentleBoxShake);
 
-      function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Sürpriz · Çok Kolay", gravityY: 1.0, dangerLimit: 2.8, settleSpeed: 2.2, bonus: 150 };
-        if (lvl === 2) return { tag: "Rahat · Kolay", gravityY: 1.06, dangerLimit: 1.7, settleSpeed: 2.6, bonus: 250 };
-        if (lvl === 3) return { tag: "Düzenli · Orta", gravityY: 1.13, dangerLimit: 1.45, settleSpeed: 2.9, bonus: 400 };
-        if (lvl === 4) return { tag: "Akıcı · Zorlayıcı", gravityY: 1.19, dangerLimit: 1.3, settleLimit: 3.1, settleSpeed: 3.1, bonus: 600 };
-        return {
-          tag: `Uzun Soluklu (${lvl}. Bölüm)`,
-          gravityY: Math.min(1.34, 1.19 + (lvl - 4) * 0.025),
-          dangerLimit: 1.25,
-          settleSpeed: 3.2,
-          bonus: 600 + (lvl - 4) * 200
-        };
+      function getNextMilestoneTarget() {
+        for (let i = 0; i < SCORE_MILESTONES.length; i++) {
+          if (score < SCORE_MILESTONES[i]) {
+            return SCORE_MILESTONES[i];
+          }
+        }
+        return null;
       }
 
       function updateHUD() {
@@ -736,10 +728,14 @@
           localStorage.setItem(KEY_BEST, String(bestScore));
         }
         bestEl.textContent = bestScore;
+        melonPill.textContent = `🍉 Karpuz: ${watermelonCount}`;
 
-        const diff = getDifficultyInfo(level);
-        levelPill.textContent = `${level}. Bölüm`;
-        goalText.innerHTML = `Hedef: <strong>🍉 Karpuz</strong> · ${diff.tag}`;
+        const nextTarget = getNextMilestoneTarget();
+        if (nextTarget !== null) {
+          goalText.innerHTML = `Sürpriz hedefi: <strong>${nextTarget.toLocaleString("tr-TR")} puan</strong> veya <strong>🍉 Karpuz</strong>`;
+        } else {
+          goalText.innerHTML = `Tüm puan sürprizleri açık · <strong>🍉 Karpuz</strong> biriktir`;
+        }
 
         chainStrip.innerHTML = "";
         FRUITS.forEach((f, idx) => {
@@ -872,34 +868,10 @@
         pendingMerges = [];
       }
 
+      // Orijinal Suika Game gibi ilk meyvelerden dengeli ve akıcı düşüş havuzu
       function pickSpawnFruit() {
-        if (level === 1) {
-          const pool = [1, 1, 2, 2, 3, 3];
-          return pool[Math.floor(Math.random() * pool.length)];
-        }
-        if (level === 2) {
-          const pool = [1, 2, 2, 3, 3, 4];
-          return pool[Math.floor(Math.random() * pool.length)];
-        }
-        if (level === 3) {
-          const pool = [0, 1, 2, 3, 4, 4];
-          return pool[Math.floor(Math.random() * pool.length)];
-        }
-        const pool = [0, 1, 2, 3, 4, 5];
+        const pool = [0, 1, 1, 2, 2, 3, 3, 4];
         return pool[Math.floor(Math.random() * pool.length)];
-      }
-
-      function seedInitialFruits(lvl) {
-        if (lvl <= 1) return;
-        const count = Math.min(4, Math.floor((lvl + 1) / 2) + 1);
-        const floorY = height - FLOOR_Y_OFFSET;
-        const usableW = Math.max(80, width - 36);
-        for (let i = 0; i < count; i++) {
-          const t = Math.min(4, ((i * 2 + lvl) % 5));
-          const def = FRUITS[t];
-          const x = 18 + ((i + 0.5) / count) * usableW;
-          createFruitBody(t, x, floorY - def.radius - 2, 1, 3, 1, 1);
-        }
       }
 
       function spawnMergeSparks(x, y, color) {
@@ -919,17 +891,15 @@
         }
       }
 
-      function startLevel(lvl, keepScore) {
-        clearPendingLevelTimer();
+      function startNewGame() {
+        clearPendingSurpriseTimer();
         resizeCanvas(true);
-        level = lvl;
-        if (!keepScore) {
-          score = 0;
-        }
-        persistProgress(level, score);
+        score = 0;
+        watermelonCount = 0;
+        unlockedSurprises = 0;
+        persistScore(score);
 
-        levelCompleted = false;
-        shakeCharges = 1;
+        shakeCharges = 2;
         updateShakeButtonUI();
         clearAllFruits();
         popups = [];
@@ -938,9 +908,7 @@
         dropCooldown = 0;
         shakeTime = 0;
         isPointerDown = false;
-        engine.gravity.y = getDifficultyInfo(level).gravityY;
 
-        seedInitialFruits(level);
         currentType = pickSpawnFruit();
         nextType = pickSpawnFruit();
         dropX = width / 2;
@@ -948,71 +916,65 @@
         updateHUD();
 
         startOverlay.classList.remove("active");
-        levelOverlay.classList.remove("active");
+        surpriseOverlay.classList.remove("active");
         gameOverOverlay.classList.remove("active");
       }
 
-      function applyNoteForLevel(targetLevel) {
-        const note = LEVEL_NOTES[(targetLevel - 1) % LEVEL_NOTES.length];
-        letterHeading.textContent = note.heading;
-        letterBody.textContent = note.body;
-      }
-
-      function openLevelCard(completedLevel, isManualLetterView) {
-        clearPendingLevelTimer();
+      function openSurpriseCard(index, isManualView) {
+        clearPendingSurpriseTimer();
         gameState = "paused";
-        const photoFile = PHOTOS[(completedLevel - 1) % PHOTOS.length];
+        const safeIdx = Math.max(0, Math.min(SURPRISES.length - 1, index));
+        const item = SURPRISES[safeIdx];
+        const photoFile = PHOTOS[safeIdx % PHOTOS.length];
 
-        levelPhotoImg.onload = () => {
-          levelPhotoFrame.classList.add("has-photo");
+        surprisePhotoImg.onload = () => {
+          surprisePhotoFrame.classList.add("has-photo");
         };
-        levelPhotoImg.onerror = () => {
-          levelPhotoFrame.classList.remove("has-photo");
+        surprisePhotoImg.onerror = () => {
+          surprisePhotoFrame.classList.remove("has-photo");
         };
-        levelPhotoFrame.classList.remove("has-photo");
-        levelPhotoImg.src = photoFile;
+        surprisePhotoFrame.classList.remove("has-photo");
+        surprisePhotoImg.src = photoFile;
 
-        if (isManualLetterView) {
-          levelModalEmoji.textContent = "🎂";
-          levelModalTitle.textContent = "Güzel Karım Özgem'e";
-          levelModalSub.textContent = `${completedLevel}. bölüm anı kartı ve doğum günü notun.`;
-          applyNoteForLevel(completedLevel);
-          birthdayLetter.style.display = "block";
-          nextLevelBtn.style.display = "none";
-          closeLetterBtn.style.display = "block";
-        } else if (completedLevel === 1) {
-          levelModalEmoji.textContent = "🎉";
-          levelModalTitle.textContent = "1. Bölüm Sürprizi Tamamlandı!";
-          levelModalSub.textContent = "İlk karpuzunu yaptın! Doğum günün kutlu olsun güzel karım.";
-          applyNoteForLevel(1);
-          birthdayLetter.style.display = "block";
-          nextLevelBtn.style.display = "block";
-          nextLevelBtn.textContent = "2. Bölüme Geç";
-          closeLetterBtn.style.display = "none";
-          launchConfetti();
-        } else {
-          levelModalEmoji.textContent = "🍉";
-          levelModalTitle.textContent = `${completedLevel}. Bölüm Tamamlandı`;
-          levelModalSub.textContent = `Sıradaki bölüm hazır: ${getDifficultyInfo(completedLevel + 1).tag}.`;
-          applyNoteForLevel(completedLevel);
-          birthdayLetter.style.display = "block";
-          nextLevelBtn.style.display = "block";
-          nextLevelBtn.textContent = `${completedLevel + 1}. Bölüme Geç`;
-          closeLetterBtn.style.display = "none";
+        surpriseEmoji.textContent = isManualView ? "🎂" : item.emoji;
+        surpriseTitle.textContent = isManualView ? "Güzel Karım Özgem'e" : item.title;
+        surpriseSub.textContent = isManualView
+          ? `Doğum günü notun ve anı kartın (${safeIdx + 1}/${PHOTOS.length}).`
+          : item.sub;
+        letterHeading.textContent = item.heading;
+        letterBody.textContent = item.body;
+        continueGameBtn.textContent = isManualView ? "Oyuna Dön" : "Kutudan Devam Et";
+
+        if (!isManualView) {
           launchConfetti();
         }
+        surpriseOverlay.classList.add("active");
+      }
 
-        levelOverlay.classList.add("active");
+      function checkScoreMilestones() {
+        if (unlockedSurprises >= SURPRISES.length) return;
+        const milestoneIdx = Math.min(unlockedSurprises, SCORE_MILESTONES.length - 1);
+        if (score >= SCORE_MILESTONES[milestoneIdx]) {
+          const cardIdx = unlockedSurprises;
+          unlockedSurprises += 1;
+          clearPendingSurpriseTimer();
+          surpriseTimer = setTimeout(() => {
+            surpriseTimer = null;
+            if (gameState === "playing") {
+              openSurpriseCard(cardIdx, false);
+            }
+          }, 420);
+        }
       }
 
       function triggerGameOver() {
         if (gameState === "gameover") return;
-        clearPendingLevelTimer();
+        clearPendingSurpriseTimer();
         pendingMerges = [];
         gameState = "gameover";
-        persistProgress(level, score);
+        persistScore(score);
         document.getElementById("gameOverSub").textContent =
-          `${level}. bölümde kutu doldu Özgem (${score} puan). Bölümün korundu, aynı bölümden devam edebilirsin.`;
+          `Kutu sınır çizgisini geçti Özgem · Toplam Puan: ${score} · Yapılan Karpuz: ${watermelonCount}`;
         gameOverOverlay.classList.add("active");
       }
 
@@ -1078,7 +1040,7 @@
         if (pendingMerges.length === 0) return;
         const watermelonIndex = FRUITS.length - 1;
         const batch = pendingMerges.splice(0, pendingMerges.length);
-        const diff = getDifficultyInfo(level);
+        let triggeredWatermelon = false;
 
         for (let i = 0; i < batch.length; i++) {
           const { aEntry, bEntry, mx, my, nextTypeIdx } = batch[i];
@@ -1091,13 +1053,17 @@
           createFruitBody(nextTypeIdx, mx, my, 0.75, 0.65, 1.08, 0.92);
 
           const isWatermelon = nextTypeIdx === watermelonIndex;
-          const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15)) + (isWatermelon ? diff.bonus : 0);
+          const gained = nextDef.score + (isWatermelon ? 250 : 0);
           score += gained;
-          persistProgress(level, score);
+          if (isWatermelon) {
+            watermelonCount += 1;
+            triggeredWatermelon = true;
+          }
+          persistScore(score);
           updateHUD();
           playMergeTone(nextTypeIdx);
           spawnMergeSparks(mx, my, nextDef.base);
-          addScreenShake(Math.min(4.0, 1.1 + nextTypeIdx * 0.22), 0.12);
+          addScreenShake(Math.min(4.2, 1.1 + nextTypeIdx * 0.22), 0.14);
 
           popups.push({
             x: mx,
@@ -1105,20 +1071,20 @@
             text: isWatermelon ? `+${gained} 🎉` : `+${gained}`,
             alpha: 1
           });
+        }
 
-          if (!levelCompleted && isWatermelon) {
-            levelCompleted = true;
-            const completedLvl = level;
-            const nextSavedLvl = completedLvl + 1;
-            persistProgress(nextSavedLvl, score);
-            addScreenShake(4.8, 0.2);
-            levelCardTimer = setTimeout(() => {
-              levelCardTimer = null;
-              if (gameState === "playing") {
-                openLevelCard(completedLvl, false);
-              }
-            }, 520);
-          }
+        if (triggeredWatermelon && unlockedSurprises < SURPRISES.length) {
+          const cardIdx = unlockedSurprises;
+          unlockedSurprises += 1;
+          clearPendingSurpriseTimer();
+          surpriseTimer = setTimeout(() => {
+            surpriseTimer = null;
+            if (gameState === "playing") {
+              openSurpriseCard(cardIdx, false);
+            }
+          }, 520);
+        } else {
+          checkScoreMilestones();
         }
       }
 
@@ -1151,26 +1117,20 @@
 
       startBtn.addEventListener("click", () => {
         syncMusic();
-        startLevel(savedLevel, true);
+        startNewGame();
       });
 
-      nextLevelBtn.addEventListener("click", () => {
+      continueGameBtn.addEventListener("click", () => {
         syncMusic();
-        const nextLvl = level + 1;
-        persistProgress(nextLvl, score);
-        startLevel(nextLvl, true);
-      });
-
-      closeLetterBtn.addEventListener("click", () => {
-        levelOverlay.classList.remove("active");
+        surpriseOverlay.classList.remove("active");
         if (gameState === "paused") {
           gameState = "playing";
         }
       });
 
-      retryLevelBtn.addEventListener("click", () => {
+      retryGameBtn.addEventListener("click", () => {
         syncMusic();
-        startLevel(level, true);
+        startNewGame();
       });
 
       function stepPhysics(dt) {
@@ -1188,7 +1148,6 @@
         Engine.update(engine, clampedDt * 1000);
         flushPendingMerges();
 
-        const diff = getDifficultyInfo(level);
         let anyAbove = false;
         for (let i = 0; i < fruitEntries.length; i++) {
           const item = fruitEntries[i];
@@ -1201,18 +1160,18 @@
 
           const r = FRUITS[item.type].radius;
           const speed = Math.hypot(item.body.velocity.x, item.body.velocity.y);
-          if (item.age > 1.0 && speed < diff.settleSpeed && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
+          if (item.age > 1.0 && speed < SETTLE_SPEED && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
             anyAbove = true;
           }
         }
 
         if (anyAbove) {
           dangerTimer += clampedDt;
-          if (dangerTimer > diff.dangerLimit) {
+          if (dangerTimer > DANGER_LIMIT) {
             triggerGameOver();
           }
         } else {
-          dangerTimer = Math.max(0, dangerTimer - clampedDt * 1.8);
+          dangerTimer = Math.max(0, dangerTimer - clampedDt * 2.0);
         }
 
         for (let i = sparks.length - 1; i >= 0; i--) {
