@@ -673,8 +673,8 @@
       let shakeTime = 0;
       let shakeIntensity = 0;
 
-      const SPAWN_Y = 52;
-      const TOP_LINE_Y = 108;
+      const SPAWN_Y = 48;
+      const TOP_LINE_Y = 86;
       const WALL_THICKNESS = 48;
       const FLOOR_Y_OFFSET = 10;
 
@@ -715,16 +715,16 @@
 
       shakeBtn.addEventListener("click", triggerGentleBoxShake);
 
-      // 1. bölüm hediye/sürpriz için çok kolay; sonraki bölümler düzenli ve kademeli
       function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Sürpriz · Çok Kolay", gravityY: 0.98, dangerLimit: 1.85, bonus: 150 };
-        if (lvl === 2) return { tag: "Rahat · Kolay", gravityY: 1.06, dangerLimit: 1.5, bonus: 250 };
-        if (lvl === 3) return { tag: "Düzenli · Orta", gravityY: 1.13, dangerLimit: 1.35, bonus: 400 };
-        if (lvl === 4) return { tag: "Akıcı · Zorlayıcı", gravityY: 1.19, dangerLimit: 1.25, bonus: 600 };
+        if (lvl === 1) return { tag: "Sürpriz · Çok Kolay", gravityY: 1.0, dangerLimit: 2.8, settleSpeed: 2.2, bonus: 150 };
+        if (lvl === 2) return { tag: "Rahat · Kolay", gravityY: 1.06, dangerLimit: 1.7, settleSpeed: 2.6, bonus: 250 };
+        if (lvl === 3) return { tag: "Düzenli · Orta", gravityY: 1.13, dangerLimit: 1.45, settleSpeed: 2.9, bonus: 400 };
+        if (lvl === 4) return { tag: "Akıcı · Zorlayıcı", gravityY: 1.19, dangerLimit: 1.3, settleLimit: 3.1, settleSpeed: 3.1, bonus: 600 };
         return {
           tag: `Uzun Soluklu (${lvl}. Bölüm)`,
           gravityY: Math.min(1.34, 1.19 + (lvl - 4) * 0.025),
-          dangerLimit: 1.2,
+          dangerLimit: 1.25,
+          settleSpeed: 3.2,
           bonus: 600 + (lvl - 4) * 200
         };
       }
@@ -872,10 +872,9 @@
         pendingMerges = [];
       }
 
-      // 1. bölümde büyük/orta meyvelerle hızlı birleşmeler sağlayan çok kolay havuz
       function pickSpawnFruit() {
         if (level === 1) {
-          const pool = [2, 2, 3, 3, 4, 4];
+          const pool = [1, 1, 2, 2, 3, 3];
           return pool[Math.floor(Math.random() * pool.length)];
         }
         if (level === 2) {
@@ -1189,6 +1188,7 @@
         Engine.update(engine, clampedDt * 1000);
         flushPendingMerges();
 
+        const diff = getDifficultyInfo(level);
         let anyAbove = false;
         for (let i = 0; i < fruitEntries.length; i++) {
           const item = fruitEntries[i];
@@ -1201,15 +1201,14 @@
 
           const r = FRUITS[item.type].radius;
           const speed = Math.hypot(item.body.velocity.x, item.body.velocity.y);
-          if (item.age > 0.9 && speed < 3.0 && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
+          if (item.age > 1.0 && speed < diff.settleSpeed && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
             anyAbove = true;
           }
         }
 
-        const dangerLimit = getDifficultyInfo(level).dangerLimit;
         if (anyAbove) {
           dangerTimer += clampedDt;
-          if (dangerTimer > dangerLimit) {
+          if (dangerTimer > diff.dangerLimit) {
             triggerGameOver();
           }
         } else {
