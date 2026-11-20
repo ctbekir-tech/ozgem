@@ -151,7 +151,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 142px;
+      max-width: 148px;
       padding: 1px 0;
     }
 
@@ -1210,21 +1210,66 @@
       const bgMusic = document.getElementById("bgMusic");
 
       // ============================================================================
-      // ÇEVRİMDIŞI KORUMALI (OFFLINE-SAFE) TÜRKÇE ROMANTİK RADYO & ŞARKI SİSTEMİ
+      // ÇİFT SUNUCU YEDEKLİ, DOĞRULANMIŞ TÜRKÇE SLOW / ROMANTİK RADYO SİSTEMİ
       // ============================================================================
       const TURKISH_ROMANTIC_RADIOS = [
-        { name: "JoyTürk Akustik", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK2.mp3" },
-        { name: "JoyTürk Slow",    url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK.mp3" },
-        { name: "Slow Türk",       url: "https://radyo.duhnet.tv/ak_dtvh_slowturk" },
-        { name: "Joy FM Romantik", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM.mp3" },
-        { name: "Süper FM Türkçe", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM.mp3" }
+        {
+          name: "Slow Türk",
+          urls: [
+            "https://radyo.duhnet.tv/ak_dtvh_slowturk",
+            "https://radyo.duhnet.tv/slowturk"
+          ]
+        },
+        {
+          name: "PowerTürk Slow",
+          urls: [
+            "https://listen.powerapp.com.tr/powerturkslow/mpeg/icecast.audio",
+            "https://listen.powerapp.com.tr/pturkslow/slow.smil/playlist.m3u8"
+          ]
+        },
+        {
+          name: "PowerTürk Akustik",
+          urls: [
+            "https://listen.powerapp.com.tr/powerturkakustik/mpeg/icecast.audio",
+            "https://listen.powerapp.com.tr/powerturkakustik/abr/playlist.m3u8"
+          ]
+        },
+        {
+          name: "PowerTürk",
+          urls: [
+            "https://listen.powerapp.com.tr/powerturk/128/icecast.audio",
+            "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio"
+          ]
+        },
+        {
+          name: "Power Love",
+          urls: [
+            "https://listen.powerapp.com.tr/powerlove/mpeg/icecast.audio",
+            "https://listen.powerapp.com.tr/powerlove/abr/playlist.m3u8"
+          ]
+        },
+        {
+          name: "JoyTürk Slow",
+          urls: [
+            "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK.mp3",
+            "https://27743.live.streamtheworld.com/JOY_TURK_SC"
+          ]
+        },
+        {
+          name: "Hayat Mix Slow",
+          urls: [
+            "https://radyo.yayin.com.tr:4090/mp3",
+            "https://moondigitaledge2.radyotvonline.net/radyo7slow/playlist.m3u8"
+          ]
+        }
       ];
 
       let isRadioMode = false;
       let currentRadioIndex = 0;
+      let currentUrlSubIndex = 0;
       let radioWatchdogTimer = null;
       let consecutiveRadioFailures = 0;
-      let isSwitchingAudio = false;
+      let activeAudioRequestId = 0;
       let soundEnabled = true;
 
       function clearRadioWatchdog() {
@@ -1249,11 +1294,13 @@
         }
       }
 
-      // İnternet yoksa veya tüm radyolar ulaşılamazsa sarki.mp3'e kesintisiz geri döner
       function playLocalSpecialSong(loopIfOffline) {
         clearRadioWatchdog();
-        isSwitchingAudio = true;
+        activeAudioRequestId += 1;
+        const reqId = activeAudioRequestId;
+
         isRadioMode = false;
+        currentUrlSubIndex = 0;
         consecutiveRadioFailures = 0;
         updateRadioStatusUI();
 
@@ -1263,107 +1310,123 @@
           bgMusic.src = "sarki.mp3";
           bgMusic.load();
           if (soundEnabled) {
-            bgMusic.play().catch(() => {});
+            const p = bgMusic.play();
+            if (p && typeof p.catch === "function") {
+              p.catch((err) => {
+                if (reqId !== activeAudioRequestId) return;
+                if (err && err.name === "AbortError") return;
+              });
+            }
           }
         } catch (_) {}
-
-        setTimeout(() => {
-          isSwitchingAudio = false;
-        }, 300);
       }
 
-      function connectTurkishRadio(stationIdx) {
+      function connectTurkishRadio(stationIdx, subUrlIdx) {
         clearRadioWatchdog();
 
-        // Çevrimdışı (İnternetsiz) Kontrolü: İnternet yoksa hiç susmadan sarki.mp3'ü tekrar çal
         if (navigator.onLine === false) {
           playLocalSpecialSong(true);
           return;
         }
 
-        // Eğer 5 Türkçe radyo kanalının tamamı denendi ve hiçbiri açılmadıysa sarki.mp3'e dön
-        if (consecutiveRadioFailures >= TURKISH_ROMANTIC_RADIOS.length) {
+        if (consecutiveRadioFailures >= TURKISH_ROMANTIC_RADIOS.length * 2) {
           playLocalSpecialSong(true);
           return;
         }
 
-        isSwitchingAudio = true;
+        activeAudioRequestId += 1;
+        const reqId = activeAudioRequestId;
+
         isRadioMode = true;
         currentRadioIndex = stationIdx % TURKISH_ROMANTIC_RADIOS.length;
         const station = TURKISH_ROMANTIC_RADIOS[currentRadioIndex];
+        currentUrlSubIndex = (subUrlIdx || 0) % station.urls.length;
+        const streamUrl = station.urls[currentUrlSubIndex];
 
         updateRadioStatusUI();
 
         try {
           bgMusic.pause();
           bgMusic.loop = false;
-          bgMusic.src = station.url;
+          bgMusic.src = streamUrl;
           bgMusic.load();
 
           if (soundEnabled) {
             const playPromise = bgMusic.play();
             if (playPromise && typeof playPromise.catch === "function") {
-              playPromise.catch(() => {
-                handleRadioStreamFailure();
+              playPromise.catch((err) => {
+                // Eski bir kanal geçişinden kalan veya yeni yükleme nedeniyle kesilen (AbortError) sinyalleri yoksay
+                if (reqId !== activeAudioRequestId) return;
+                if (err && (err.name === "AbortError" || err.name === "NotAllowedError")) return;
+                handleRadioStreamFailure(reqId);
               });
             }
           }
         } catch (_) {
-          handleRadioStreamFailure();
+          if (reqId === activeAudioRequestId) {
+            handleRadioStreamFailure(reqId);
+          }
         }
 
-        setTimeout(() => {
-          isSwitchingAudio = false;
-        }, 300);
-
         if (soundEnabled) {
-          // 7 saniye içinde canlı yayın akışı başlamazsa sıradaki Türkçe radyoya geç
           radioWatchdogTimer = setTimeout(() => {
+            if (reqId !== activeAudioRequestId) return;
             radioWatchdogTimer = null;
             if (isRadioMode && soundEnabled && (bgMusic.paused || bgMusic.readyState < 2)) {
-              handleRadioStreamFailure();
+              handleRadioStreamFailure(reqId);
             }
-          }, 7000);
+          }, 8000);
         }
       }
 
-      function handleRadioStreamFailure() {
+      function handleRadioStreamFailure(reqId) {
+        if (typeof reqId === "number" && reqId !== activeAudioRequestId) return;
         clearRadioWatchdog();
+
         if (navigator.onLine === false) {
           playLocalSpecialSong(true);
           return;
         }
+
         consecutiveRadioFailures += 1;
-        if (consecutiveRadioFailures >= TURKISH_ROMANTIC_RADIOS.length) {
+        if (consecutiveRadioFailures >= TURKISH_ROMANTIC_RADIOS.length * 2) {
           playLocalSpecialSong(true);
           return;
         }
+
+        const station = TURKISH_ROMANTIC_RADIOS[currentRadioIndex];
+        const nextSubIdx = currentUrlSubIndex + 1;
+
         radioWatchdogTimer = setTimeout(() => {
+          if (reqId !== activeAudioRequestId) return;
           radioWatchdogTimer = null;
-          if (soundEnabled) {
-            connectTurkishRadio(currentRadioIndex + 1);
+          if (!soundEnabled) return;
+
+          // Önce aynı radyonun yedek sunucusunu dene, o da açılmazsa sıradaki radyoya geç
+          if (station && nextSubIdx < station.urls.length) {
+            connectTurkishRadio(currentRadioIndex, nextSubIdx);
+          } else {
+            connectTurkishRadio(currentRadioIndex + 1, 0);
           }
-        }, 1000);
+        }, 700);
       }
 
-      // 1. Şarkı normal bittiğinde: İnternet varsa Türkçe radyoya geç, yoksa sarki.mp3 devam etsin
+      // 1. Şarkı normal bittiğinde Türkçe radyoya geç
       bgMusic.addEventListener("ended", () => {
-        if (isSwitchingAudio) return;
         if (!isRadioMode) {
           if (navigator.onLine === false) {
             playLocalSpecialSong(true);
           } else {
             consecutiveRadioFailures = 0;
-            connectTurkishRadio(0);
+            connectTurkishRadio(0, 0);
           }
         } else {
-          connectTurkishRadio(currentRadioIndex + 1);
+          connectTurkishRadio(currentRadioIndex + 1, 0);
         }
       });
 
       // 2. iOS Safari VBR MP3 son saniye takılma koruması
       bgMusic.addEventListener("timeupdate", () => {
-        if (isSwitchingAudio) return;
         if (!isRadioMode && !bgMusic.loop && bgMusic.duration > 1 && Number.isFinite(bgMusic.duration)) {
           if (bgMusic.currentTime >= bgMusic.duration - 0.35) {
             if (navigator.onLine === false) {
@@ -1371,26 +1434,25 @@
               bgMusic.play().catch(() => {});
             } else {
               consecutiveRadioFailures = 0;
-              connectTurkishRadio(0);
+              connectTurkishRadio(0, 0);
             }
           }
         }
       });
 
-      // 3. Hata durumunda yedek radyoya veya çevrimdışı şarkıya geçiş
+      // 3. Yayın bağlantı hatası olursa yedek sunucuya veya sıradaki radyoya geç
       bgMusic.addEventListener("error", () => {
-        if (isSwitchingAudio) return;
+        const reqId = activeAudioRequestId;
         if (!isRadioMode) {
           if (navigator.onLine !== false) {
             consecutiveRadioFailures = 0;
-            connectTurkishRadio(0);
+            connectTurkishRadio(0, 0);
           }
         } else {
-          handleRadioStreamFailure();
+          handleRadioStreamFailure(reqId);
         }
       });
 
-      // Canlı yayın başarıyla çalmaya başladığında hata sayacını sıfırla
       bgMusic.addEventListener("playing", () => {
         clearRadioWatchdog();
         if (isRadioMode) {
@@ -1399,7 +1461,6 @@
         updateRadioStatusUI();
       });
 
-      // İnternet bağlantısı kesilirse veya geri gelirse akıllı geçiş yap
       window.addEventListener("offline", () => {
         if (isRadioMode) {
           playLocalSpecialSong(true);
@@ -1412,7 +1473,7 @@
         }
       });
 
-      // Üstteki radyo göstergesine dokununca: Özel Şarkımız -> 5 Türkçe Radyo -> Özel Şarkımız döngüsü
+      // Üstteki radyo göstergesine dokununca: Özel Şarkımız -> 7 Türkçe Radyo -> Özel Şarkımız döngüsü
       radioStatusPill.addEventListener("click", (e) => {
         e.stopPropagation();
         if (!soundEnabled) {
@@ -1435,9 +1496,9 @@
 
         consecutiveRadioFailures = 0;
         if (!isRadioMode) {
-          connectTurkishRadio(0);
+          connectTurkishRadio(0, 0);
         } else if (currentRadioIndex + 1 < TURKISH_ROMANTIC_RADIOS.length) {
-          connectTurkishRadio(currentRadioIndex + 1);
+          connectTurkishRadio(currentRadioIndex + 1, 0);
         } else {
           playLocalSpecialSong(false);
         }
@@ -1550,11 +1611,14 @@
           bgMusic.pause();
           return;
         }
+        const reqId = activeAudioRequestId;
         const p = bgMusic.play();
         if (p && typeof p.catch === "function") {
-          p.catch(() => {
+          p.catch((err) => {
+            if (reqId !== activeAudioRequestId) return;
+            if (err && (err.name === "AbortError" || err.name === "NotAllowedError")) return;
             if (isRadioMode) {
-              handleRadioStreamFailure();
+              handleRadioStreamFailure(reqId);
             }
           });
         }
@@ -2383,7 +2447,6 @@
         }
       }
 
-      // iPhone 11 Çoklu Dokunma (Avuç İçi) Korumalı Nişan ve Bırakma
       canvas.addEventListener("pointerdown", (e) => {
         if (gameState !== "playing") return;
         if (isPointerDown && activePointerId !== null) return;
@@ -2491,7 +2554,6 @@
           const r = FRUITS[item.type].radius;
           const pos = item.body.position;
 
-          // Sınır dışına taşma koruması
           if (pos.x < 8 + r || pos.x > width - 8 - r || pos.y > floorY - r + 4) {
             const cx = Math.max(8 + r, Math.min(width - 8 - r, pos.x));
             const cy = Math.min(floorY - r, pos.y);
@@ -2573,7 +2635,6 @@
           ctx.translate(dx, dy);
         }
 
-        // Tehlike anında üst çizgi uyarı efekti
         if (dangerTimer > 0.25) {
           const pulseAlpha = 0.12 + 0.1 * Math.sin(performance.now() * 0.012);
           ctx.fillStyle = `rgba(223, 59, 87, ${pulseAlpha})`;
