@@ -494,9 +494,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v9";
-      const KEY_LEVEL = "ozgem_saved_level_v9";
-      const KEY_SCORE = "ozgem_saved_score_v9";
+      const KEY_BEST = "ozgem_best_v10";
+      const KEY_LEVEL = "ozgem_saved_level_v10";
+      const KEY_SCORE = "ozgem_saved_score_v10";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -623,13 +623,12 @@
         shakeTime = Math.max(shakeTime, duration);
       }
 
-      // 1. bölüm çok kolay başlar, bölümler ilerledikçe zorluk artar
       function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Çok Kolay", gravity: 960 };
-        if (lvl === 2) return { tag: "Kolay", gravity: 1020 };
-        if (lvl === 3) return { tag: "Orta", gravity: 1080 };
-        if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1140 };
-        return { tag: `Zor (${lvl}. Bölüm)`, gravity: Math.min(1260, 1140 + (lvl - 4) * 30) };
+        if (lvl === 1) return { tag: "Çok Kolay", gravity: 980 };
+        if (lvl === 2) return { tag: "Kolay", gravity: 1040 };
+        if (lvl === 3) return { tag: "Orta", gravity: 1100 };
+        if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1160 };
+        return { tag: `Zor (${lvl}. Bölüm)`, gravity: Math.min(1280, 1160 + (lvl - 4) * 30) };
       }
 
       function updateHUD() {
@@ -688,7 +687,6 @@
       window.addEventListener("orientationchange", () => setTimeout(() => resizeCanvas(true), 120));
       resizeCanvas(true);
 
-      // Bölüm numarasına göre kolaydan zora meyve havuzu
       function pickSpawnFruit() {
         if (level === 1) {
           const pool = [1, 2, 2, 3, 3, 4, 4];
@@ -706,7 +704,6 @@
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
-      // 1. bölüm boş/ferah başlar; üst bölümlerde tabana engel meyveler eklenir
       function seedInitialFruits(lvl) {
         if (lvl <= 1) return;
         const count = Math.min(7, lvl + 1);
@@ -849,7 +846,7 @@
           x,
           y: SPAWN_Y,
           vx: 0,
-          vy: 26,
+          vy: 24,
           radius: r,
           scaleX: 0.96,
           scaleY: 1.04,
@@ -923,15 +920,15 @@
         }
 
         const gravity = getDifficultyInfo(level).gravity;
-        const damping = 0.985;
+        const damping = 0.992;
         const floorY = height - 10;
 
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
           f.age = (f.age || 0) + dt;
 
-          const weightFactor = 1 - Math.min(0.75, f.type * 0.075);
-          const bounce = 0.12 * weightFactor + 0.02;
+          const weightFactor = 1 - Math.min(0.65, f.type * 0.06);
+          const bounce = 0.14 * weightFactor + 0.03;
 
           if (f.spawnScale < 1) {
             f.spawnScale = Math.min(1, f.spawnScale + dt * 8);
@@ -959,14 +956,13 @@
             const impactVy = f.vy;
             f.y = floorY - f.radius;
             if (f.vy > 0) {
-              f.vy = impactVy > 90 ? -f.vy * bounce : 0;
-              if (impactVy > 240) {
+              f.vy = impactVy > 85 ? -f.vy * bounce : 0;
+              if (impactVy > 230) {
                 f.scaleX = 1.06;
                 f.scaleY = 0.94;
               }
             }
-            f.vx *= 0.78;
-            if (Math.abs(f.vx) < 8) f.vx = 0;
+            f.vx *= 0.92;
           }
         }
 
@@ -974,7 +970,7 @@
         const toRemove = new Set();
         const watermelonIndex = FRUITS.length - 1;
 
-        for (let iter = 0; iter < 4; iter++) {
+        for (let iter = 0; iter < 5; iter++) {
           for (let i = 0; i < fruits.length; i++) {
             if (toRemove.has(fruits[i].id)) continue;
             for (let j = i + 1; j < fruits.length; j++) {
@@ -1010,8 +1006,8 @@
                     type: nextTypeIdx,
                     x: mx,
                     y: my,
-                    vx: (a.vx + b.vx) * 0.12,
-                    vy: -80,
+                    vx: (a.vx + b.vx) * 0.15,
+                    vy: -75,
                     radius: nextDef.radius,
                     scaleX: 1.09,
                     scaleY: 0.91,
@@ -1059,26 +1055,39 @@
                 const ny = dy / dist;
                 const overlap = minDist - dist;
 
-                const massA = Math.pow(a.radius, 1.5);
-                const massB = Math.pow(b.radius, 1.5);
-                const totalMass = massA + massB;
-                const moveA = (massB / totalMass) * 0.85;
-                const moveB = (massA / totalMass) * 0.85;
+                // Tam dikey üst üste binmelerde yana kaymayı tetikleyerek kuleleşmeyi önle
+                let adjNx = nx;
+                if (Math.abs(nx) < 0.08 && Math.abs(ny) > 0.92) {
+                  adjNx = (a.id % 2 === 0 ? 1 : -1) * 0.18;
+                }
 
-                a.x -= nx * overlap * moveA;
+                const massA = Math.pow(a.radius, 1.35);
+                const massB = Math.pow(b.radius, 1.35);
+                const totalMass = massA + massB;
+                const moveA = (massB / totalMass) * 0.9;
+                const moveB = (massA / totalMass) * 0.9;
+
+                a.x -= adjNx * overlap * moveA;
                 a.y -= ny * overlap * moveA;
-                b.x += nx * overlap * moveB;
+                b.x += adjNx * overlap * moveB;
                 b.y += ny * overlap * moveB;
+
+                // Üstteki meyve altındakinin eğimine göre yana yuvarlansın
+                if (a.y < b.y) {
+                  a.vx += adjNx * overlap * 16;
+                } else {
+                  b.vx -= adjNx * overlap * 16;
+                }
 
                 const rvx = b.vx - a.vx;
                 const rvy = b.vy - a.vy;
                 const velAlongNormal = rvx * nx + rvy * ny;
                 if (velAlongNormal < 0) {
-                  const impulse = -(1 + 0.05) * velAlongNormal * 0.45;
-                  a.vx -= impulse * nx * (massB / totalMass) * 1.1;
-                  a.vy -= impulse * ny * (massB / totalMass) * 1.1;
-                  b.vx += impulse * nx * (massA / totalMass) * 1.1;
-                  b.vy += impulse * ny * (massA / totalMass) * 1.1;
+                  const impulse = -(1 + 0.08) * velAlongNormal * 0.5;
+                  a.vx -= impulse * nx * (massB / totalMass) * 1.25;
+                  a.vy -= impulse * ny * (massB / totalMass) * 1.25;
+                  b.vx += impulse * nx * (massA / totalMass) * 1.25;
+                  b.vy += impulse * ny * (massA / totalMass) * 1.25;
                 }
               }
             }
@@ -1108,7 +1117,6 @@
           }
         }
 
-        // Kesin taşma kontrolü: sınır çizgisinin üzerine çıkan yerleşik meyveler süreyi doldurur
         let anyAbove = false;
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
@@ -1128,7 +1136,6 @@
         }
       }
 
-      // Meyvelerin yüzü ve parlaklığı dönmeden her zaman düzgün görünür
       function drawGlossyFruit(f) {
         const def = FRUITS[f.type];
         const r = f.radius * (f.spawnScale || 1);
