@@ -39,7 +39,6 @@
       -webkit-user-select: none;
     }
 
-    /* iPhone Safari alt beyaz boşluk sorununu tamamen engelleyen tam ekran kilidi */
     html, body {
       margin: 0;
       padding: 0;
@@ -155,7 +154,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 148px;
+      max-width: 154px;
       padding: 1px 0;
     }
 
@@ -343,7 +342,6 @@
       will-change: transform;
     }
 
-    /* Alt Bar: 3D İlerleme Zinciri + Ortalanmış Büyük Salla Butonu */
     .bottom-dock {
       display: flex;
       flex-direction: column;
@@ -400,8 +398,8 @@
       align-items: center;
       justify-content: center;
       gap: 9px;
-      min-width: 215px;
-      padding: 9px 20px;
+      min-width: 220px;
+      padding: 9px 22px;
       border-radius: 999px;
       border: 1.5px solid #f5b5c2;
       background: linear-gradient(135deg, #fff5f7 0%, #fde2e8 100%);
@@ -468,17 +466,17 @@
       overflow-y: auto;
       background: var(--card);
       border-radius: 26px;
-      padding: 20px 16px 18px;
+      padding: 18px 15px 16px;
       box-shadow: 0 24px 55px rgba(28, 15, 8, 0.28);
       text-align: center;
       border: 1px solid var(--border);
     }
 
     .hero-badge {
-      width: 58px;
-      height: 58px;
-      border-radius: 19px;
-      margin: 0 auto 10px;
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      margin: 0 auto 8px;
       background: linear-gradient(145deg, #fff2f5, #fbd5de);
       border: 1.5px solid #f7bcc8;
       box-shadow: 0 8px 20px rgba(223, 59, 87, 0.16);
@@ -488,15 +486,15 @@
     }
 
     .hero-badge svg, .hero-badge img {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       display: block;
       object-fit: contain;
     }
 
     .modal-title {
-      margin: 0 0 5px;
-      font-size: 19px;
+      margin: 0 0 4px;
+      font-size: 18.5px;
       font-weight: 800;
       letter-spacing: -0.4px;
       color: var(--ink);
@@ -505,20 +503,19 @@
     }
 
     .modal-sub {
-      margin: 0 0 12px;
-      font-size: 12.5px;
-      line-height: 1.48;
+      margin: 0 0 11px;
+      font-size: 12px;
+      line-height: 1.45;
       color: var(--muted);
       white-space: normal;
       word-break: break-word;
     }
 
-    /* Tema Seçim Listesi Tasarımı */
     .theme-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 14px;
+      gap: 7px;
+      margin-bottom: 12px;
       text-align: left;
     }
 
@@ -526,9 +523,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 16px;
+      gap: 8px;
+      padding: 9px 11px;
+      border-radius: 15px;
       border: 1.5px solid var(--border);
       background: #fffdf9;
       cursor: pointer;
@@ -554,15 +551,15 @@
     }
 
     .theme-name {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--ink);
     }
 
     .theme-desc {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--muted);
-      line-height: 1.3;
+      line-height: 1.28;
     }
 
     .theme-previews {
@@ -573,8 +570,8 @@
     }
 
     .theme-previews img {
-      width: 26px;
-      height: 26px;
+      width: 25px;
+      height: 25px;
       object-fit: contain;
       filter: drop-shadow(0 2px 3px rgba(44, 32, 24, 0.15));
     }
@@ -679,7 +676,7 @@
       color: #ffffff;
       font-size: 15px;
       font-weight: 800;
-      padding: 13.5px 16px;
+      padding: 13px 16px;
       cursor: pointer;
       box-shadow: 0 8px 22px rgba(223, 59, 87, 0.3);
       white-space: normal;
@@ -770,14 +767,14 @@
           <div class="stat-value" id="bestEl">0</div>
         </div>
 
-        <!-- 3D Tema Seçim Menüsü Butonu -->
+        <!-- Tema Seçim Menüsü Butonu -->
         <button class="icon-btn" id="themeMenuBtn" title="Düşen Nesne Temasını Değiştir" aria-label="Tema Seç">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M12 3C7.03 3 3 6.8 3 11.5C3 16.2 7.03 20 12 20C13.38 20 14.5 18.88 14.5 17.5C14.5 16.87 14.26 16.32 13.88 15.88C13.52 15.46 13.3 14.95 13.3 14.35C13.3 13.11 14.31 12.1 15.55 12.1H17.2C19.3 12.1 21 10.4 21 8.3C21 5.37 16.97 3 12 3Z" fill="#fff0f3" stroke="#df3b57" stroke-width="1.75"/>
-            <circle cx="7.5" cy="10.5" r="1.4" fill="#e11d48"/>
-            <circle cx="11" cy="7.5" r="1.4" fill="#f59e0b"/>
-            <circle cx="15.5" cy="8" r="1.4" fill="#10b981"/>
-            <circle cx="8.5" cy="14.5" r="1.4" fill="#8b5cf6"/>
+            <circle cx="7.5" cy="10.5" r="1.4" fill="#ef4444"/>
+            <circle cx="11" cy="7.5" r="1.4" fill="#2563eb"/>
+            <circle cx="15.5" cy="8" r="1.4" fill="#eab308"/>
+            <circle cx="8.5" cy="14.5" r="1.4" fill="#9333ea"/>
           </svg>
         </button>
 
@@ -824,7 +821,7 @@
       <canvas id="gameCanvas"></canvas>
     </div>
 
-    <!-- Alt Konsol: Minyatür 3D Zincir + Ortalanmış Büyük Kutuyu Salla Butonu -->
+    <!-- Alt Konsol: Minyatür Zincir + Ortalanmış Büyük Kutuyu Salla Butonu -->
     <div class="bottom-dock">
       <div class="chain-strip" id="chainStrip" aria-hidden="true"></div>
       <button class="shake-dock-btn" id="shakeBtn" title="Kutuyu Salla" aria-label="Kutuyu Salla">
@@ -864,20 +861,20 @@
     </div>
   </div>
 
-  <!-- 3D Tema Seçim Menüsü Ekranı -->
+  <!-- Tema Seçim Menüsü Ekranı -->
   <div class="overlay" id="themeOverlay">
     <div class="modal-card">
       <div class="hero-badge">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M12 3C7.03 3 3 6.8 3 11.5C3 16.2 7.03 20 12 20C13.38 20 14.5 18.88 14.5 17.5C14.5 16.87 14.26 16.32 13.88 15.88C13.52 15.46 13.3 14.95 13.3 14.35C13.3 13.11 14.31 12.1 15.55 12.1H17.2C19.3 12.1 21 10.4 21 8.3C21 5.37 16.97 3 12 3Z" fill="#fff0f3" stroke="#df3b57" stroke-width="1.75"/>
-          <circle cx="7.5" cy="10.5" r="1.5" fill="#e11d48"/>
-          <circle cx="11" cy="7.5" r="1.5" fill="#f59e0b"/>
-          <circle cx="15.5" cy="8" r="1.5" fill="#10b981"/>
-          <circle cx="8.5" cy="14.5" r="1.5" fill="#8b5cf6"/>
+          <circle cx="7.5" cy="10.5" r="1.5" fill="#ef4444"/>
+          <circle cx="11" cy="7.5" r="1.5" fill="#2563eb"/>
+          <circle cx="15.5" cy="8" r="1.5" fill="#eab308"/>
+          <circle cx="8.5" cy="14.5" r="1.5" fill="#9333ea"/>
         </svg>
       </div>
-      <h2 class="modal-title">Görünüm ve 3D Tema Seç</h2>
-      <p class="modal-sub">Seçtiğin tema kutudaki mevcut nesneleri bozmadan anında uygulanır sevgilim.</p>
+      <h2 class="modal-title">Düşen Nesne Teması Seç</h2>
+      <p class="modal-sub">Tüm temalarda 11 seviyenin renkleri birbirinden tamamen ayrıdır ve anında uygulanır.</p>
 
       <div class="theme-list" id="themeListContainer"></div>
 
@@ -937,7 +934,6 @@
     </div>
   </div>
 
-  <!-- İlk şarkı (sarki.mp3) bittiğinde internet varsa Türkçe Romantik Radyoya geçer, internet yoksa sarki.mp3 devam eder -->
   <audio id="bgMusic" src="sarki.mp3" preload="auto" playsinline></audio>
 
   <script>
@@ -977,62 +973,73 @@
       }
       setCustomAppleIcon();
 
-      // Fizik yarıçapları ve puanlar tüm temalarda ortaktır (böylece oyun ortasında tema değişince fizik bozulmaz)
+      // ============================================================================
+      // BİRBİRİNE KARIŞMAYAN 11 YÜKSEK KONTRASTLI RENK PALETİ
+      // Hiçbir seviyenin rengi diğerine benzemez:
+      // 1:Kırmızı, 2:Mavi, 3:Sarı, 4:Mor, 5:Turuncu, 6:Turkuaz, 7:Şeker Pembe,
+      // 8:Kakao Kahve, 9:İnci Beyazı, 10:Gece Laciverti, 11:Zümrüt Karpuz Yeşili
+      // ============================================================================
       const FRUITS = [
-        { radius: 17, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
-        { radius: 23, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
-        { radius: 30, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
-        { radius: 37, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
-        { radius: 45, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
-        { radius: 54, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
-        { radius: 63, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
-        { radius: 73, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
-        { radius: 83, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
-        { radius: 94, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
-        { radius: 106, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
+        { radius: 17, light: "#fca5a5", base: "#ef4444", dark: "#7f1d1d", score: 2 },    // 0: Parlak Kırmızı
+        { radius: 23, light: "#93c5fd", base: "#2563eb", dark: "#1e3a8a", score: 4 },    // 1: Kraliyet Mavisi
+        { radius: 30, light: "#fef08a", base: "#eab308", dark: "#713f12", score: 8 },    // 2: Güneş Sarısı
+        { radius: 37, light: "#e9d5ff", base: "#9333ea", dark: "#4c1d95", score: 16 },   // 3: Ametist Moru
+        { radius: 45, light: "#fdba74", base: "#f97316", dark: "#7c2d12", score: 32 },   // 4: Canlı Turuncu
+        { radius: 54, light: "#a5f3fc", base: "#06b6d4", dark: "#164e63", score: 64 },   // 5: Buz Turkuazı
+        { radius: 63, light: "#fbcfe8", base: "#ec4899", dark: "#831843", score: 128 },  // 6: Şeker Pembesi
+        { radius: 73, light: "#d97706", base: "#78350f", dark: "#291002", score: 256 },  // 7: Kakao Kahvesi
+        { radius: 83, light: "#ffffff", base: "#cbd5e1", dark: "#334155", score: 512 },  // 8: İnci Beyazı
+        { radius: 94, light: "#818cf8", base: "#312e81", dark: "#0f0d26", score: 1024 }, // 9: Gece Laciverti
+        { radius: 106, light: "#86efac", base: "#16a34a", dark: "#052e16", score: 2048 } // 10: Zümrüt Karpuz Yeşili
       ];
 
-      // 5 Seçilebilir Görünüm Teması ve Tema Odaklı Son Nesne İsimleri
       const THEMES = [
-        {
-          id: "realistic",
-          name: "3D Gerçekçi Meyveler",
-          desc: "Yapraklı, saplı, dokulu 3 boyutlu meyveler ve dilimli Karpuz",
-          finalName: "Karpuz",
-          finalUpper: "KARPUZ"
-        },
-        {
-          id: "patisserie",
-          name: "Fransız Pastanesi (3D Tatlılar)",
-          desc: "Makaron, Donut, Cupcake, Tart ve Çilekli Kutlama Pastası",
-          finalName: "Pasta",
-          finalUpper: "PASTA"
-        },
-        {
-          id: "jewels",
-          name: "3D Mücevher & Kristaller",
-          desc: "Işıltılı İnci, Zümrüt, Yakut, Safir ve Kraliyet Kalp Pırlantası",
-          finalName: "Pırlanta",
-          finalUpper: "PIRLANTA"
-        },
-        {
-          id: "garden",
-          name: "3D Çiçek Bahçesi",
-          desc: "Papatya, Sakura, Lale, Orkide, Gül ve Kalp Çiçek Buketi",
-          finalName: "Buket",
-          finalUpper: "BUKET"
-        },
         {
           id: "classic",
           name: "Sevimli Klasik Toplar",
-          desc: "Gülümseyen gözlü, parlak renkli klasik sevimli toplar",
+          desc: "Birbirine karışmayan 11 net renkte, farklı yüz ifadeli sevimli toplar",
           finalName: "Karpuz",
           finalUpper: "KARPUZ"
+        },
+        {
+          id: "slices",
+          name: "Sulu Meyve Kesitleri",
+          desc: "Lifli, çekirdekli 3 boyutlu taze meyve dilimleri ve Karpuz göbeği",
+          finalName: "Karpuz",
+          finalUpper: "KARPUZ"
+        },
+        {
+          id: "chubby_pets",
+          name: "Sevimli Tombul Hayvanlar",
+          desc: "Civciv, Baykuş, Tilki, Penguen, Tavşan, Ayıcık ve Kral Panda",
+          finalName: "Panda",
+          finalUpper: "PANDA"
+        },
+        {
+          id: "planets",
+          name: "Gezegenler & Uzay Küreleri",
+          desc: "Mars, Neptün, Venüs, Jüpiter, Halkalı Satürn, Ay ve Yaşam Küresi",
+          finalName: "Dünya",
+          finalUpper: "DÜNYA"
+        },
+        {
+          id: "coffee_sweets",
+          name: "Kahve & Dondurma Keyfi",
+          desc: "Renkli Dondurma Topları, Köpüklü Türk Kahvesi ve Kalpli Latte Art",
+          finalName: "Latte",
+          finalUpper: "LATTE"
+        },
+        {
+          id: "photo_orbs",
+          name: "Bizim Fotoğraf Kürelerimiz",
+          desc: "11 farklı renk kristal çerçeve içinde sizin anı fotoğraflarınız",
+          finalName: "Anı Küresi",
+          finalUpper: "ANI KÜRESİ"
         }
       ];
 
-      const KEY_THEME = "ozgem_selected_theme";
-      let currentThemeId = "realistic";
+      const KEY_THEME = "ozgem_selected_theme_v2";
+      let currentThemeId = "classic";
       try {
         const savedTheme = localStorage.getItem(KEY_THEME);
         if (savedTheme && THEMES.some((t) => t.id === savedTheme)) {
@@ -1051,6 +1058,21 @@
         "resim4.jpg",
         "resim5.jpg"
       ];
+
+      // Fotoğraf Küreleri teması için yerel fotoğrafları belleğe yükle
+      const loadedPhotoImages = [];
+      function preloadPhotosForOrbs() {
+        PHOTOS.forEach((src, idx) => {
+          const img = new Image();
+          img.onload = () => {
+            loadedPhotoImages[idx] = img;
+            if (currentThemeId === "photo_orbs") {
+              buildFruitSprites();
+            }
+          };
+          img.src = src;
+        });
+      }
 
       // ============================================================================
       // 30 ÖZEL EL YAPIMI NOT + 160.000 ÖZGÜN KOMBİNASYONLU SONSUZ MEKTUP MOTORU
@@ -1413,7 +1435,7 @@
       const bgMusic = document.getElementById("bgMusic");
 
       // ============================================================================
-      // ÇİFT SUNUCU YEDEKLİ, DOĞRULANMIŞ TÜRKÇE SLOW / ROMANTİK RADYO SİSTEMİ
+      // 14 KANALLI GENİŞLETİLMİŞ TÜRKÇE ROMANTİK & SLOW RADYO LİSTESİ (ÇİFT YEDEKLİ)
       // ============================================================================
       const TURKISH_ROMANTIC_RADIOS = [
         {
@@ -1438,10 +1460,38 @@
           ]
         },
         {
-          name: "PowerTürk",
+          name: "JoyTürk Slow",
           urls: [
-            "https://listen.powerapp.com.tr/powerturk/128/icecast.audio",
-            "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio"
+            "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK.mp3",
+            "https://27743.live.streamtheworld.com/JOY_TURK_SC"
+          ]
+        },
+        {
+          name: "JoyTürk Akustik",
+          urls: [
+            "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_AKUSTIK.mp3",
+            "https://listen.powerapp.com.tr/powerturkakustik/mpeg/icecast.audio"
+          ]
+        },
+        {
+          name: "Radyo 7 Romantik",
+          urls: [
+            "https://moondigitaledge2.radyotvonline.net/radyo7romantik/playlist.m3u8",
+            "https://moondigitaledge2.radyotvonline.net/radyo7slow/playlist.m3u8"
+          ]
+        },
+        {
+          name: "Kral FM",
+          urls: [
+            "https://dygedge2.radyotvonline.net/kralfm/playlist.m3u8",
+            "https://listen.powerapp.com.tr/powerturkslow/mpeg/icecast.audio"
+          ]
+        },
+        {
+          name: "Kral Pop",
+          urls: [
+            "https://dygedge2.radyotvonline.net/kralpop/playlist.m3u8",
+            "https://listen.powerapp.com.tr/powerturk/128/icecast.audio"
           ]
         },
         {
@@ -1452,10 +1502,31 @@
           ]
         },
         {
-          name: "JoyTürk Slow",
+          name: "Pal Slow",
           urls: [
-            "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK.mp3",
-            "https://27743.live.streamtheworld.com/JOY_TURK_SC"
+            "https://moondigitaledge2.radyotvonline.net/palslow/playlist.m3u8",
+            "https://radyo.duhnet.tv/ak_dtvh_slowturk"
+          ]
+        },
+        {
+          name: "PowerTürk",
+          urls: [
+            "https://listen.powerapp.com.tr/powerturk/128/icecast.audio",
+            "https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio"
+          ]
+        },
+        {
+          name: "Joy FM Love",
+          urls: [
+            "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM.mp3",
+            "https://listen.powerapp.com.tr/powerlove/mpeg/icecast.audio"
+          ]
+        },
+        {
+          name: "Süper FM",
+          urls: [
+            "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM.mp3",
+            "https://listen.powerapp.com.tr/powerturk/128/icecast.audio"
           ]
         },
         {
@@ -1909,7 +1980,7 @@
       const SETTLE_SPEED = 2.4;
 
       // ============================================================================
-      // 5 FARKLI 3D TEMA ÇİZİM VE ÖNBELLEK MOTORU (iPhone 11 60 FPS Offscreen Cache)
+      // 6 FARKLI TEMA ÇİZİM VE ÖNBELLEK MOTORU (Yüksek Kontrastlı, Karışmayan Renkler)
       // ============================================================================
       const fruitSpriteCache = [];
       let shadowSpriteCanvas = null;
@@ -1921,7 +1992,7 @@
         const sctx = sc.getContext("2d");
         sctx.beginPath();
         sctx.arc(64, 64, 58, 0, Math.PI * 2);
-        sctx.fillStyle = "rgba(44, 32, 24, 0.12)";
+        sctx.fillStyle = "rgba(44, 32, 24, 0.13)";
         sctx.fill();
         shadowSpriteCanvas = sc;
       }
@@ -1936,523 +2007,482 @@
         octx.fillStyle = grad;
         octx.fill();
 
-        // Alt iç 3D yansıma (Rim light)
         const rim = octx.createRadialGradient(r * 0.3, r * 0.35, r * 0.1, 0, 0, r);
         rim.addColorStop(0, "rgba(255,255,255,0.22)");
         rim.addColorStop(0.6, "rgba(255,255,255,0)");
-        rim.addColorStop(1, "rgba(0,0,0,0.2)");
+        rim.addColorStop(1, "rgba(0,0,0,0.22)");
         octx.fillStyle = rim;
         octx.fill();
+      }
+
+      // Topların birbirine girmesini önleyen net çift katmanlı çerçeve (Beyaz İç Rim + Koyu Dış Çerçeve)
+      function drawCrispSeparationRim(octx, r, darkCol) {
+        octx.beginPath();
+        octx.arc(0, 0, r - Math.max(1.2, r * 0.035), 0, Math.PI * 2);
+        octx.lineWidth = Math.max(1.2, r * 0.03);
+        octx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+        octx.stroke();
+
+        octx.beginPath();
+        octx.arc(0, 0, r, 0, Math.PI * 2);
+        octx.lineWidth = Math.max(2.2, r * 0.055);
+        octx.strokeStyle = darkCol;
+        octx.stroke();
       }
 
       function drawSpecularGloss(octx, r, intensity) {
         octx.save();
         octx.beginPath();
-        octx.ellipse(-r * 0.33, -r * 0.35, r * 0.27, r * 0.14, -0.65, 0, Math.PI * 2);
+        octx.ellipse(-r * 0.33, -r * 0.35, r * 0.26, r * 0.13, -0.65, 0, Math.PI * 2);
         octx.fillStyle = `rgba(255, 255, 255, ${intensity || 0.72})`;
         octx.fill();
 
         octx.beginPath();
-        octx.arc(-r * 0.12, -r * 0.52, r * 0.06, 0, Math.PI * 2);
+        octx.arc(-r * 0.12, -r * 0.52, r * 0.055, 0, Math.PI * 2);
         octx.fillStyle = "rgba(255, 255, 255, 0.5)";
         octx.fill();
         octx.restore();
       }
 
-      // 1. TEMA: SEVİMLİ KLASİK TOPLAR
+      // 1. TEMA: SEVİMLİ KLASİK TOPLAR (11 Tamamen Ayrık Renk + Farklı Sevimli Yüz İfadeleri)
       function renderClassicItem(octx, idx, r) {
         const def = FRUITS[idx];
         draw3DSphereBase(octx, r, def.light, def.base, def.dark);
-        octx.lineWidth = Math.max(2, r * 0.05);
-        octx.strokeStyle = def.dark;
-        octx.stroke();
+
+        // Her seviyede renkleri daha da net ayıran zarif yüzey desenleri
+        octx.save();
+        octx.beginPath();
+        octx.arc(0, 0, r - 2, 0, Math.PI * 2);
+        octx.clip();
 
         if (idx === 10) {
-          octx.save();
-          octx.beginPath();
-          octx.arc(0, 0, r - 2, 0, Math.PI * 2);
-          octx.clip();
-          octx.strokeStyle = "rgba(20, 83, 45, 0.5)";
-          octx.lineWidth = Math.max(3, r * 0.07);
+          // 11. Seviye: Klasik Karpuz Çizgileri
+          octx.strokeStyle = "rgba(5, 46, 22, 0.62)";
+          octx.lineWidth = Math.max(3.5, r * 0.075);
           for (let s = -2; s <= 2; s++) {
             octx.beginPath();
             octx.arc(s * r * 0.34, 0, r * 0.92, -Math.PI * 0.45, Math.PI * 0.45);
             octx.stroke();
           }
-          octx.restore();
+        } else if (idx === 9) {
+          // 10. Seviye (Gece Laciverti): Minik altın yıldız benekleri
+          octx.fillStyle = "rgba(254, 240, 138, 0.45)";
+          const pts = [[-0.5, -0.4], [0.55, -0.35], [-0.55, 0.4], [0.5, 0.45], [0, -0.62]];
+          pts.forEach((p) => {
+            octx.beginPath();
+            octx.arc(p[0] * r, p[1] * r, r * 0.045, 0, Math.PI * 2);
+            octx.fill();
+          });
+        } else if (idx === 6) {
+          // 7. Seviye (Şeker Pembesi): Üstte minik fiyonk detayı
+          octx.fillStyle = "#be123c";
+          octx.beginPath();
+          octx.ellipse(-r * 0.14, -r * 0.68, r * 0.13, r * 0.08, -0.3, 0, Math.PI * 2);
+          octx.ellipse(r * 0.14, -r * 0.68, r * 0.13, r * 0.08, 0.3, 0, Math.PI * 2);
+          octx.fill();
         }
+        octx.restore();
 
-        drawSpecularGloss(octx, r, 0.68);
+        drawCrispSeparationRim(octx, r, def.dark);
+        drawSpecularGloss(octx, r, 0.72);
+
+        // Koyu zeminli toplarda (Kakao Kahve #7 ve Gece Laciverti #9) yüz hatlarının net görünmesi için krem/beyaz kontur
+        const isDarkBall = idx === 7 || idx === 9;
+        const faceColor = isDarkBall ? "#fffbeb" : "#231712";
+        const cheekColor = isDarkBall ? "rgba(251, 113, 133, 0.65)" : "rgba(255, 255, 255, 0.48)";
 
         const eyeOffsetX = r * 0.32;
-        const eyeY = -r * 0.04;
-        const eyeR = Math.max(1.8, r * 0.075);
+        const eyeY = -r * 0.03;
+        const eyeR = Math.max(1.9, r * 0.08);
 
-        octx.fillStyle = "#231712";
+        // Yanaklar
+        octx.fillStyle = cheekColor;
         octx.beginPath();
-        octx.arc(-eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
-        octx.arc(eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+        octx.ellipse(-eyeOffsetX * 1.18, eyeY + r * 0.15, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
+        octx.ellipse(eyeOffsetX * 1.18, eyeY + r * 0.15, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
         octx.fill();
 
-        octx.fillStyle = "rgba(255, 255, 255, 0.4)";
-        octx.beginPath();
-        octx.ellipse(-eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
-        octx.ellipse(eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
-        octx.fill();
-
-        octx.strokeStyle = "#231712";
-        octx.lineWidth = Math.max(1.7, r * 0.058);
+        // Gözler (Bazı seviyelerde göz kırpma / mutlu yay gözler)
+        octx.fillStyle = faceColor;
+        octx.strokeStyle = faceColor;
+        octx.lineWidth = Math.max(1.8, r * 0.06);
         octx.lineCap = "round";
+
+        if (idx === 2 || idx === 6) {
+          // Sol göz normal, sağ göz sevimli göz kırpma
+          octx.beginPath();
+          octx.arc(-eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+          octx.fill();
+
+          octx.beginPath();
+          octx.arc(eyeOffsetX, eyeY + r * 0.03, eyeR * 1.1, Math.PI * 1.15, Math.PI * 1.85);
+          octx.stroke();
+        } else if (idx === 8) {
+          // İnci Beyazı: Neşeli gülen yay gözler
+          octx.beginPath();
+          octx.arc(-eyeOffsetX, eyeY + r * 0.03, eyeR * 1.05, Math.PI * 1.15, Math.PI * 1.85);
+          octx.stroke();
+          octx.beginPath();
+          octx.arc(eyeOffsetX, eyeY + r * 0.03, eyeR * 1.05, Math.PI * 1.15, Math.PI * 1.85);
+          octx.stroke();
+        } else {
+          // Parlak ışıltılı gözler
+          octx.beginPath();
+          octx.arc(-eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+          octx.arc(eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+          octx.fill();
+
+          octx.fillStyle = isDarkBall ? "#231712" : "#ffffff";
+          octx.beginPath();
+          octx.arc(-eyeOffsetX - eyeR * 0.28, eyeY - eyeR * 0.28, eyeR * 0.35, 0, Math.PI * 2);
+          octx.arc(eyeOffsetX - eyeR * 0.28, eyeY - eyeR * 0.28, eyeR * 0.35, 0, Math.PI * 2);
+          octx.fill();
+        }
+
+        // Gülümseme
+        octx.strokeStyle = faceColor;
+        octx.lineWidth = Math.max(1.8, r * 0.06);
         octx.beginPath();
         octx.arc(0, eyeY + r * 0.06, r * 0.22, 0.15 * Math.PI, 0.85 * Math.PI);
         octx.stroke();
       }
 
-      // 2. TEMA: 3D GERÇEKÇİ MEYVELER
-      function renderRealisticFruitItem(octx, idx, r) {
-        const palettes = [
-          { l: "#ff758f", b: "#be123c", d: "#4c0519" }, // 0: Kiraz
-          { l: "#ff9ebb", b: "#e11d48", d: "#881337" }, // 1: Çilek
-          { l: "#d8b4fe", b: "#7e22ce", d: "#3b0764" }, // 2: Üzüm
-          { l: "#fdba74", b: "#ea580c", d: "#7c2d12" }, // 3: Mandalina
-          { l: "#fde047", b: "#f59e0b", d: "#92400e" }, // 4: Portakal
-          { l: "#fca5a5", b: "#dc2626", d: "#7f1d1d" }, // 5: Kırmızı Elma
-          { l: "#d9f99d", b: "#65a30d", d: "#365314" }, // 6: Armut
-          { l: "#fecdd3", b: "#fb7185", d: "#be123c" }, // 7: Şeftali
-          { l: "#fde047", b: "#d97706", d: "#78350f" }, // 8: Ananas
-          { l: "#fef08a", b: "#ca8a04", d: "#713f12" }, // 9: Kavun
-          { l: "#4ade80", b: "#15803d", d: "#052e16" }  // 10: 3D Karpuz
-        ];
-        const pal = palettes[idx];
-        draw3DSphereBase(octx, r, pal.l, pal.b, pal.d);
+      // 2. TEMA: SULU MEYVE KESİTLERİ (İç Dilimler)
+      function renderFruitSlicesItem(octx, idx, r) {
+        const def = FRUITS[idx];
+        // Dış kabuk halkası
+        draw3DSphereBase(octx, r, def.light, def.base, def.dark);
+
+        // Beyaz iç kabuk katmanı
+        octx.beginPath();
+        octx.arc(0, 0, r * 0.86, 0, Math.PI * 2);
+        octx.fillStyle = idx === 7 ? "#fef3c7" : "#fffdf9";
+        octx.fill();
+
+        // Sulu iç meyve eti
+        const fleshR = r * 0.78;
+        const fleshGrad = octx.createRadialGradient(0, 0, r * 0.05, 0, 0, fleshR);
+        if (idx === 10) {
+          // Karpuz içi kırmızı, dışı zümrüt yeşili
+          fleshGrad.addColorStop(0, "#fda4af");
+          fleshGrad.addColorStop(0.7, "#e11d48");
+          fleshGrad.addColorStop(1, "#9f1239");
+        } else {
+          fleshGrad.addColorStop(0, def.light);
+          fleshGrad.addColorStop(0.75, def.base);
+          fleshGrad.addColorStop(1, def.dark);
+        }
+        octx.beginPath();
+        octx.arc(0, 0, fleshR, 0, Math.PI * 2);
+        octx.fillStyle = fleshGrad;
+        octx.fill();
+
+        // Narenciye / Meyve Dilim Çizgileri ve Çekirdekler
+        octx.save();
+        if (idx === 10) {
+          // Karpuz çekirdekleri
+          octx.fillStyle = "#1c1917";
+          const seeds = 10;
+          for (let i = 0; i < seeds; i++) {
+            const ang = (i / seeds) * Math.PI * 2;
+            octx.save();
+            octx.rotate(ang);
+            octx.beginPath();
+            octx.ellipse(0, -r * 0.45, r * 0.038, r * 0.075, 0, 0, Math.PI * 2);
+            octx.fill();
+            octx.restore();
+          }
+        } else {
+          const segments = 8;
+          octx.strokeStyle = "rgba(255, 255, 255, 0.72)";
+          octx.lineWidth = Math.max(1.4, r * 0.045);
+          for (let i = 0; i < segments; i++) {
+            const ang = (i / segments) * Math.PI * 2;
+            octx.beginPath();
+            octx.moveTo(0, 0);
+            octx.lineTo(Math.cos(ang) * fleshR, Math.sin(ang) * fleshR);
+            octx.stroke();
+          }
+          octx.beginPath();
+          octx.arc(0, 0, r * 0.14, 0, Math.PI * 2);
+          octx.fillStyle = "#fffdf9";
+          octx.fill();
+        }
+        octx.restore();
+
+        drawCrispSeparationRim(octx, r, def.dark);
+        drawSpecularGloss(octx, r, 0.55);
+      }
+
+      // 3. TEMA: SEVİMLİ TOMBUL HAYVANLAR (11 Ayrık Renk)
+      function renderChubbyPetsItem(octx, idx, r) {
+        const def = FRUITS[idx];
+        // Üst kulaklar (daire içinde üst kısımda 3D kulak kabartması)
+        octx.save();
+        const earR = r * 0.28;
+        octx.fillStyle = def.dark;
+        octx.beginPath();
+        octx.arc(-r * 0.52, -r * 0.52, earR, 0, Math.PI * 2);
+        octx.arc(r * 0.52, -r * 0.52, earR, 0, Math.PI * 2);
+        octx.fill();
+
+        octx.fillStyle = "#fda4af";
+        octx.beginPath();
+        octx.arc(-r * 0.52, -r * 0.52, earR * 0.55, 0, Math.PI * 2);
+        octx.arc(r * 0.52, -r * 0.52, earR * 0.55, 0, Math.PI * 2);
+        octx.fill();
+        octx.restore();
+
+        // Gövde
+        if (idx === 10) {
+          // 11. Seviye: Yeşil Bambu/Karpuz Çelenkli Kral Panda
+          draw3DSphereBase(octx, r, "#ffffff", "#f1f5f9", "#64748b");
+          octx.lineWidth = Math.max(4, r * 0.08);
+          octx.strokeStyle = "#16a34a";
+          octx.stroke();
+        } else {
+          draw3DSphereBase(octx, r, def.light, def.base, def.dark);
+        }
+
+        // Beyaz/Krem Tombul Ağız & Burun Bölgesi (Snout)
+        octx.beginPath();
+        octx.ellipse(0, r * 0.14, r * 0.34, r * 0.24, 0, 0, Math.PI * 2);
+        octx.fillStyle = "rgba(255, 253, 249, 0.92)";
+        octx.fill();
+
+        const isDark = idx === 7 || idx === 9;
+        const eyeCol = isDark ? "#ffffff" : "#1e1b18";
+
+        // Panda göz yamaları
+        if (idx === 10) {
+          octx.fillStyle = "#1e293b";
+          octx.beginPath();
+          octx.ellipse(-r * 0.34, -r * 0.08, r * 0.18, r * 0.14, -0.3, 0, Math.PI * 2);
+          octx.ellipse(r * 0.34, -r * 0.08, r * 0.18, r * 0.14, 0.3, 0, Math.PI * 2);
+          octx.fill();
+        }
+
+        // Gözler
+        const ex = r * 0.34;
+        const ey = -r * 0.08;
+        const er = Math.max(2, r * 0.085);
+        octx.fillStyle = idx === 10 ? "#ffffff" : eyeCol;
+        octx.beginPath();
+        octx.arc(-ex, ey, er, 0, Math.PI * 2);
+        octx.arc(ex, ey, er, 0, Math.PI * 2);
+        octx.fill();
+
+        // Pembe Yanaklar
+        octx.fillStyle = "rgba(244, 63, 94, 0.45)";
+        octx.beginPath();
+        octx.ellipse(-ex * 1.22, ey + r * 0.18, r * 0.13, r * 0.08, 0, 0, Math.PI * 2);
+        octx.ellipse(ex * 1.22, ey + r * 0.18, r * 0.13, r * 0.08, 0, 0, Math.PI * 2);
+        octx.fill();
+
+        // Sevimli Burun ve 'w' Ağız
+        if (idx === 2 || idx === 5) {
+          // Civciv & Penguen turuncu gaga
+          octx.fillStyle = "#f97316";
+          octx.beginPath();
+          octx.ellipse(0, r * 0.1, r * 0.16, r * 0.1, 0, 0, Math.PI * 2);
+          octx.fill();
+        } else {
+          octx.fillStyle = "#be123c";
+          octx.beginPath();
+          octx.ellipse(0, r * 0.07, r * 0.1, r * 0.07, 0, 0, Math.PI * 2);
+          octx.fill();
+
+          octx.strokeStyle = "#231712";
+          octx.lineWidth = Math.max(1.5, r * 0.048);
+          octx.lineCap = "round";
+          octx.beginPath();
+          octx.arc(-r * 0.08, r * 0.15, r * 0.08, 0.1 * Math.PI, 0.9 * Math.PI);
+          octx.stroke();
+          octx.beginPath();
+          octx.arc(r * 0.08, r * 0.15, r * 0.08, 0.1 * Math.PI, 0.9 * Math.PI);
+          octx.stroke();
+        }
+
+        drawCrispSeparationRim(octx, r, idx === 10 ? "#15803d" : def.dark);
+        drawSpecularGloss(octx, r, 0.48);
+      }
+
+      // 4. TEMA: GEZEGENLER & UZAY KÜRELERİ
+      function renderPlanetsItem(octx, idx, r) {
+        const def = FRUITS[idx];
+        draw3DSphereBase(octx, r, def.light, def.base, def.dark);
 
         octx.save();
         octx.beginPath();
         octx.arc(0, 0, r - 1, 0, Math.PI * 2);
         octx.clip();
 
-        if (idx === 1) {
-          // Çilek altın tohum dokusu
-          octx.fillStyle = "rgba(254, 240, 138, 0.85)";
-          for (let y = -r * 0.55; y <= r * 0.65; y += r * 0.28) {
-            for (let x = -r * 0.6; x <= r * 0.6; x += r * 0.32) {
-              const ox = x + ((Math.round(y * 10) % 2) * r * 0.15);
-              if (ox * ox + y * y < r * r * 0.65) {
-                octx.beginPath();
-                octx.ellipse(ox, y, r * 0.04, r * 0.07, 0.2, 0, Math.PI * 2);
-                octx.fill();
-              }
-            }
-          }
-        } else if (idx === 2) {
-          // Üzüm salkım boğum dokusu
-          for (let gx = -1; gx <= 1; gx++) {
-            for (let gy = -1; gy <= 1; gy++) {
-              const bx = gx * r * 0.36;
-              const by = gy * r * 0.36;
-              const gGrad = octx.createRadialGradient(bx - r * 0.1, by - r * 0.1, r * 0.04, bx, by, r * 0.38);
-              gGrad.addColorStop(0, "rgba(243, 232, 255, 0.55)");
-              gGrad.addColorStop(1, "rgba(59, 7, 100, 0.25)");
-              octx.beginPath();
-              octx.arc(bx, by, r * 0.36, 0, Math.PI * 2);
-              octx.fillStyle = gGrad;
-              octx.fill();
-            }
-          }
-        } else if (idx === 3 || idx === 4) {
-          // Narenciye gözenek dokusu
-          octx.fillStyle = "rgba(124, 45, 18, 0.16)";
-          for (let a = 0; a < 28; a++) {
-            const ang = a * 2.4;
-            const dist = ((a * 7) % 10) * 0.085 * r;
-            octx.beginPath();
-            octx.arc(Math.cos(ang) * dist, Math.sin(ang) * dist, r * 0.032, 0, Math.PI * 2);
-            octx.fill();
-          }
-        } else if (idx === 7) {
-          // Şeftali karakteristik yan oluk çizgisi
-          octx.strokeStyle = "rgba(159, 18, 57, 0.35)";
-          octx.lineWidth = r * 0.06;
+        if (idx === 10) {
+          // 11. Seviye: Yaşam Küresi Dünya (Mavi okyanus + Zümrüt yeşili kıtalar)
+          const earthGrad = octx.createRadialGradient(-r * 0.3, -r * 0.3, r * 0.1, 0, 0, r);
+          earthGrad.addColorStop(0, "#38bdf8");
+          earthGrad.addColorStop(0.6, "#0284c7");
+          earthGrad.addColorStop(1, "#0c4a6e");
+          octx.fillStyle = earthGrad;
+          octx.fillRect(-r, -r, r * 2, r * 2);
+
+          octx.fillStyle = "#22c55e";
           octx.beginPath();
-          octx.arc(-r * 0.2, 0, r * 0.78, -Math.PI * 0.42, Math.PI * 0.42);
+          octx.ellipse(-r * 0.25, -r * 0.15, r * 0.38, r * 0.26, 0.4, 0, Math.PI * 2);
+          octx.ellipse(r * 0.3, r * 0.25, r * 0.34, r * 0.22, -0.3, 0, Math.PI * 2);
+          octx.ellipse(r * 0.15, -r * 0.45, r * 0.25, r * 0.15, 0.2, 0, Math.PI * 2);
+          octx.fill();
+        } else if (idx === 4 || idx === 7) {
+          // Jüpiter & Satürn atmosfer kuşakları
+          octx.fillStyle = "rgba(255, 255, 255, 0.24)";
+          octx.fillRect(-r, -r * 0.45, r * 2, r * 0.18);
+          octx.fillRect(-r, r * 0.1, r * 2, r * 0.22);
+          octx.fillStyle = "rgba(0, 0, 0, 0.15)";
+          octx.fillRect(-r, -r * 0.15, r * 2, r * 0.16);
+        } else {
+          // 3D Gezegen kraterleri
+          const craters = [[-0.3, 0.2, 0.18], [0.35, -0.15, 0.15], [0.1, 0.42, 0.12]];
+          craters.forEach((c) => {
+            octx.beginPath();
+            octx.arc(c[0] * r, c[1] * r, c[2] * r, 0, Math.PI * 2);
+            octx.fillStyle = "rgba(0, 0, 0, 0.16)";
+            octx.fill();
+            octx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+            octx.lineWidth = Math.max(1, r * 0.025);
+            octx.stroke();
+          });
+        }
+
+        // Satürn (#7) ve Nebula (#9) için gezegen halkası
+        if (idx === 7 || idx === 9) {
+          octx.strokeStyle = "rgba(254, 240, 138, 0.78)";
+          octx.lineWidth = Math.max(3, r * 0.085);
+          octx.beginPath();
+          octx.ellipse(0, 0, r * 0.92, r * 0.28, -0.35, 0, Math.PI * 2);
           octx.stroke();
-        } else if (idx === 8) {
-          // Ananas 3D elmas kafes dokusu
-          octx.strokeStyle = "rgba(120, 53, 15, 0.42)";
-          octx.lineWidth = Math.max(1.5, r * 0.038);
-          for (let k = -r * 1.4; k <= r * 1.4; k += r * 0.34) {
-            octx.beginPath();
-            octx.moveTo(k, -r);
-            octx.lineTo(k + r, r);
-            octx.moveTo(k, -r);
-            octx.lineTo(k - r, r);
-            octx.stroke();
-          }
-        } else if (idx === 9) {
-          // Kavun ağ kabuk çizgileri
-          octx.strokeStyle = "rgba(254, 249, 195, 0.48)";
-          octx.lineWidth = Math.max(1.6, r * 0.035);
-          for (let s = -2; s <= 2; s++) {
-            octx.beginPath();
-            octx.arc(s * r * 0.32, 0, r * 0.94, -Math.PI * 0.5, Math.PI * 0.5);
-            octx.stroke();
-            octx.beginPath();
-            octx.arc(0, s * r * 0.32, r * 0.94, 0, Math.PI);
-            octx.stroke();
-          }
-        } else if (idx === 10) {
-          // 3D Gerçekçi Karpuz koyu yeşil dalgalı şeritleri
-          octx.strokeStyle = "#052e16";
-          octx.lineWidth = Math.max(4.5, r * 0.095);
-          octx.lineCap = "round";
-          for (let s = -2; s <= 2; s++) {
-            octx.beginPath();
-            octx.arc(s * r * 0.35, 0, r * 0.94, -Math.PI * 0.46, Math.PI * 0.46);
-            octx.stroke();
-          }
         }
         octx.restore();
 
-        // Üst 3D Sap ve Yeşil Yaprak Detayı
-        octx.save();
-        octx.translate(0, -r * 0.72);
-        // Sap çukuru gölgesi
-        octx.beginPath();
-        octx.ellipse(0, r * 0.06, r * 0.22, r * 0.08, 0, 0, Math.PI * 2);
-        octx.fillStyle = "rgba(0, 0, 0, 0.25)";
-        octx.fill();
-
-        // Odunsu sap
-        octx.strokeStyle = "#5c3a21";
-        octx.lineWidth = Math.max(2, r * 0.07);
-        octx.lineCap = "round";
-        octx.beginPath();
-        octx.moveTo(0, r * 0.05);
-        octx.quadraticCurveTo(r * 0.08, -r * 0.14, r * 0.16, -r * 0.18);
-        octx.stroke();
-
-        // Canlı yeşil 3D yaprak
-        octx.beginPath();
-        octx.ellipse(-r * 0.14, -r * 0.04, r * 0.22, r * 0.1, -0.35, 0, Math.PI * 2);
-        const leafGrad = octx.createLinearGradient(-r * 0.3, -r * 0.15, 0, r * 0.08);
-        leafGrad.addColorStop(0, "#86efac");
-        leafGrad.addColorStop(1, "#15803d");
-        octx.fillStyle = leafGrad;
-        octx.fill();
-        octx.restore();
-
-        octx.beginPath();
-        octx.arc(0, 0, r, 0, Math.PI * 2);
-        octx.lineWidth = Math.max(1.8, r * 0.04);
-        octx.strokeStyle = pal.d;
-        octx.stroke();
-
-        drawSpecularGloss(octx, r, 0.75);
+        drawCrispSeparationRim(octx, r, def.dark);
+        drawSpecularGloss(octx, r, 0.65);
       }
 
-      // 3. TEMA: FRANSIZ PASTANESİ (3D TATLILAR & KUTLAMA PASTASI)
-      function renderPatisserieItem(octx, idx, r) {
-        const sweetPal = [
-          { l: "#fbcfe8", b: "#ec4899", d: "#9d174d", icing: "#fdf2f8" }, // 0: Pembe Makaron
-          { l: "#a16207", b: "#713f12", d: "#422006", icing: "#fef08a" }, // 1: Çikolatalı Trüf
-          { l: "#fde68a", b: "#d97706", d: "#92400e", icing: "#f43f5e" }, // 2: Çilekli Kurabiye
-          { l: "#fed7aa", b: "#ea580c", d: "#9a3412", icing: "#fff7ed" }, // 3: Karamelli Tartlet
-          { l: "#fde047", b: "#ca8a04", d: "#854d0e", icing: "#fb7185" }, // 4: Pembe Glazürlü Donut
-          { l: "#f9a8d4", b: "#db2777", d: "#831843", icing: "#ffffff" }, // 5: Çilekli Cupcake
-          { l: "#fcd34d", b: "#b45309", d: "#78350f", icing: "#ef4444" }, // 6: Meyveli Tart
-          { l: "#e9d5ff", b: "#9333ea", d: "#581c87", icing: "#faf5ff" }, // 7: Yaban Mersinli Cheesecake
-          { l: "#d6d3d1", b: "#78350f", d: "#451a03", icing: "#fef3c7" }, // 8: Profiterol Kulesi
-          { l: "#fecdd3", b: "#e11d48", d: "#881337", icing: "#fff1f2" }, // 9: Frambuazlı Charlotte
-          { l: "#fff1f2", b: "#f43f5e", d: "#9f1239", icing: "#ffffff" }  // 10: Çok Katlı Kutlama Pastası
-        ];
-        const pal = sweetPal[idx];
+      // 5. TEMA: KAHVE & DONDURMA KEYFİ
+      function renderCoffeeSweetsItem(octx, idx, r) {
+        const def = FRUITS[idx];
+        // Porselen fincan / kase dış çerçevesi
+        draw3DSphereBase(octx, r, def.light, def.base, def.dark);
 
-        // 3D Hamur / Kek Gövdesi
-        draw3DSphereBase(octx, r, pal.l, pal.b, pal.d);
-
-        // Üst Krema / Glazür Katmanı
-        octx.save();
-        if (idx === 4) {
-          // Donut glazürü ve orta çukuru
+        if (idx === 10) {
+          // 11. Seviye: Zümrüt Fincanda Kalpli Latte Art
           octx.beginPath();
-          octx.arc(0, 0, r * 0.78, 0, Math.PI * 2);
-          octx.fillStyle = pal.icing;
+          octx.arc(0, 0, r * 0.84, 0, Math.PI * 2);
+          octx.fillStyle = "#ffffff";
           octx.fill();
 
+          const coffeeGrad = octx.createRadialGradient(-r * 0.2, -r * 0.2, r * 0.05, 0, 0, r * 0.76);
+          coffeeGrad.addColorStop(0, "#d97706");
+          coffeeGrad.addColorStop(0.7, "#78350f");
+          coffeeGrad.addColorStop(1, "#451a03");
           octx.beginPath();
-          octx.arc(0, 0, r * 0.28, 0, Math.PI * 2);
-          octx.fillStyle = pal.d;
+          octx.arc(0, 0, r * 0.76, 0, Math.PI * 2);
+          octx.fillStyle = coffeeGrad;
+          octx.fill();
+
+          // Süt köpüğünden Latte Kalbi
+          const hr = r * 0.42;
+          octx.beginPath();
+          octx.moveTo(0, hr * 0.85);
+          octx.bezierCurveTo(-hr * 1.3, hr * 0.1, -hr * 1.1, -hr * 0.9, -hr * 0.45, -hr * 0.9);
+          octx.bezierCurveTo(-hr * 0.1, -hr * 0.9, 0, -hr * 0.55, 0, -hr * 0.4);
+          octx.bezierCurveTo(0, -hr * 0.55, hr * 0.1, -hr * 0.9, hr * 0.45, -hr * 0.9);
+          octx.bezierCurveTo(hr * 1.1, -hr * 0.9, hr * 1.3, hr * 0.1, 0, hr * 0.85);
+          octx.fillStyle = "#fffbeb";
           octx.fill();
         } else {
-          // Dalgalı krema örtüsü
-          octx.beginPath();
-          const waves = 10;
-          for (let i = 0; i < waves; i++) {
-            const a1 = (i / waves) * Math.PI * 2;
-            const a2 = ((i + 0.5) / waves) * Math.PI * 2;
-            const rOuter = r * (idx === 10 ? 0.84 : 0.72);
-            const rInner = r * (idx === 10 ? 0.72 : 0.58);
-            if (i === 0) octx.moveTo(Math.cos(a1) * rOuter, Math.sin(a1) * rOuter);
-            else octx.lineTo(Math.cos(a1) * rOuter, Math.sin(a1) * rOuter);
-            octx.lineTo(Math.cos(a2) * rInner, Math.sin(a2) * rInner);
-          }
-          octx.closePath();
-          const creamGrad = octx.createRadialGradient(-r * 0.2, -r * 0.2, r * 0.05, 0, 0, r * 0.85);
-          creamGrad.addColorStop(0, "#ffffff");
-          creamGrad.addColorStop(1, pal.icing);
-          octx.fillStyle = creamGrad;
-          octx.fill();
-        }
-
-        // Renkli Pasta Şekerlemeleri (Sprinkles) veya Çilek Süslemeleri
-        const sprinkleColors = ["#e11d48", "#f59e0b", "#10b981", "#3b82f6", "#a855f7"];
-        for (let s = 0; s < 8; s++) {
-          const ang = (s / 8) * Math.PI * 2 + 0.3;
-          const dist = r * 0.45;
-          const sx = Math.cos(ang) * dist;
-          const sy = Math.sin(ang) * dist;
+          // Dondurma / Krema Girdabı (Swirl) ve Çikolata Sosu
           octx.save();
-          octx.translate(sx, sy);
-          octx.rotate(ang);
-          octx.fillStyle = sprinkleColors[s % sprinkleColors.length];
-          if (idx >= 8) {
-            // Büyük pastalarda çevre çilek/rozet süsü
-            octx.beginPath();
-            octx.arc(0, 0, r * 0.11, 0, Math.PI * 2);
-            octx.fillStyle = "#e11d48";
-            octx.fill();
-            octx.beginPath();
-            octx.arc(-r * 0.03, -r * 0.03, r * 0.035, 0, Math.PI * 2);
-            octx.fillStyle = "#ffffff";
-            octx.fill();
-          } else {
-            octx.fillRect(-r * 0.08, -r * 0.03, r * 0.16, r * 0.06);
-          }
-          octx.restore();
-        }
-
-        // En son seviye (Pasta) için merkezde 3D Kalp Çilek Tacı
-        if (idx === 10) {
-          octx.save();
-          const hr = r * 0.32;
-          octx.beginPath();
-          octx.moveTo(0, hr * 0.85);
-          octx.bezierCurveTo(-hr * 1.3, hr * 0.1, -hr * 1.1, -hr * 0.9, -hr * 0.45, -hr * 0.9);
-          octx.bezierCurveTo(-hr * 0.1, -hr * 0.9, 0, -hr * 0.55, 0, -hr * 0.4);
-          octx.bezierCurveTo(0, -hr * 0.55, hr * 0.1, -hr * 0.9, hr * 0.45, -hr * 0.9);
-          octx.bezierCurveTo(hr * 1.1, -hr * 0.9, hr * 1.3, hr * 0.1, 0, hr * 0.85);
-          octx.fillStyle = "#e11d48";
-          octx.fill();
-          octx.lineWidth = 2;
-          octx.strokeStyle = "#ffffff";
-          octx.stroke();
-          octx.restore();
-        }
-        octx.restore();
-
-        octx.beginPath();
-        octx.arc(0, 0, r, 0, Math.PI * 2);
-        octx.lineWidth = Math.max(1.8, r * 0.045);
-        octx.strokeStyle = pal.d;
-        octx.stroke();
-
-        drawSpecularGloss(octx, r, 0.55);
-      }
-
-      // 4. TEMA: 3D MÜCEVHER & KRİSTALLER
-      function renderJewelItem(octx, idx, r) {
-        const gemPal = [
-          { l: "#ffffff", b: "#f1f5f9", d: "#94a3b8" }, // 0: Okyanus İncisi
-          { l: "#f3e8ff", b: "#9333ea", d: "#4c1d95" }, // 1: Ametist
-          { l: "#cffafe", b: "#06b6d4", d: "#164e63" }, // 2: Akuamarin
-          { l: "#fef08a", b: "#eab308", d: "#713f12" }, // 3: Sitrin
-          { l: "#bfdbfe", b: "#2563eb", d: "#1e3a8a" }, // 4: Kraliyet Safiri
-          { l: "#a7f3d0", b: "#10b981", d: "#064e3b" }, // 5: Kolombiya Zümrüdü
-          { l: "#fecdd3", b: "#e11d48", d: "#881337" }, // 6: Birmanya Yakutu
-          { l: "#fbcfe8", b: "#ec4899", d: "#831843" }, // 7: Pembe Kuvars
-          { l: "#fde68a", b: "#d97706", d: "#78350f" }, // 8: İmparatorluk Topazı
-          { l: "#ddd6fe", b: "#6366f1", d: "#312e81" }, // 9: Tanzanit
-          { l: "#ffe4e6", b: "#f43f5e", d: "#881337" }  // 10: Kraliyet Kalp Pırlantası
-        ];
-        const pal = gemPal[idx];
-
-        draw3DSphereBase(octx, r, pal.l, pal.b, pal.d);
-
-        // 3D Kristal Faset Kesim Çizgileri ve Işık Kırılma Poligonları
-        const sides = idx < 4 ? 6 : 8;
-        const innerR = r * 0.56;
-
-        octx.save();
-        for (let i = 0; i < sides; i++) {
-          const a1 = (i / sides) * Math.PI * 2;
-          const a2 = ((i + 1) / sides) * Math.PI * 2;
-
-          octx.beginPath();
-          octx.moveTo(Math.cos(a1) * innerR, Math.sin(a1) * innerR);
-          octx.lineTo(Math.cos(a2) * innerR, Math.sin(a2) * innerR);
-          octx.lineTo(Math.cos(a2) * r, Math.sin(a2) * r);
-          octx.lineTo(Math.cos(a1) * r, Math.sin(a1) * r);
-          octx.closePath();
-
-          octx.fillStyle = i % 2 === 0 ? "rgba(255, 255, 255, 0.18)" : "rgba(0, 0, 0, 0.14)";
-          octx.fill();
-          octx.strokeStyle = "rgba(255, 255, 255, 0.45)";
-          octx.lineWidth = Math.max(1, r * 0.025);
-          octx.stroke();
-        }
-
-        // Üst Tabla Faseti
-        octx.beginPath();
-        for (let i = 0; i < sides; i++) {
-          const a = (i / sides) * Math.PI * 2;
-          const px = Math.cos(a) * innerR;
-          const py = Math.sin(a) * innerR;
-          if (i === 0) octx.moveTo(px, py);
-          else octx.lineTo(px, py);
-        }
-        octx.closePath();
-        const tableGrad = octx.createLinearGradient(-innerR, -innerR, innerR, innerR);
-        tableGrad.addColorStop(0, "rgba(255, 255, 255, 0.65)");
-        tableGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.1)");
-        tableGrad.addColorStop(1, "rgba(255, 255, 255, 0.35)");
-        octx.fillStyle = tableGrad;
-        octx.fill();
-        octx.strokeStyle = "rgba(255, 255, 255, 0.8)";
-        octx.lineWidth = Math.max(1.2, r * 0.03);
-        octx.stroke();
-
-        // Son seviye Pırlanta için merkezde ışıltılı kalp kesimi
-        if (idx === 10) {
-          const hr = r * 0.36;
-          octx.beginPath();
-          octx.moveTo(0, hr * 0.85);
-          octx.bezierCurveTo(-hr * 1.3, hr * 0.1, -hr * 1.1, -hr * 0.9, -hr * 0.45, -hr * 0.9);
-          octx.bezierCurveTo(-hr * 0.1, -hr * 0.9, 0, -hr * 0.55, 0, -hr * 0.4);
-          octx.bezierCurveTo(0, -hr * 0.55, hr * 0.1, -hr * 0.9, hr * 0.45, -hr * 0.9);
-          octx.bezierCurveTo(hr * 1.1, -hr * 0.9, hr * 1.3, hr * 0.1, 0, hr * 0.85);
-          octx.fillStyle = "rgba(255, 255, 255, 0.85)";
-          octx.fill();
-        }
-
-        // Pırlanta yıldız parlaması
-        const sx = -r * 0.32;
-        const sy = -r * 0.32;
-        const sr = r * 0.24;
-        octx.fillStyle = "#ffffff";
-        octx.beginPath();
-        octx.moveTo(sx, sy - sr);
-        octx.quadraticCurveTo(sx, sy, sx + sr, sy);
-        octx.quadraticCurveTo(sx, sy, sx, sy + sr);
-        octx.quadraticCurveTo(sx, sy, sx - sr, sy);
-        octx.quadraticCurveTo(sx, sy, sx, sy - sr);
-        octx.fill();
-        octx.restore();
-
-        octx.beginPath();
-        octx.arc(0, 0, r, 0, Math.PI * 2);
-        octx.lineWidth = Math.max(1.8, r * 0.045);
-        octx.strokeStyle = pal.d;
-        octx.stroke();
-      }
-
-      // 5. TEMA: 3D ÇİÇEK BAHÇESİ & BUKET
-      function renderGardenItem(octx, idx, r) {
-        const flowerPal = [
-          { bg: "#dcfce7", petal1: "#ffffff", petal2: "#f1f5f9", center: "#facc15", rim: "#15803d" }, // 0: Papatya
-          { bg: "#f3e8ff", petal1: "#d8b4fe", petal2: "#9333ea", center: "#fef08a", rim: "#581c87" }, // 1: Lavanta
-          { bg: "#ede9fe", petal1: "#a78bfa", petal2: "#6d28d9", center: "#fde047", rim: "#4c1d95" }, // 2: Menekşe
-          { bg: "#fce7f3", petal1: "#fbcfe8", petal2: "#ec4899", center: "#fef08a", rim: "#9d174d" }, // 3: Sakura
-          { bg: "#fef9c3", petal1: "#fef08a", petal2: "#eab308", center: "#ea580c", rim: "#854d0e" }, // 4: Nergis
-          { bg: "#e0f2fe", petal1: "#7dd3fc", petal2: "#0284c7", center: "#fef9c3", rim: "#0c4a6e" }, // 5: Ortanca
-          { bg: "#ffe4e6", petal1: "#fda4af", petal2: "#e11d48", center: "#fef08a", rim: "#881337" }, // 6: Lale
-          { bg: "#fae8ff", petal1: "#f0abfc", petal2: "#c026d3", center: "#fde047", rim: "#701a75" }, // 7: Orkide
-          { bg: "#fce7f3", petal1: "#f9a8d4", petal2: "#db2777", center: "#fef08a", rim: "#831843" }, // 8: Şakayık
-          { bg: "#ffe4e6", petal1: "#fb7185", petal2: "#be123c", center: "#fda4af", rim: "#4c0519" }, // 9: Kırmızı Gül
-          { bg: "#fff1f2", petal1: "#ff758f", petal2: "#e11d48", center: "#fde047", rim: "#881337" }  // 10: Kalp Çiçek Buketi
-        ];
-        const pal = flowerPal[idx];
-
-        // Yumuşak yaprak yeşili/pastel 3D madalyon tabanı
-        draw3DSphereBase(octx, r, "#ffffff", pal.bg, pal.rim);
-
-        // 3D Çiçek Taç Yaprakları
-        const petals = idx < 3 ? 6 : (idx < 7 ? 8 : 10);
-        octx.save();
-        for (let i = 0; i < petals; i++) {
-          const ang = (i / petals) * Math.PI * 2;
-          octx.save();
-          octx.rotate(ang);
-          octx.beginPath();
-          octx.ellipse(0, -r * 0.44, r * 0.24, r * 0.38, 0, 0, Math.PI * 2);
-          const pGrad = octx.createRadialGradient(0, -r * 0.55, r * 0.04, 0, -r * 0.4, r * 0.4);
-          pGrad.addColorStop(0, pal.petal1);
-          pGrad.addColorStop(1, pal.petal2);
-          octx.fillStyle = pGrad;
-          octx.fill();
-          octx.lineWidth = Math.max(1, r * 0.025);
-          octx.strokeStyle = "rgba(255,255,255,0.65)";
-          octx.stroke();
-          octx.restore();
-        }
-
-        // İç Katman Taç Yapraklar (Büyük çiçekler için katmerli 3D görünüm)
-        if (idx >= 5) {
-          for (let i = 0; i < petals; i++) {
-            const ang = ((i + 0.5) / petals) * Math.PI * 2;
+          octx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+          octx.lineWidth = Math.max(2, r * 0.08);
+          octx.lineCap = "round";
+          for (let a = 0; a < 4; a++) {
+            const ang = (a / 4) * Math.PI * 2;
             octx.save();
             octx.rotate(ang);
             octx.beginPath();
-            octx.ellipse(0, -r * 0.28, r * 0.17, r * 0.26, 0, 0, Math.PI * 2);
-            octx.fillStyle = pal.petal1;
-            octx.fill();
+            octx.arc(0, -r * 0.25, r * 0.35, -0.3 * Math.PI, 0.5 * Math.PI);
+            octx.stroke();
             octx.restore();
           }
+
+          // Üstte kiraz / çikolata granülleri
+          const dotCols = ["#ffffff", "#fef08a", "#451a03"];
+          for (let d = 0; d < 6; d++) {
+            const ang = (d / 6) * Math.PI * 2;
+            octx.fillStyle = dotCols[d % dotCols.length];
+            octx.beginPath();
+            octx.arc(Math.cos(ang) * r * 0.46, Math.sin(ang) * r * 0.46, r * 0.065, 0, Math.PI * 2);
+            octx.fill();
+          }
+          octx.restore();
         }
 
-        // Çiçek Polen Merkezi veya Buket Kalbi
-        if (idx === 10) {
-          const hr = r * 0.34;
+        drawCrispSeparationRim(octx, r, def.dark);
+        drawSpecularGloss(octx, r, 0.55);
+      }
+
+      // 6. TEMA: BİZİM FOTOĞRAF KÜRELERİMİZ (11 Farklı Renkli Kristal Halka İçinde Fotoğraflarınız)
+      function renderPhotoOrbsItem(octx, idx, r) {
+        const def = FRUITS[idx];
+        // Dış 3D Renkli Kristal Çerçeve (Hangi iki kürenin birleşeceği çerçeve renginden çok net anlaşılır)
+        draw3DSphereBase(octx, r, def.light, def.base, def.dark);
+
+        const photoImg = loadedPhotoImages[idx % PHOTOS.length];
+        const innerR = r * 0.74;
+
+        if (photoImg && photoImg.complete && photoImg.naturalWidth > 0) {
+          octx.save();
           octx.beginPath();
-          octx.moveTo(0, hr * 0.85);
-          octx.bezierCurveTo(-hr * 1.3, hr * 0.1, -hr * 1.1, -hr * 0.9, -hr * 0.45, -hr * 0.9);
-          octx.bezierCurveTo(-hr * 0.1, -hr * 0.9, 0, -hr * 0.55, 0, -hr * 0.4);
-          octx.bezierCurveTo(0, -hr * 0.55, hr * 0.1, -hr * 0.9, hr * 0.45, -hr * 0.9);
-          octx.bezierCurveTo(hr * 1.1, -hr * 0.9, hr * 1.3, hr * 0.1, 0, hr * 0.85);
-          octx.fillStyle = "#be123c";
-          octx.fill();
-          octx.lineWidth = 2;
-          octx.strokeStyle = "#fde047";
-          octx.stroke();
+          octx.arc(0, 0, innerR, 0, Math.PI * 2);
+          octx.clip();
+
+          const iw = photoImg.naturalWidth;
+          const ih = photoImg.naturalHeight;
+          const minDim = Math.min(iw, ih);
+          const sx = (iw - minDim) * 0.5;
+          const sy = (ih - minDim) * 0.5;
+          octx.drawImage(photoImg, sx, sy, minDim, minDim, -innerR, -innerR, innerR * 2, innerR * 2);
+          octx.restore();
         } else {
-          const cGrad = octx.createRadialGradient(-r * 0.08, -r * 0.08, r * 0.02, 0, 0, r * 0.26);
-          cGrad.addColorStop(0, "#ffffff");
-          cGrad.addColorStop(0.35, pal.center);
-          cGrad.addColorStop(1, "#ca8a04");
+          // Fotoğraf yüklenene kadar iç kısım romantik kalp madalyonu gösterir
           octx.beginPath();
-          octx.arc(0, 0, r * 0.25, 0, Math.PI * 2);
-          octx.fillStyle = cGrad;
+          octx.arc(0, 0, innerR, 0, Math.PI * 2);
+          octx.fillStyle = "rgba(255, 255, 255, 0.25)";
           octx.fill();
         }
-        octx.restore();
 
+        // Fotoğraf ile renkli kristal halka arasındaki altın/beyaz iç çerçeve
         octx.beginPath();
-        octx.arc(0, 0, r, 0, Math.PI * 2);
-        octx.lineWidth = Math.max(1.8, r * 0.045);
-        octx.strokeStyle = pal.rim;
+        octx.arc(0, 0, innerR, 0, Math.PI * 2);
+        octx.lineWidth = Math.max(1.8, r * 0.05);
+        octx.strokeStyle = "#ffffff";
         octx.stroke();
 
-        drawSpecularGloss(octx, r, 0.45);
+        drawCrispSeparationRim(octx, r, def.dark);
+        drawSpecularGloss(octx, r, 0.58);
       }
 
       function renderThemeSpriteToContext(octx, themeId, idx, r) {
-        if (themeId === "realistic") {
-          renderRealisticFruitItem(octx, idx, r);
-        } else if (themeId === "patisserie") {
-          renderPatisserieItem(octx, idx, r);
-        } else if (themeId === "jewels") {
-          renderJewelItem(octx, idx, r);
-        } else if (themeId === "garden") {
-          renderGardenItem(octx, idx, r);
+        if (themeId === "slices") {
+          renderFruitSlicesItem(octx, idx, r);
+        } else if (themeId === "chubby_pets") {
+          renderChubbyPetsItem(octx, idx, r);
+        } else if (themeId === "planets") {
+          renderPlanetsItem(octx, idx, r);
+        } else if (themeId === "coffee_sweets") {
+          renderCoffeeSweetsItem(octx, idx, r);
+        } else if (themeId === "photo_orbs") {
+          renderPhotoOrbsItem(octx, idx, r);
         } else {
           renderClassicItem(octx, idx, r);
         }
@@ -2493,7 +2523,6 @@
         refreshThemeDependentUI();
       }
 
-      // Tema değiştiğinde alt zinciri, üst durum rozetini ve oyun sonu ikonunu anında günceller
       function refreshThemeDependentUI() {
         chainStrip.innerHTML = "";
         for (let idx = 0; idx < fruitSpriteCache.length; idx++) {
@@ -2522,7 +2551,6 @@
         }
       }
 
-      // Tema Menüsü Önizleme İkonlarını Hazırla
       function createPreviewDataUrl(themeId, itemIdx) {
         const r = 24;
         const half = 30;
@@ -2554,7 +2582,7 @@
 
           const previews = document.createElement("div");
           previews.className = "theme-previews";
-          [1, 5, 10].forEach((tierIdx) => {
+          [0, 1, 2, 10].forEach((tierIdx) => {
             const pImg = document.createElement("img");
             pImg.src = createPreviewDataUrl(th.id, tierIdx);
             pImg.alt = th.name;
@@ -2598,6 +2626,7 @@
         }
       });
 
+      preloadPhotosForOrbs();
       buildFruitSprites();
 
       // ============================================================================
