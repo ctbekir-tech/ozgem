@@ -473,17 +473,17 @@
       setStrawberryIcon();
 
       const FRUITS = [
-        { name: "Kiraz",     radius: 23, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
-        { name: "Çilek",     radius: 30, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
-        { name: "Üzüm",      radius: 39, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
-        { name: "Mandalina", radius: 48, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
-        { name: "Portakal",  radius: 58, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
-        { name: "Elma",      radius: 69, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
-        { name: "Armut",     radius: 80, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
-        { name: "Şeftali",   radius: 92, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
-        { name: "Ananas",    radius: 104, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
-        { name: "Kavun",     radius: 116, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
-        { name: "Karpuz",    radius: 128, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
+        { name: "Kiraz",     radius: 22, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
+        { name: "Çilek",     radius: 29, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
+        { name: "Üzüm",      radius: 37, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
+        { name: "Mandalina", radius: 46, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
+        { name: "Portakal",  radius: 55, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
+        { name: "Elma",      radius: 65, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
+        { name: "Armut",     radius: 75, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
+        { name: "Şeftali",   radius: 86, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
+        { name: "Ananas",    radius: 97, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
+        { name: "Kavun",     radius: 108, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
+        { name: "Karpuz",    radius: 120, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
       ];
 
       const PHOTOS = [
@@ -494,9 +494,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v8";
-      const KEY_LEVEL = "ozgem_saved_level_v8";
-      const KEY_SCORE = "ozgem_saved_score_v8";
+      const KEY_BEST = "ozgem_best_v9";
+      const KEY_LEVEL = "ozgem_saved_level_v9";
+      const KEY_SCORE = "ozgem_saved_score_v9";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -623,12 +623,13 @@
         shakeTime = Math.max(shakeTime, duration);
       }
 
+      // 1. bölüm çok kolay başlar, bölümler ilerledikçe zorluk artar
       function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Kolay · Akıcı", gravity: 1020 };
-        if (lvl === 2) return { tag: "Orta Kolay", gravity: 1060 };
-        if (lvl === 3) return { tag: "Orta", gravity: 1100 };
+        if (lvl === 1) return { tag: "Çok Kolay", gravity: 960 };
+        if (lvl === 2) return { tag: "Kolay", gravity: 1020 };
+        if (lvl === 3) return { tag: "Orta", gravity: 1080 };
         if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1140 };
-        return { tag: `${lvl}. Seviye Zor`, gravity: Math.min(1260, 1140 + (lvl - 4) * 25) };
+        return { tag: `Zor (${lvl}. Bölüm)`, gravity: Math.min(1260, 1140 + (lvl - 4) * 30) };
       }
 
       function updateHUD() {
@@ -687,47 +688,47 @@
       window.addEventListener("orientationchange", () => setTimeout(() => resizeCanvas(true), 120));
       resizeCanvas(true);
 
+      // Bölüm numarasına göre kolaydan zora meyve havuzu
       function pickSpawnFruit() {
         if (level === 1) {
-          const pool = [1, 1, 2, 2, 3, 3, 4];
-          return pool[Math.floor(Math.random() * pool.length)];
-        }
-        if (level === 2) {
           const pool = [1, 2, 2, 3, 3, 4, 4];
           return pool[Math.floor(Math.random() * pool.length)];
         }
-        if (level === 3) {
-          const pool = [1, 2, 3, 3, 4, 4, 5];
+        if (level === 2) {
+          const pool = [0, 1, 2, 3, 4, 4];
           return pool[Math.floor(Math.random() * pool.length)];
         }
-        const pool = [2, 2, 3, 3, 4, 4, 5];
+        if (level === 3) {
+          const pool = [0, 1, 2, 3, 4, 5];
+          return pool[Math.floor(Math.random() * pool.length)];
+        }
+        const pool = [0, 1, 2, 3, 4, 5, 5];
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
+      // 1. bölüm boş/ferah başlar; üst bölümlerde tabana engel meyveler eklenir
       function seedInitialFruits(lvl) {
         if (lvl <= 1) return;
-        const count = Math.min(6, lvl);
+        const count = Math.min(7, lvl + 1);
         const floorY = height - 10;
         for (let i = 0; i < count; i++) {
-          const t = Math.min(3, (i + Math.floor(lvl / 2)) % 4);
+          const t = Math.min(4, ((i * 2 + lvl) % 5));
           const def = FRUITS[t];
-          const span = width - 52;
-          const x = 26 + ((i + 0.5) / count) * span;
+          const span = width - 56;
+          const x = 28 + ((i + 0.5) / count) * span;
           fruits.push({
             id: nextBodyId++,
             type: t,
             x,
-            y: floorY - def.radius - i * 3,
+            y: floorY - def.radius - i * 4,
             vx: 0,
             vy: 0,
             radius: def.radius,
-            rotation: (Math.random() - 0.5) * 0.25,
-            vr: 0,
             scaleX: 1,
             scaleY: 1,
             merged: false,
             spawnScale: 1,
-            age: 2
+            age: 3
           });
         }
       }
@@ -848,20 +849,18 @@
           x,
           y: SPAWN_Y,
           vx: 0,
-          vy: 24,
+          vy: 26,
           radius: r,
-          rotation: 0,
-          vr: 0,
           scaleX: 0.96,
           scaleY: 1.04,
           merged: false,
-          spawnScale: 0.72,
+          spawnScale: 0.75,
           age: 0
         });
 
         currentType = nextType;
         nextType = pickSpawnFruit();
-        dropCooldown = 0.28;
+        dropCooldown = 0.26;
       }
 
       canvas.addEventListener("pointerdown", (e) => {
@@ -932,7 +931,7 @@
           f.age = (f.age || 0) + dt;
 
           const weightFactor = 1 - Math.min(0.75, f.type * 0.075);
-          const bounce = 0.14 * weightFactor + 0.02;
+          const bounce = 0.12 * weightFactor + 0.02;
 
           if (f.spawnScale < 1) {
             f.spawnScale = Math.min(1, f.spawnScale + dt * 8);
@@ -947,18 +946,6 @@
 
           f.x += f.vx * dt;
           f.y += f.vy * dt;
-
-          // Yavaşlayan veya oturan meyvelerin dönmesini hızla durdur
-          const speed = Math.hypot(f.vx, f.vy);
-          if (speed < 28) {
-            f.vr *= 0.65;
-            if (Math.abs(f.vr) < 0.04) {
-              f.vr = 0;
-            }
-          } else {
-            f.vr = ((f.vx / Math.max(24, f.radius)) * 0.35 * weightFactor) + f.vr * 0.72;
-          }
-          f.rotation += f.vr * dt;
 
           if (f.x - f.radius < 8) {
             f.x = 8 + f.radius;
@@ -1024,15 +1011,13 @@
                     x: mx,
                     y: my,
                     vx: (a.vx + b.vx) * 0.12,
-                    vy: -85,
+                    vy: -80,
                     radius: nextDef.radius,
-                    rotation: 0,
-                    vr: 0,
                     scaleX: 1.09,
                     scaleY: 0.91,
                     merged: false,
-                    spawnScale: 0.72,
-                    age: 0.35
+                    spawnScale: 0.75,
+                    age: 0.5
                   });
 
                   const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
@@ -1089,7 +1074,7 @@
                 const rvy = b.vy - a.vy;
                 const velAlongNormal = rvx * nx + rvy * ny;
                 if (velAlongNormal < 0) {
-                  const impulse = -(1 + 0.06) * velAlongNormal * 0.45;
+                  const impulse = -(1 + 0.05) * velAlongNormal * 0.45;
                   a.vx -= impulse * nx * (massB / totalMass) * 1.1;
                   a.vy -= impulse * ny * (massB / totalMass) * 1.1;
                   b.vx += impulse * nx * (massA / totalMass) * 1.1;
@@ -1123,10 +1108,11 @@
           }
         }
 
+        // Kesin taşma kontrolü: sınır çizgisinin üzerine çıkan yerleşik meyveler süreyi doldurur
         let anyAbove = false;
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
-          if ((f.age || 0) > 0.65 && f.y - f.radius < TOP_LINE_Y) {
+          if ((f.age || 0) > 0.55 && f.y - f.radius * 0.65 < TOP_LINE_Y) {
             anyAbove = true;
             break;
           }
@@ -1134,14 +1120,15 @@
 
         if (anyAbove) {
           dangerTimer += dt;
-          if (dangerTimer > 1.25) {
+          if (dangerTimer > 1.1) {
             triggerGameOver();
           }
         } else {
-          dangerTimer = Math.max(0, dangerTimer - dt * 2.5);
+          dangerTimer = Math.max(0, dangerTimer - dt * 1.8);
         }
       }
 
+      // Meyvelerin yüzü ve parlaklığı dönmeden her zaman düzgün görünür
       function drawGlossyFruit(f) {
         const def = FRUITS[f.type];
         const r = f.radius * (f.spawnScale || 1);
@@ -1158,9 +1145,6 @@
         ctx.arc(0, r * 0.08, r, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(44, 32, 24, 0.12)";
         ctx.fill();
-
-        ctx.save();
-        ctx.rotate(f.rotation || 0);
 
         const grad = ctx.createRadialGradient(-r * 0.32, -r * 0.34, r * 0.12, 0, 0, r);
         grad.addColorStop(0, def.light);
@@ -1219,7 +1203,6 @@
         ctx.stroke();
 
         ctx.restore();
-        ctx.restore();
       }
 
       function render() {
@@ -1235,7 +1218,7 @@
 
         ctx.setLineDash([6, 6]);
         ctx.lineWidth = 1.6;
-        ctx.strokeStyle = dangerTimer > 0.15 ? "rgba(225, 75, 100, 0.9)" : "rgba(180, 145, 120, 0.45)";
+        ctx.strokeStyle = dangerTimer > 0.1 ? "rgba(225, 75, 100, 0.92)" : "rgba(180, 145, 120, 0.45)";
         ctx.beginPath();
         ctx.moveTo(12, TOP_LINE_Y);
         ctx.lineTo(width - 12, TOP_LINE_Y);
@@ -1253,7 +1236,6 @@
           y: 42,
           radius: 15,
           type: nextType,
-          rotation: 0,
           spawnScale: 1
         });
 
@@ -1274,8 +1256,7 @@
             y: SPAWN_Y,
             radius: curDef.radius,
             type: currentType,
-            rotation: 0,
-            spawnScale: dropCooldown > 0 ? 0.72 : 1
+            spawnScale: dropCooldown > 0 ? 0.75 : 1
           });
         }
 
