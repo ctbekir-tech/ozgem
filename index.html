@@ -6,19 +6,19 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Özgem" />
-  <meta name="theme-color" content="#fdf6ee" />
+  <meta name="theme-color" content="#fdf4e7" />
   <title>Özgem</title>
   <link id="apple-icon" rel="apple-touch-icon" href="" />
   <style>
     :root {
-      --bg: #fdf6ee;
+      --bg: #fdf4e7;
       --surface: #fffdf9;
       --card: #ffffff;
-      --ink: #2b211b;
-      --muted: #7c685a;
+      --ink: #2c2018;
+      --muted: #7d6757;
       --accent: #e14b64;
       --accent-soft: #fde8ec;
-      --border: #ead9c8;
+      --border: #ead6c0;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -49,36 +49,35 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      padding-top: calc(var(--safe-top) + 8px);
-      padding-bottom: calc(var(--safe-bottom) + 10px);
-      padding-left: 14px;
-      padding-right: 14px;
-      gap: 8px;
+      padding-top: calc(var(--safe-top) + 6px);
+      padding-bottom: calc(var(--safe-bottom) + 8px);
+      padding-left: 12px;
+      padding-right: 12px;
+      gap: 7px;
     }
 
-    /* Üst Bilgi Çubuğu */
     .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       flex-shrink: 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
     }
 
     .brand-emoji {
-      font-size: 24px;
+      font-size: 22px;
       line-height: 1;
     }
 
     .brand-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: -0.3px;
       white-space: nowrap;
@@ -89,7 +88,7 @@
     .stats {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-shrink: 0;
     }
 
@@ -97,13 +96,13 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 5px 10px;
+      padding: 4px 9px;
       text-align: center;
-      min-width: 62px;
+      min-width: 56px;
     }
 
     .stat-label {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.4px;
@@ -112,20 +111,20 @@
     }
 
     .stat-value {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       color: var(--ink);
-      line-height: 1.25;
+      line-height: 1.2;
     }
 
     .icon-btn {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--ink);
-      font-size: 17px;
+      font-size: 16px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -137,16 +136,15 @@
       transform: scale(0.95);
     }
 
-    /* Bölüm Hedef Bandı */
     .level-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 7px 12px;
-      font-size: 13px;
+      border-radius: 13px;
+      padding: 6px 11px;
+      font-size: 12.5px;
       flex-shrink: 0;
       gap: 8px;
     }
@@ -173,7 +171,6 @@
       color: var(--ink);
     }
 
-    /* Oyun Alanı */
     .stage-wrap {
       position: relative;
       flex: 1;
@@ -188,51 +185,57 @@
       height: 100%;
       display: block;
       border-radius: 22px;
-      background: #fffaf3;
+      background: linear-gradient(180deg, #fffcf7 0%, #fdf3e4 100%);
       border: 2px solid var(--border);
-      box-shadow: 0 10px 28px rgba(66, 42, 24, 0.08);
+      box-shadow: 0 10px 26px rgba(66, 42, 24, 0.09);
       touch-action: none;
     }
 
-    /* Alt Meyve Sırası (Sade ve Okunaklı) */
     .chain-strip {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 6px 8px;
+      border-radius: 13px;
+      padding: 5px 6px;
       flex-shrink: 0;
       overflow-x: auto;
     }
 
-    .chain-item {
-      font-size: 16px;
-      line-height: 1;
-      padding: 3px 4px;
-      border-radius: 8px;
-      opacity: 0.72;
+    .chain-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.55);
+      flex-shrink: 0;
     }
 
-    .chain-item.target {
-      opacity: 1;
-      background: var(--accent-soft);
-      transform: scale(1.12);
+    .chain-dot.final {
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+      box-shadow: 0 0 0 2px var(--accent-soft), inset 0 2px 4px rgba(255, 255, 255, 0.55);
     }
 
     .chain-arrow {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--muted);
-      opacity: 0.55;
+      opacity: 0.5;
     }
 
-    /* Katmanlar (Açılış, Doğum Günü / Bölüm Kartı, Oyun Bitti) */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(43, 33, 27, 0.45);
+      background: rgba(44, 32, 24, 0.48);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: flex;
@@ -258,26 +261,26 @@
       background: var(--card);
       border-radius: 26px;
       padding: 22px 20px;
-      box-shadow: 0 20px 50px rgba(32, 18, 10, 0.24);
+      box-shadow: 0 20px 50px rgba(32, 18, 10, 0.25);
       text-align: center;
       border: 1px solid var(--border);
     }
 
     .hero-emoji {
-      font-size: 48px;
+      font-size: 46px;
       line-height: 1.1;
       margin-bottom: 8px;
     }
 
     .modal-title {
       margin: 0 0 6px;
-      font-size: 23px;
+      font-size: 22px;
       font-weight: 800;
       letter-spacing: -0.4px;
     }
 
     .modal-sub {
-      margin: 0 0 16px;
+      margin: 0 0 15px;
       font-size: 14px;
       line-height: 1.5;
       color: var(--muted);
@@ -394,7 +397,7 @@
 
     <div class="level-bar">
       <span class="level-pill" id="levelPill">1. Bölüm</span>
-      <span class="goal-text" id="goalText">Hedef: <strong>🍊 Mandalina</strong> yap</span>
+      <span class="goal-text" id="goalText">Hedef: <strong>🍉 Karpuz</strong> yap</span>
     </div>
 
     <div class="stage-wrap">
@@ -409,19 +412,20 @@
     <div class="modal-card">
       <div class="hero-emoji">🍓</div>
       <h1 class="modal-title">Güzel Karım Özgem</h1>
-      <p class="modal-sub">
-        İyi ki doğdun sevgilim. Meyveleri birleştir, bölümleri geç ve her anın tadını çıkar.
+      <p class="modal-sub" id="startSub">
+        İyi ki doğdun sevgilim. Her bölümde meyveleri birleştirip 🍉 Karpuz'a ulaş!
       </p>
       <button class="btn-primary" id="startBtn">Oyuna Başla</button>
+      <button class="btn-secondary" id="continueBtn" style="display: none;"></button>
     </div>
   </div>
 
   <!-- Bölüm Geçiş / Doğum Günü Sürpriz Kartı -->
   <div class="overlay" id="levelOverlay">
     <div class="modal-card">
-      <div class="hero-emoji" id="levelModalEmoji">🎂</div>
+      <div class="hero-emoji" id="levelModalEmoji">🍉</div>
       <h2 class="modal-title" id="levelModalTitle">1. Bölüm Tamamlandı!</h2>
-      <p class="modal-sub" id="levelModalSub">Doğum günün kutlu olsun güzel karım.</p>
+      <p class="modal-sub" id="levelModalSub">Karpuzu yaptın güzel karım, doğum günün kutlu olsun!</p>
 
       <div class="photo-frame" id="levelPhotoFrame">
         <img id="levelPhotoImg" src="" alt="Anı fotoğrafı" />
@@ -432,7 +436,7 @@
         Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!
       </div>
 
-      <button class="btn-primary" id="nextLevelBtn">Sonraki Bölüme Geç</button>
+      <button class="btn-primary" id="nextLevelBtn">2. Bölüme Geç</button>
       <button class="btn-secondary" id="closeLetterBtn" style="display: none;">Kapat</button>
     </div>
   </div>
@@ -440,11 +444,11 @@
   <!-- Oyun Bitti Kartı -->
   <div class="overlay" id="gameOverOverlay">
     <div class="modal-card">
-      <div class="hero-emoji">🍓</div>
+      <div class="hero-emoji">🍉</div>
       <h2 class="modal-title">Kutu Doldu!</h2>
-      <p class="modal-sub" id="gameOverSub">Harika oynadın Özgem. İstersen bu bölümden ya da baştan devam edebilirsin.</p>
+      <p class="modal-sub" id="gameOverSub">Harika oynadın Özgem.</p>
       <button class="btn-primary" id="retryLevelBtn">Bu Bölümü Tekrar Oyna</button>
-      <button class="btn-secondary" id="restartAllBtn">1. Bölümden Başla</button>
+      <button class="btn-secondary" id="restartFromOneBtn">1. Bölümden Başla</button>
     </div>
   </div>
 
@@ -452,7 +456,7 @@
 
   <script>
     (function () {
-      // Çilek uygulama ikonu (iPhone Ana Ekrana Ekle için)
+      // Çilek uygulama ikonu (iPhone Ana Ekrana Ekle)
       function setStrawberryIcon() {
         const c = document.createElement("canvas");
         c.width = 180;
@@ -469,28 +473,20 @@
       }
       setStrawberryIcon();
 
-      // Meyve Zinciri (Büyük ve okunaklı boyutlar)
+      // Orijinal 11 Meyve Sırası ve Parlak + Gülümseyen Tasarım
+      // Boyutlar tok, okunaklı ve telefon ekranına uyumlu oranlarda
       const FRUITS = [
-        { name: "Kiraz",    emoji: "🍒", radius: 18, color: "#e63950", bg: "#ffe5ea", score: 2 },
-        { name: "Çilek",    emoji: "🍓", radius: 24, color: "#ef476f", bg: "#ffe3ea", score: 4 },
-        { name: "Üzüm",     emoji: "🍇", radius: 30, color: "#7b2cbf", bg: "#f3e8ff", score: 8 },
-        { name: "Mandalina",emoji: "🍊", radius: 37, color: "#f77f00", bg: "#fff0db", score: 16 },
-        { name: "Portakal", emoji: "🟠", radius: 44, color: "#fb8500", bg: "#ffedd5", score: 32 },
-        { name: "Elma",     emoji: "🍎", radius: 52, color: "#d62828", bg: "#fee2e2", score: 64 },
-        { name: "Armut",    emoji: "🍐", radius: 60, color: "#8ac926", bg: "#ecfccb", score: 128 },
-        { name: "Şeftali",  emoji: "🍑", radius: 68, color: "#ff9ebb", bg: "#fce7f3", score: 256 },
-        { name: "Ananas",   emoji: "🍍", radius: 77, color: "#eab308", bg: "#fef9c3", score: 512 },
-        { name: "Kavun",    emoji: "🍈", radius: 86, color: "#65a30d", bg: "#ecfccb", score: 1024 },
-        { name: "Karpuz",   emoji: "🍉", radius: 96, color: "#16a34a", bg: "#dcfce7", score: 2048 }
-      ];
-
-      // Bölüm hedefleri (1. bölüm doğum günü sürprizi için tatlı ve ulaşılabilir)
-      const LEVEL_GOALS = [
-        { fruitIndex: 3, label: "🍊 Mandalina" },   // 1. Bölüm: Doğum günü sürprizi
-        { fruitIndex: 5, label: "🍎 Elma" },        // 2. Bölüm
-        { fruitIndex: 7, label: "🍑 Şeftali" },     // 3. Bölüm
-        { fruitIndex: 9, label: "🍈 Kavun" },       // 4. Bölüm
-        { fruitIndex: 10, label: "🍉 Karpuz" }      // 5. Bölüm ve sonrası
+        { name: "Kiraz",     radius: 22, light: "#ff859b", base: "#e11d48", dark: "#9f1239", score: 2 },
+        { name: "Çilek",     radius: 29, light: "#ff8fa3", base: "#f43f5e", dark: "#be123c", score: 4 },
+        { name: "Üzüm",      radius: 37, light: "#c084fc", base: "#7e22ce", dark: "#581c87", score: 8 },
+        { name: "Mandalina", radius: 46, light: "#fdba74", base: "#ea580c", dark: "#9a3412", score: 16 },
+        { name: "Portakal",  radius: 55, light: "#fcd34d", base: "#f59e0b", dark: "#b45309", score: 32 },
+        { name: "Elma",      radius: 65, light: "#fca5a5", base: "#dc2626", dark: "#991b1b", score: 64 },
+        { name: "Armut",     radius: 75, light: "#bef264", base: "#65a30d", dark: "#3f6212", score: 128 },
+        { name: "Şeftali",   radius: 86, light: "#fbcfe8", base: "#ec4899", dark: "#9d174d", score: 256 },
+        { name: "Ananas",    radius: 97, light: "#fde047", base: "#eab308", dark: "#a16207", score: 512 },
+        { name: "Kavun",     radius: 109, light: "#d9f99d", base: "#84cc16", dark: "#4d7c0f", score: 1024 },
+        { name: "Karpuz",    radius: 122, light: "#86efac", base: "#16a34a", dark: "#166534", score: 2048 }
       ];
 
       const PHOTOS = [
@@ -501,10 +497,25 @@
         "resim5.jpg"
       ];
 
-      const STORAGE_BEST = "ozgem_oyun_rekor_v1";
-      let bestScore = parseInt(localStorage.getItem(STORAGE_BEST) || "0", 10) || 0;
+      // Kalıcı Kayıt Anahtarları
+      const KEY_BEST = "ozgem_best_v2";
+      const KEY_LEVEL = "ozgem_saved_level_v2";
+      const KEY_SCORE = "ozgem_saved_score_v2";
 
-      // DOM Referansları
+      let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
+      let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
+      let savedScore = Math.max(0, parseInt(localStorage.getItem(KEY_SCORE) || "0", 10) || 0);
+
+      function persistProgress(lvl, scr) {
+        localStorage.setItem(KEY_LEVEL, String(lvl));
+        localStorage.setItem(KEY_SCORE, String(scr));
+        if (scr > bestScore) {
+          bestScore = scr;
+          localStorage.setItem(KEY_BEST, String(bestScore));
+        }
+      }
+
+      // DOM Elementleri
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
       const scoreEl = document.getElementById("scoreEl");
@@ -518,10 +529,11 @@
       const gameOverOverlay = document.getElementById("gameOverOverlay");
 
       const startBtn = document.getElementById("startBtn");
+      const continueBtn = document.getElementById("continueBtn");
       const nextLevelBtn = document.getElementById("nextLevelBtn");
       const closeLetterBtn = document.getElementById("closeLetterBtn");
       const retryLevelBtn = document.getElementById("retryLevelBtn");
-      const restartAllBtn = document.getElementById("restartAllBtn");
+      const restartFromOneBtn = document.getElementById("restartFromOneBtn");
       const soundBtn = document.getElementById("soundBtn");
       const noteBtn = document.getElementById("noteBtn");
 
@@ -531,10 +543,15 @@
       const levelPhotoFrame = document.getElementById("levelPhotoFrame");
       const levelPhotoImg = document.getElementById("levelPhotoImg");
       const birthdayLetter = document.getElementById("birthdayLetter");
-
       const bgMusic = document.getElementById("bgMusic");
 
-      // Ses Durumu (Web Audio ile hafif birleşme tınısı + sarki.mp3)
+      // Başlangıçta kayıtlı bölüm varsa devam butonu göster
+      if (savedLevel > 1 || savedScore > 0) {
+        continueBtn.style.display = "block";
+        continueBtn.textContent = `Kaldığın Yerden Devam Et (${savedLevel}. Bölüm)`;
+      }
+
+      // Ses ve Müzik
       let soundEnabled = true;
       let audioCtx = null;
 
@@ -550,9 +567,9 @@
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = "sine";
-          const baseFreq = 320 + tier * 38;
+          const baseFreq = 300 + tier * 34;
           osc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.28, audioCtx.currentTime + 0.11);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.25, audioCtx.currentTime + 0.11);
 
           gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.13);
@@ -588,8 +605,8 @@
       let height = 560;
       let dpr = 1;
 
-      let score = 0;
-      let level = 1;
+      let score = savedScore;
+      let level = savedLevel;
       let levelCompleted = false;
       let gameState = "start"; // "start" | "playing" | "paused" | "gameover"
 
@@ -603,33 +620,35 @@
       let dangerTimer = 0;
       let nextBodyId = 1;
 
-      const TOP_LINE_Y = 76;
+      const TOP_LINE_Y = 82;
 
-      function getLevelGoal(lvl) {
-        if (lvl <= LEVEL_GOALS.length) {
-          return LEVEL_GOALS[lvl - 1];
-        }
-        return { fruitIndex: 10, label: "🍉 Karpuz" };
+      function getDifficultyText(lvl) {
+        if (lvl === 1) return "Kolay · Rahat Başlangıç";
+        if (lvl === 2) return "Orta Kolay · Ufak Başlangıç Taşları";
+        if (lvl === 3) return "Orta · Daha Hızlı İlerleyiş";
+        if (lvl === 4) return "Zorlayıcı · Sıkı Alan";
+        return `${lvl}. Seviye · Usta Modu`;
       }
 
       function updateHUD() {
         scoreEl.textContent = score;
         if (score > bestScore) {
           bestScore = score;
-          localStorage.setItem(STORAGE_BEST, String(bestScore));
+          localStorage.setItem(KEY_BEST, String(bestScore));
         }
         bestEl.textContent = bestScore;
 
-        const goal = getLevelGoal(level);
         levelPill.textContent = `${level}. Bölüm`;
-        goalText.innerHTML = `Hedef: <strong>${goal.label}</strong> yap`;
+        goalText.innerHTML = `Hedef: <strong>🍉 Karpuz</strong> · ${getDifficultyText(level)}`;
 
         chainStrip.innerHTML = "";
         FRUITS.forEach((f, idx) => {
-          const span = document.createElement("span");
-          span.className = "chain-item" + (idx === goal.fruitIndex ? " target" : "");
-          span.textContent = f.emoji;
-          chainStrip.appendChild(span);
+          const dot = document.createElement("span");
+          const isFinal = idx === FRUITS.length - 1;
+          dot.className = "chain-dot" + (isFinal ? " final" : "");
+          dot.style.background = `radial-gradient(circle at 32% 28%, ${f.light}, ${f.base})`;
+          dot.textContent = isFinal ? "🍉" : String(idx + 1);
+          chainStrip.appendChild(dot);
 
           if (idx < FRUITS.length - 1) {
             const arrow = document.createElement("span");
@@ -655,9 +674,43 @@
       window.addEventListener("resize", resizeCanvas);
       resizeCanvas();
 
+      // Bölümlere göre düşen meyve havuzu (kolaydan zora)
       function pickSpawnFruit() {
-        const maxPool = level === 1 ? 3 : 4; // İlk 4 meyveden (Kiraz..Mandalina) düşer
-        return Math.floor(Math.random() * maxPool);
+        if (level === 1) {
+          // 1. bölüm: ilk 4 meyve (Kiraz..Mandalina), çoğunlukla küçük/orta
+          const pool = [0, 0, 1, 1, 2, 2, 3];
+          return pool[Math.floor(Math.random() * pool.length)];
+        }
+        if (level === 2) {
+          const pool = [0, 1, 1, 2, 2, 3, 4];
+          return pool[Math.floor(Math.random() * pool.length)];
+        }
+        const pool = [0, 1, 2, 2, 3, 3, 4];
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      // Zorluk arttıkça tabanda ufak başlangıç meyveleri
+      function seedInitialFruits(lvl) {
+        if (lvl <= 1) return;
+        const count = Math.min(5, lvl - 1);
+        const floorY = height - 10;
+        for (let i = 0; i < count; i++) {
+          const t = i % 2; // Kiraz veya Çilek
+          const def = FRUITS[t];
+          const span = width - 48;
+          const x = 24 + ((i + 0.5) / count) * span;
+          fruits.push({
+            id: nextBodyId++,
+            type: t,
+            x,
+            y: floorY - def.radius - i * 4,
+            vx: 0,
+            vy: 0,
+            radius: def.radius,
+            merged: false,
+            spawnScale: 1
+          });
+        }
       }
 
       function startLevel(lvl, resetScore) {
@@ -665,11 +718,14 @@
         if (resetScore) {
           score = 0;
         }
+        persistProgress(level, score);
+
         levelCompleted = false;
         fruits = [];
         popups = [];
         dangerTimer = 0;
         dropCooldown = 0;
+        seedInitialFruits(level);
         currentType = pickSpawnFruit();
         nextType = pickSpawnFruit();
         dropX = width / 2;
@@ -704,16 +760,16 @@
         } else if (completedLevel === 1) {
           levelModalEmoji.textContent = "🎉";
           levelModalTitle.textContent = "1. Bölüm Tamamlandı!";
-          levelModalSub.textContent = "İlk sürpriz kutun açıldı güzel karım.";
+          levelModalSub.textContent = "İlk karpuzunu yaptın! Doğum günün kutlu olsun güzel karım.";
           birthdayLetter.style.display = "block";
           nextLevelBtn.style.display = "block";
-          nextLevelBtn.textContent = "2. Bölüme Geç";
+          nextLevelBtn.textContent = "2. Bölüme Geç (Kaydedildi)";
           closeLetterBtn.style.display = "none";
           launchConfetti();
         } else {
-          levelModalEmoji.textContent = "✨";
-          levelModalTitle.textContent = `${completedLevel}. Bölüm Geçildi!`;
-          levelModalSub.textContent = `Harika gidiyorsun Özgem! Sıradaki hedef: ${getLevelGoal(completedLevel + 1).label}.`;
+          levelModalEmoji.textContent = "🍉";
+          levelModalTitle.textContent = `${completedLevel}. Bölüm Tamamlandı!`;
+          levelModalSub.textContent = `Harikasın Özgem! ${completedLevel + 1}. bölüm seni bekliyor.`;
           birthdayLetter.style.display = "none";
           nextLevelBtn.style.display = "block";
           nextLevelBtn.textContent = `${completedLevel + 1}. Bölüme Geç`;
@@ -727,26 +783,26 @@
       function triggerGameOver() {
         if (gameState === "gameover") return;
         gameState = "gameover";
+        persistProgress(level, score);
         document.getElementById("gameOverSub").textContent =
-          `${level}. bölümde ${score} puana ulaştın Özgem. Dilediğin yerden devam edebilirsin.`;
+          `${level}. bölümde ${score} puana ulaştın Özgem. Bölüm kaydın duruyor, istersen bu bölümü tekrar deneyebilirsin.`;
         gameOverOverlay.classList.add("active");
       }
 
-      // Meyve Bırakma Kontrolü
       function clientToX(clientX) {
         const rect = canvas.getBoundingClientRect();
         const r = FRUITS[currentType].radius;
-        const pad = Math.max(14, r * 0.65);
+        const pad = Math.max(14, r);
         return Math.max(pad, Math.min(width - pad, clientX - rect.left));
       }
 
       function dropFruit() {
         if (gameState !== "playing" || dropCooldown > 0) return;
         const def = FRUITS[currentType];
-        const r = def.radius * 0.68;
+        const r = def.radius;
         const pad = Math.max(14, r);
         const x = Math.max(pad, Math.min(width - pad, dropX));
-        const y = TOP_LINE_Y - 26;
+        const y = TOP_LINE_Y - 30;
 
         fruits.push({
           id: nextBodyId++,
@@ -754,10 +810,10 @@
           x,
           y,
           vx: 0,
-          vy: 1.5,
+          vy: 2,
           radius: r,
           merged: false,
-          spawnScale: 0.35
+          spawnScale: 0.45
         });
 
         currentType = nextType;
@@ -787,15 +843,23 @@
         }
       });
 
-      // Buton Olayları
       startBtn.addEventListener("click", () => {
         syncMusic();
         startLevel(1, true);
       });
 
+      continueBtn.addEventListener("click", () => {
+        syncMusic();
+        startLevel(savedLevel, false);
+      });
+
       nextLevelBtn.addEventListener("click", () => {
         syncMusic();
-        startLevel(level + 1, false);
+        const nextLvl = level + 1;
+        persistProgress(nextLvl, score);
+        savedLevel = nextLvl;
+        savedScore = score;
+        startLevel(nextLvl, false);
       });
 
       closeLetterBtn.addEventListener("click", () => {
@@ -810,12 +874,11 @@
         startLevel(level, false);
       });
 
-      restartAllBtn.addEventListener("click", () => {
+      restartFromOneBtn.addEventListener("click", () => {
         syncMusic();
         startLevel(1, true);
       });
 
-      // Fizik ve Birleştirme Döngüsü
       function stepPhysics(dt) {
         if (gameState !== "playing") return;
 
@@ -823,9 +886,9 @@
           dropCooldown = Math.max(0, dropCooldown - dt);
         }
 
-        const gravity = 920; // px/s^2
+        const gravity = 940;
         const damping = 0.992;
-        const bounce = 0.25;
+        const bounce = 0.24;
         const floorY = height - 10;
 
         for (let i = 0; i < fruits.length; i++) {
@@ -841,7 +904,6 @@
           f.x += f.vx * dt;
           f.y += f.vy * dt;
 
-          // Sol ve sağ duvar
           if (f.x - f.radius < 8) {
             f.x = 8 + f.radius;
             f.vx = Math.abs(f.vx) * bounce;
@@ -850,7 +912,6 @@
             f.vx = -Math.abs(f.vx) * bounce;
           }
 
-          // Alt zemin
           if (f.y + f.radius > floorY) {
             f.y = floorY - f.radius;
             if (f.vy > 0) f.vy = -f.vy * bounce;
@@ -858,9 +919,9 @@
           }
         }
 
-        // Çarpışma ve Birleştirme (birkaç iterasyon ile yığılma kararlılığı)
         const toAdd = [];
         const toRemove = new Set();
+        const watermelonIndex = FRUITS.length - 1;
 
         for (let iter = 0; iter < 3; iter++) {
           for (let i = 0; i < fruits.length; i++) {
@@ -876,13 +937,12 @@
               const distSq = dx * dx + dy * dy;
 
               if (distSq < minDist * minDist) {
-                // Aynı tür meyvelerse ve henüz birleşmediyse
                 if (
                   iter === 0 &&
                   a.type === b.type &&
                   !a.merged &&
                   !b.merged &&
-                  a.type < FRUITS.length - 1
+                  a.type < watermelonIndex
                 ) {
                   a.merged = true;
                   b.merged = true;
@@ -900,32 +960,40 @@
                     x: mx,
                     y: my,
                     vx: (a.vx + b.vx) * 0.2,
-                    vy: -60,
-                    radius: nextDef.radius * 0.68,
+                    vy: -65,
+                    radius: nextDef.radius,
                     merged: false,
-                    spawnScale: 0.55
+                    spawnScale: 0.6
                   });
 
-                  score += nextDef.score;
+                  const gained = nextDef.score * (1 + (level - 1) * 0.15);
+                  score += Math.round(gained);
+                  persistProgress(level, score);
+                  savedLevel = level;
+                  savedScore = score;
                   updateHUD();
                   playMergeTone(nextTypeIdx);
 
                   popups.push({
                     x: mx,
-                    y: my - 10,
-                    text: `+${nextDef.score}`,
+                    y: my - 12,
+                    text: `+${Math.round(gained)}`,
                     alpha: 1
                   });
 
-                  // Bölüm hedefi kontrolü
-                  const goal = getLevelGoal(level);
-                  if (!levelCompleted && nextTypeIdx >= goal.fruitIndex) {
+                  // Her bölümde Karpuz oluşunca bölüm tamamlanır
+                  if (!levelCompleted && nextTypeIdx === watermelonIndex) {
                     levelCompleted = true;
+                    const completedLvl = level;
+                    const nextSavedLvl = completedLvl + 1;
+                    persistProgress(nextSavedLvl, score);
+                    savedLevel = nextSavedLvl;
+                    savedScore = score;
                     setTimeout(() => {
                       if (gameState === "playing") {
-                        openLevelCard(level, false);
+                        openLevelCard(completedLvl, false);
                       }
-                    }, 360);
+                    }, 450);
                   }
                   continue;
                 }
@@ -944,7 +1012,6 @@
                 b.x += nx * overlap * ratioB * 0.85;
                 b.y += ny * overlap * ratioB * 0.85;
 
-                // Hız ayrımı
                 const rvx = b.vx - a.vx;
                 const rvy = b.vy - a.vy;
                 const velAlongNormal = rvx * nx + rvy * ny;
@@ -964,7 +1031,6 @@
           fruits = fruits.filter((f) => !toRemove.has(f.id)).concat(toAdd);
         }
 
-        // Puan baloncukları
         for (let i = popups.length - 1; i >= 0; i--) {
           popups[i].y -= 34 * dt;
           popups[i].alpha -= dt * 1.3;
@@ -973,7 +1039,6 @@
           }
         }
 
-        // Üst sınır taşma kontrolü (yerleşmiş meyveler çizgiyi geçerse)
         let anyAbove = false;
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
@@ -986,7 +1051,7 @@
 
         if (anyAbove) {
           dangerTimer += dt;
-          if (dangerTimer > 1.35) {
+          if (dangerTimer > 1.4) {
             triggerGameOver();
           }
         } else {
@@ -994,8 +1059,8 @@
         }
       }
 
-      // Çizim Döngüsü
-      function drawFruit(f) {
+      // Parlak ve gülümseyen meyve çizimi
+      function drawGlossyFruit(f) {
         const def = FRUITS[f.type];
         const r = f.radius * f.spawnScale;
         if (r <= 1) return;
@@ -1003,21 +1068,73 @@
         ctx.save();
         ctx.translate(f.x, f.y);
 
-        // Yumuşak meyve dairesi
+        // Yumuşak gölge
+        ctx.beginPath();
+        ctx.arc(0, r * 0.08, r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(44, 32, 24, 0.12)";
+        ctx.fill();
+
+        // Parlak küre gradyanı
+        const grad = ctx.createRadialGradient(-r * 0.32, -r * 0.34, r * 0.12, 0, 0, r);
+        grad.addColorStop(0, def.light);
+        grad.addColorStop(0.62, def.base);
+        grad.addColorStop(1, def.dark);
+
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
-        ctx.fillStyle = def.bg;
+        ctx.fillStyle = grad;
         ctx.fill();
-        ctx.lineWidth = 2.2;
-        ctx.strokeStyle = def.color;
+        ctx.lineWidth = Math.max(1.8, r * 0.045);
+        ctx.strokeStyle = def.dark;
         ctx.stroke();
 
-        // Emoji büyük ve net
-        const fontSize = Math.round(r * 1.28);
-        ctx.font = `${fontSize}px -apple-system, Apple Color Emoji, "Segoe UI Emoji", sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(def.emoji, 0, 1);
+        // Karpuz ise koyu yeşil şeritler
+        if (def.name === "Karpuz") {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(0, 0, r - 2, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.strokeStyle = "rgba(20, 83, 45, 0.45)";
+          ctx.lineWidth = Math.max(3, r * 0.07);
+          for (let s = -2; s <= 2; s++) {
+            ctx.beginPath();
+            ctx.arc(s * r * 0.34, 0, r * 0.92, -Math.PI * 0.45, Math.PI * 0.45);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        // Üst sol parlak yansıma
+        ctx.beginPath();
+        ctx.ellipse(-r * 0.34, -r * 0.36, r * 0.24, r * 0.13, -0.65, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+        ctx.fill();
+
+        // Tatlı gülümseyen yüz ifadesi
+        const eyeOffsetX = r * 0.32;
+        const eyeY = -r * 0.04;
+        const eyeR = Math.max(1.8, r * 0.075);
+
+        ctx.fillStyle = "#231712";
+        ctx.beginPath();
+        ctx.arc(-eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+        ctx.arc(eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Yanak allığı
+        ctx.fillStyle = "rgba(255, 120, 140, 0.42)";
+        ctx.beginPath();
+        ctx.ellipse(-eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
+        ctx.ellipse(eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Gülümseyen ağız
+        ctx.strokeStyle = "#231712";
+        ctx.lineWidth = Math.max(1.6, r * 0.055);
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.arc(0, eyeY + r * 0.06, r * 0.22, 0.15 * Math.PI, 0.85 * Math.PI);
+        ctx.stroke();
 
         ctx.restore();
       }
@@ -1025,57 +1142,58 @@
       function render() {
         ctx.clearRect(0, 0, width, height);
 
-        // Üst sınır çizgisi
         ctx.save();
         ctx.setLineDash([6, 6]);
         ctx.lineWidth = 1.6;
-        ctx.strokeStyle = dangerTimer > 0.2 ? "rgba(225, 75, 100, 0.75)" : "rgba(180, 145, 120, 0.45)";
+        ctx.strokeStyle = dangerTimer > 0.2 ? "rgba(225, 75, 100, 0.8)" : "rgba(180, 145, 120, 0.45)";
         ctx.beginPath();
         ctx.moveTo(12, TOP_LINE_Y);
         ctx.lineTo(width - 12, TOP_LINE_Y);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Sıradaki meyve göstergesi (sol üst köşe)
-        const nextDef = FRUITS[nextType];
-        ctx.fillStyle = "#7c685a";
-        ctx.font = "700 11px -apple-system, sans-serif";
+        // Sıradaki meyve önizlemesi (sol üst)
+        ctx.fillStyle = "#7d6757";
+        ctx.font = "700 10px -apple-system, sans-serif";
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
-        ctx.fillText("SIRADAKİ", 14, 24);
-        ctx.font = "24px -apple-system, Apple Color Emoji, sans-serif";
-        ctx.fillText(nextDef.emoji, 14, 48);
+        ctx.fillText("SIRADAKİ", 14, 22);
 
-        // Aktif düşecek meyve ve dikey rehber
+        drawGlossyFruit({
+          x: 34,
+          y: 48,
+          radius: 17,
+          type: nextType,
+          spawnScale: 1
+        });
+
+        // Aktif düşecek meyve
         if (gameState === "playing") {
           const curDef = FRUITS[currentType];
-          const curR = curDef.radius * 0.68;
-          const previewY = TOP_LINE_Y - 26;
+          const previewY = TOP_LINE_Y - 30;
 
           ctx.strokeStyle = "rgba(180, 145, 120, 0.28)";
           ctx.lineWidth = 1.5;
           ctx.setLineDash([4, 6]);
           ctx.beginPath();
-          ctx.moveTo(dropX, previewY + curR);
+          ctx.moveTo(dropX, previewY + curDef.radius);
           ctx.lineTo(dropX, height - 12);
           ctx.stroke();
           ctx.setLineDash([]);
 
-          drawFruit({
+          drawGlossyFruit({
             x: dropX,
             y: previewY,
-            radius: curR,
+            radius: curDef.radius,
             type: currentType,
-            spawnScale: dropCooldown > 0 ? 0.65 : 1
+            spawnScale: dropCooldown > 0 ? 0.68 : 1
           });
         }
 
-        // Tahtadaki meyveler
         for (let i = 0; i < fruits.length; i++) {
-          drawFruit(fruits[i]);
+          drawGlossyFruit(fruits[i]);
         }
 
-        // Puan artış yazıları
         for (let i = 0; i < popups.length; i++) {
           const p = popups[i];
           ctx.globalAlpha = Math.max(0, p.alpha);
@@ -1097,7 +1215,6 @@
         requestAnimationFrame(loop);
       }
 
-      // Hafif Konfeti Efekti
       const confettiCanvas = document.getElementById("confettiCanvas");
       const cCtx = confettiCanvas.getContext("2d");
       let particles = [];
