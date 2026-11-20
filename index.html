@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Özgem" />
+  <meta name="apple-mobile-web-app-title" content="Özgem ❤️" />
   <meta name="theme-color" content="#fdf4e7" />
-  <title>Özgem</title>
+  <title>Özgem ❤️</title>
   <link id="apple-icon" rel="apple-touch-icon" href="" />
   <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
   <style>
@@ -68,13 +68,13 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       min-width: 0;
       flex: 1 1 auto;
     }
 
     .brand-emoji {
-      font-size: 19px;
+      font-size: 20px;
       line-height: 1;
       flex-shrink: 0;
       cursor: pointer;
@@ -87,12 +87,12 @@
     }
 
     .brand-emoji:active {
-      transform: scale(0.88);
+      transform: scale(0.86);
       background: var(--accent-soft);
     }
 
     .brand-title {
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 800;
       letter-spacing: -0.35px;
       white-space: nowrap;
@@ -102,7 +102,7 @@
     .stats {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
       flex-shrink: 0;
     }
 
@@ -110,9 +110,9 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 3px 6px;
+      padding: 3px 7px;
       text-align: center;
-      min-width: 42px;
+      min-width: 46px;
     }
 
     .stat-label {
@@ -132,13 +132,13 @@
     }
 
     .icon-btn {
-      width: 29px;
-      height: 29px;
+      width: 31px;
+      height: 31px;
       border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--ink);
-      font-size: 13.5px;
+      font-size: 14px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -149,7 +149,7 @@
     }
 
     .icon-btn:active {
-      transform: scale(0.95);
+      transform: scale(0.93);
     }
 
     .icon-btn.used {
@@ -157,12 +157,12 @@
       cursor: default;
     }
 
-    .shake-badge {
+    .badge {
       position: absolute;
       top: -4px;
       right: -4px;
-      min-width: 14px;
-      height: 14px;
+      min-width: 15px;
+      height: 15px;
       padding: 0 3px;
       border-radius: 999px;
       background: var(--accent);
@@ -177,22 +177,28 @@
 
     .status-bar {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 13px;
-      padding: 6px 10px;
-      font-size: 11.5px;
+      padding: 6px 10px 7px;
       flex-shrink: 0;
+      gap: 5px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 6px;
+      font-size: 11.5px;
     }
 
     .status-pill {
       background: var(--accent-soft);
       color: var(--accent);
       font-weight: 800;
-      padding: 3px 8px;
+      padding: 2px 8px;
       border-radius: 999px;
       font-size: 11px;
       white-space: nowrap;
@@ -202,14 +208,31 @@
     .goal-text {
       color: var(--muted);
       font-weight: 600;
-      white-space: normal;
-      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       text-align: right;
       flex: 1 1 auto;
     }
 
     .goal-text strong {
       color: var(--ink);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: #f3e5d3;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff758f, #e14b64);
+      border-radius: 999px;
+      transition: width 0.22s ease;
     }
 
     .stage-wrap {
@@ -226,10 +249,12 @@
       height: 100%;
       display: block;
       border-radius: 22px;
-      background: linear-gradient(180deg, #fffcf7 0%, #fdf2e2 100%);
+      background: #fffcf7;
       border: 2px solid var(--border);
       box-shadow: 0 10px 26px rgba(66, 42, 24, 0.09);
       touch-action: none;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .chain-strip {
@@ -312,7 +337,6 @@
       font-size: 40px;
       line-height: 1.1;
       margin-bottom: 6px;
-      cursor: pointer;
     }
 
     .modal-title {
@@ -336,7 +360,7 @@
     .photo-frame {
       width: auto;
       max-width: 100%;
-      max-height: 205px;
+      max-height: 210px;
       border-radius: 16px;
       overflow: hidden;
       margin: 0 auto 12px;
@@ -354,7 +378,7 @@
       width: auto;
       height: auto;
       max-width: 100%;
-      max-height: 205px;
+      max-height: 210px;
       object-fit: contain;
     }
 
@@ -362,11 +386,11 @@
       background: #fff7f8;
       border: 1px solid #fad3da;
       border-radius: 16px;
-      padding: 11px 12px;
-      margin-bottom: 13px;
+      padding: 12px 13px;
+      margin-bottom: 11px;
       text-align: left;
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 13.5px;
+      line-height: 1.52;
       color: #3a2629;
       white-space: normal;
       word-break: break-word;
@@ -376,41 +400,38 @@
       display: block;
       margin-bottom: 4px;
       color: var(--accent);
-      font-size: 13.5px;
+      font-size: 14px;
     }
 
-    .progress-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 10px 12px;
-      margin-bottom: 11px;
-      text-align: left;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .progress-box div {
+    .album-nav {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 2px 0;
+      margin-bottom: 11px;
     }
 
-    .progress-code {
-      width: 100%;
-      min-height: 60px;
+    .nav-btn {
+      flex: 1;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fffdf9;
+      background: var(--surface);
       color: var(--ink);
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 10.5px;
-      padding: 8px;
-      resize: none;
-      margin-bottom: 8px;
-      user-select: text;
-      -webkit-user-select: text;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .nav-btn:active {
+      transform: scale(0.96);
+    }
+
+    .nav-counter {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--muted);
+      min-width: 64px;
     }
 
     .btn-primary {
@@ -433,16 +454,21 @@
 
     .btn-secondary {
       width: 100%;
-      margin-top: 7px;
+      margin-top: 8px;
       border: 1px solid var(--border);
       border-radius: 14px;
       background: var(--surface);
       color: var(--ink);
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 700;
       padding: 11px 14px;
       cursor: pointer;
       white-space: normal;
+      display: none;
+    }
+
+    .btn-secondary.visible {
+      display: block;
     }
 
     .btn-secondary:active {
@@ -465,8 +491,8 @@
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <span class="brand-emoji" id="topStrawberryBtn" title="Dokununca +1 Titreşim Hakkı" aria-label="Çilek Titreşim Hakkı">🍓</span>
-        <span class="brand-title">Güzel Karım Özgem</span>
+        <span class="brand-emoji" id="topStrawberryBtn" title="Dokununca +1 Salla Hakkı" aria-label="Çilek Salla Hakkı">🍓</span>
+        <span class="brand-title">Özgem ❤️</span>
       </div>
       <div class="stats">
         <div class="stat-box">
@@ -477,18 +503,24 @@
           <div class="stat-label">Rekor</div>
           <div class="stat-value" id="bestEl">0</div>
         </div>
-        <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla / Titreşim" aria-label="Kutuyu Salla">
-          🔀<span class="shake-badge" id="shakeBadge">2</span>
+        <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla" aria-label="Kutuyu Salla">
+          🔀<span class="badge" id="shakeBadge">2</span>
         </button>
-        <button class="icon-btn" id="progressBtn" title="İlerleme ve Hak" aria-label="İlerleme ve Hak">📊</button>
-        <button class="icon-btn" id="noteBtn" title="Doğum Günü Notu" aria-label="Doğum Günü Notu">💌</button>
-        <button class="icon-btn" id="soundBtn" title="Müzik ve Ses" aria-label="Müzik ve Ses">🔊</button>
+        <button class="icon-btn" id="noteBtn" title="Sevgi Notları Albümü" aria-label="Sevgi Notları Albümü">
+          💌<span class="badge" id="noteBadge">1</span>
+        </button>
+        <button class="icon-btn" id="soundBtn" title="Müzik ve Romantik Radyo" aria-label="Müzik ve Romantik Radyo">🔊</button>
       </div>
     </header>
 
     <div class="status-bar">
-      <span class="status-pill" id="melonPill">🍉 Karpuz: 0</span>
-      <span class="goal-text" id="goalText">Sürpriz: <strong>1.000 puan</strong> veya <strong>🍉 Karpuz</strong></span>
+      <div class="status-row">
+        <span class="status-pill" id="melonPill">🍉 Karpuz: 0</span>
+        <span class="goal-text" id="goalText">💌 Yeni Not: <strong>0 / 750</strong></span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
     </div>
 
     <div class="stage-wrap">
@@ -501,51 +533,36 @@
   <!-- Açılış Ekranı -->
   <div class="overlay active" id="startOverlay">
     <div class="modal-card">
-      <div class="hero-emoji" id="startStrawberryBtn">🍓</div>
-      <h1 class="modal-title">Güzel Karım Özgem</h1>
-      <p class="modal-sub">
-        İyi ki doğdun sevgilim. Meyveleri birleştirip puan topladıkça ve 🍉 Karpuz yaptıkça sürpriz kartların açılır.
+      <div class="hero-emoji">🍓</div>
+      <h1 class="modal-title">Özgem ❤️</h1>
+      <p class="modal-sub" id="startSubText">
+        Meyveleri birleştirip puan topladıkça ve 🍉 Karpuz yaptıkça sana özel sevgi notlarım ve anı fotoğraflarımız açılır.
       </p>
       <button class="btn-primary" id="startBtn">Oyuna Başla</button>
+      <button class="btn-secondary" id="newGameFromStartBtn">Sıfırdan Yeni Kutu Aç</button>
     </div>
   </div>
 
-  <!-- İlerleme ve Anlık Salla / Titreşim Hakkı Ekranı -->
-  <div class="overlay" id="progressOverlay">
-    <div class="modal-card">
-      <div class="hero-emoji">📊</div>
-      <h2 class="modal-title">Oyuncu İlerlemesi</h2>
-      <p class="modal-sub">İlerleme özetini kopyalayabilir veya anlık salla/titreşim hakkı verebilirsin.</p>
-
-      <div class="progress-box" id="progressSummaryBox">
-        <div><span>Anlık Puan:</span><strong id="sumScore">0</strong></div>
-        <div><span>En Yüksek Rekor:</span><strong id="sumBest">0</strong></div>
-        <div><span>Yapılan Karpuz:</span><strong id="sumMelon">0</strong></div>
-        <div><span>Açılan Sürpriz:</span><strong id="sumSurprises">0 / 5</strong></div>
-        <div><span>Kalan Salla Hakkı:</span><strong id="sumShake">2</strong></div>
-      </div>
-
-      <textarea class="progress-code" id="progressCodeArea" readonly></textarea>
-      <button class="btn-primary" id="grantShakeBtn">+1 Anlık Salla / Titreşim Hakkı Ver</button>
-      <button class="btn-secondary" id="copyProgressBtn">İlerleme Özetini Kopyala</button>
-      <button class="btn-secondary" id="closeProgressBtn">Kapat</button>
-    </div>
-  </div>
-
-  <!-- Doğum Günü Sürpriz / Anı Kartı -->
+  <!-- Sevgi Notu ve Anı Albümü Kartı -->
   <div class="overlay" id="surpriseOverlay">
     <div class="modal-card">
-      <div class="hero-emoji" id="surpriseEmoji">🎉</div>
-      <h2 class="modal-title" id="surpriseTitle">Doğum Günün Kutlu Olsun!</h2>
-      <p class="modal-sub" id="surpriseSub">Yeni bir sürpriz anı kartı açıldı güzel karım!</p>
+      <div class="hero-emoji" id="surpriseEmoji">💖</div>
+      <h2 class="modal-title" id="surpriseTitle">Canım Özgem ❤️</h2>
+      <p class="modal-sub" id="surpriseSub">Yeni bir sevgi notu ve anı kartın açıldı sevgilim!</p>
 
       <div class="photo-frame" id="surprisePhotoFrame">
         <img id="surprisePhotoImg" src="" alt="Anı fotoğrafı" />
       </div>
 
       <div class="love-letter" id="birthdayLetter">
-        <strong id="letterHeading">İyi ki doğdun güzel karım Özgem ❤️</strong>
-        <span id="letterBody">Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!</span>
+        <strong id="letterHeading">İyi ki varsın Özgem ❤️</strong>
+        <span id="letterBody">Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Seni çok seviyorum!</span>
+      </div>
+
+      <div class="album-nav">
+        <button class="nav-btn" id="prevNoteBtn">◀ Önceki Not</button>
+        <span class="nav-counter" id="noteCounterText">1 / 1</span>
+        <button class="nav-btn" id="nextNoteBtn">Sonraki Not ▶</button>
       </div>
 
       <button class="btn-primary" id="continueGameBtn">Kutudan Devam Et</button>
@@ -556,13 +573,14 @@
   <div class="overlay" id="gameOverOverlay">
     <div class="modal-card">
       <div class="hero-emoji">🍉</div>
-      <h2 class="modal-title">Kutu Doldu!</h2>
-      <p class="modal-sub" id="gameOverSub">Kutu sınır çizgisini geçti Özgem.</p>
-      <button class="btn-primary" id="retryGameBtn">Yeniden Başla</button>
+      <h2 class="modal-title">Kutu Doldu Sevgilim!</h2>
+      <p class="modal-sub" id="gameOverSub">Harika oynadın Özgem.</p>
+      <button class="btn-primary" id="retryGameBtn">Yeni Kutuya Başla</button>
     </div>
   </div>
 
-  <audio id="bgMusic" src="sarki.mp3" loop preload="auto"></audio>
+  <!-- İlk şarkı bittiğinde otomatik 7/24 romantik radyoya bağlanır -->
+  <audio id="bgMusic" src="sarki.mp3" preload="auto"></audio>
 
   <script>
     (function () {
@@ -606,101 +624,281 @@
         "resim5.jpg"
       ];
 
-      const SCORE_MILESTONES = [1000, 3000, 6000, 10000, 15000];
-
-      const SURPRISES = [
+      // Hem doğum gününde hem de yılın her gününde eşini mutlu edecek 30 özel sevgi notu
+      const LOVE_NOTES = [
         {
           emoji: "🎉",
-          title: "Doğum Günü Sürprizi!",
-          sub: "İyi ki doğdun güzel karım Özgem! İlk sürpriz kartın açıldı.",
-          heading: "İyi ki doğdun güzel karım Özgem ❤️",
-          body: "Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yeni yaşında da yüzünden gülümseme, kalbinden sevgi hiç eksik olmasın. Seni çok seviyorum!"
+          title: "İyi ki Doğdun, İyi ki Varsın!",
+          heading: "Canım Karım Özgem ❤️",
+          body: "Hayatıma getirdiğin neşe, güzellik ve huzur için her gün sana yeniden teşekkür ediyorum. Yalnızca doğum gününde değil, nefes aldığım her gün iyi ki benimlesin. Seni çok seviyorum!"
         },
         {
           emoji: "🌸",
-          title: "Birlikte Her Mevsim",
-          sub: "Harika ilerliyorsun sevgilim, sıradaki anı kartın burada!",
-          heading: "Seninle Her An Daha Güzel 🌸",
-          body: "Elini tuttuğum her an kalbim ilk günkü gibi çarpıyor. Birlikte nice güzel anılar biriktireceğimiz uzun yıllarımız olsun."
+          title: "Gülüşünün İzi",
+          heading: "Gülüşün En Sevdiğim Manzara 🌸",
+          body: "Yorgun bir günün sonunda bile yüzündeki tek bir tebessüm bütün dünyamı aydınlatmaya yetiyor. O güzel yüzün hep gülsün sevgilim."
+        },
+        {
+          emoji: "☕",
+          title: "Sabah Huzurum",
+          heading: "Seninle Başlayan Her Gün Güzel ☕",
+          body: "Sabah gözümü açtığımda yanımda olduğunu bilmek, içtiğimiz her kahve, paylaştığımız her sessizlik hayatımın en büyük lüksü."
         },
         {
           emoji: "✨",
-          title: "Gülüşünün Rengi",
-          sub: "Bir sürpriz daha açıldı! Oyuna kaldığın yerden devam edebilirsin.",
-          heading: "Gülüşün En Sevdiğim Manzara ✨",
-          body: "En sade günleri bile gülüşünle bayrama çeviriyorsun. Mutluluğun hiç eksilmesin güzel karım."
+          title: "Kalbimdeki Evim",
+          heading: "En Güvenli Limanım Sensin ✨",
+          body: "Nerede olursak olalım, elini tuttuğum an evimdeyim. Senin yanın benim bu dünyadaki en huzurlu köşem Özgem."
         },
         {
           emoji: "🍓",
-          title: "Kalbimin Huzuru",
-          sub: "Yeni bir kilometre taşına daha ulaştın güzel karım!",
-          heading: "Kalbimin Huzuru 🍓",
-          body: "Hayatın koşturmacasında en güvenli limanım sensin. İyi ki benimlesin, iyi ki varsın."
+          title: "İlk Gün Gibi",
+          heading: "Kalbim Hâlâ İlk Günkü Gibi Çarpıyor 🍓",
+          body: "Aradan ne kadar zaman geçerse geçsin, sana her baktığımda içimde yine o ilk günkü tatlı heyecanı hissediyorum."
         },
         {
-          emoji: "💖",
-          title: "Sonsuz Sevgimle",
-          sub: "Tüm anı kartları açıldı; dilediğin kadar yüksek puan toplayabilirsin!",
-          heading: "Sonsuz Sevgimle 💖",
-          body: "Her yeni yaşın sana sağlık, huzur ve dilediğin tüm güzellikleri getirsin. Seni her şeyden çok seviyorum!"
+          emoji: "🌙",
+          title: "Geceye Not",
+          heading: "Gözlerindeki Işık 🌙",
+          body: "Gece yıldızlara bakmaya hiç gerek yok; senin gözlerinin içindeki o güzel parıltı benim yolumu her zaman aydınlatıyor."
+        },
+        {
+          emoji: "🦋",
+          title: "Ruhumun Eşi",
+          heading: "Hayat Arkadaşım, Sırdaşım 🦋",
+          body: "Sen sadece eşim değil; en yakın arkadaşım, en tatlı dert ortağım ve başıma gelen en güzel şeysin."
+        },
+        {
+          emoji: "🌷",
+          title: "Seninle Her Mevsim",
+          heading: "Kışın Ortasında Baharım Sensin 🌷",
+          body: "Dışarıda hava nasıl olursa olsun, senin sesini duyduğum anda kalbimde çiçekler açıyor."
+        },
+        {
+          emoji: "🍯",
+          title: "En Tatlı İyi Ki'm",
+          heading: "Dualarımın En Güzel Karşılığı 🍯",
+          body: "Bazen durup düşünüyorum da, seni hak edecek ne yaptım bilmiyorum ama iyi ki yollarımız kesişmiş, iyi ki benim olmuşsun."
+        },
+        {
+          emoji: "👑",
+          title: "Kalbimin Kraliçesi",
+          heading: "Başımın Tacı Özgem 👑",
+          body: "Zarafetinle, merhametinle ve sevginle hayatımı öyle güzelleştirdin ki... Seni dün olduğundan daha çok, yarın olacağından bile derin seviyorum."
+        },
+        {
+          emoji: "🎶",
+          title: "En Güzel Melodi",
+          heading: "Sesin Kalbimin Şarkısı 🎶",
+          body: "Dünyanın en güzel şarkıları bile senin bir kez içten gülüşünün yanında sönük kalır."
+        },
+        {
+          emoji: "🏡",
+          title: "Bizim Hikayemiz",
+          heading: "En Sevdiğim Hikaye 'Biz'iz 🏡",
+          body: "Birlikte kurduğumuz bu yuva, biriktirdiğimiz her anı benim en büyük hazinem. Nice yıllarımız, nice tatlı kahkahalarımız olsun."
+        },
+        {
+          emoji: "💌",
+          title: "Küçük Bir Hatırlatma",
+          heading: "Şu An Bunu Okurken Bil İstedim 💌",
+          body: "Bu oyunu her açtığında bil ki kalbimde ve aklımda hep sen varsın. Seni her şeyden çok seviyorum güzel karım."
+        },
+        {
+          emoji: "🌅",
+          title: "Yarınlarım",
+          heading: "Geleceğe Dair En Güzel Hayalim 🌅",
+          body: "Saçlarımıza aklar düştüğünde bile elini bugünkü gibi sıkı sıkı tutmak, seninle yaşlanmak en büyük dileğim."
+        },
+        {
+          emoji: "🍒",
+          title: "Neşe Kaynağım",
+          heading: "Evinin Neşesi, Kalbimin Birtanesi 🍒",
+          body: "En sıradan günü bile varlığınla bayrama çeviriyorsun. İyi ki hayatımın tam merkezindesin Özgem."
+        },
+        {
+          emoji: "💫",
+          title: "Şansım Sensin",
+          heading: "Hayattaki En Büyük Şansım 💫",
+          body: "Bütün şansımı seni bulduğum gün kullanmışım gibi hissediyorum ve bundan dolayı dünyanın en mutlu insanıyım."
+        },
+        {
+          emoji: "🌹",
+          title: "Aşkla",
+          heading: "Sana Her Gün Yeniden Aşık Oluyorum 🌹",
+          body: "Bazen konuşurken, bazen bir şeye dalıp gittiğinde sana gizlice bakıp 'İyi ki benim karım' diye içimden geçiriyorum."
+        },
+        {
+          emoji: "☀️",
+          title: "Güneşim",
+          heading: "İçimi Isıtan Güneşim ☀️",
+          body: "Bakışındaki sıcaklık bütün yorgunluğumu alıp götürüyor. Varlığın bana her zaman güç veriyor sevgilim."
+        },
+        {
+          emoji: "🕊️",
+          title: "Huzur Kokulum",
+          heading: "Sarıldığımda Dünya Duruyor 🕊️",
+          body: "Sana sarıldığım o ilk saniyede dünyadaki bütün telaş bitiyor, geriye sadece huzur kalıyor."
+        },
+        {
+          emoji: "💎",
+          title: "En Değerlim",
+          heading: "Kalbi Yüzünden de Güzel Karım 💎",
+          body: "Güzelliğin büyüleyici ama o tertemiz, sevgi dolu kalbin seni dünyada eşi benzeri olmayan biri yapıyor."
+        },
+        {
+          emoji: "🌈",
+          title: "Renklerim",
+          heading: "Hayatımın En Canlı Rengi 🌈",
+          body: "Sen gelmeden önce her şey siyah beyazmış meğer; bütün güzel renkleri hayatıma sen getirdin."
+        },
+        {
+          emoji: "🍀",
+          title: "Dört Yapraklı Yoncam",
+          heading: "Mucizem Sensin 🍀",
+          body: "Mucizelere inanmamı sağlayan tek şey, seninle aynı hayatı paylaşıyor olmak. Seni çok seviyorum Özgem ❤️"
+        },
+        {
+          emoji: "🕯️",
+          title: "Akşam Huzuru",
+          heading: "Günün En Güzel Saati 🕯️",
+          body: "Günün en sevdiğim anı, bütün işlerin bitip seninle yan yana oturduğumuz o huzurlu saatler."
+        },
+        {
+          emoji: "🎈",
+          title: "Çocuksu Sevincim",
+          heading: "Yanında Hep Mutluyum 🎈",
+          body: "Senin yanındayken zamanın nasıl geçtiğini hiç anlamıyorum. Birlikte güldüğümüz her saniye ömrüme ömür katıyor."
+        },
+        {
+          emoji: "🌺",
+          title: "Özlemim",
+          heading: "Yanımdayken Bile Özlediğim 🌺",
+          body: "Gün içinde ayrı kaldığımız birkaç saatte bile aklım hep sende, kalbim hep senin yanında."
+        },
+        {
+          emoji: "🧁",
+          title: "Tatlılığım",
+          heading: "Hayatımın En Tatlı Köşesi 🧁",
+          body: "Bu oyundaki bütün meyveler bir araya gelse senin o tatlı gülüşünün yerini tutamaz sevgilim."
+        },
+        {
+          emoji: "🌌",
+          title: "Sonsuzluk",
+          heading: "Sonsuza Dek El Ele 🌌",
+          body: "Ne olursa olsun, hangi mevsimde olursak olalım, kalbim her zaman senin için atmaya devam edecek."
+        },
+        {
+          emoji: "🎀",
+          title: "En Güzel Hediye",
+          heading: "Hayatın Bana En Güzel Hediyesi 🎀",
+          body: "Sen bana verilmiş en güzel armağansın. Seni mutlu görmek benim bu hayattaki en büyük mutluluğum."
+        },
+        {
+          emoji: "🦢",
+          title: "Zarafetin",
+          heading: "Baktıkça Doyamadığım 🦢",
+          body: "Gözlerinin içine her baktığımda kendimi dünyanın en şanslı eşi hissediyorum. İyi ki varsın Özgem."
+        },
+        {
+          emoji: "❤️",
+          title: "Her Şeyim",
+          heading: "Seni Çok Seviyorum Özgem ❤️",
+          body: "Bugün, yarın ve daima... Kalbimin tek sahibi sensin. Yüzünden gülümseme hiç eksik olmasın canım karım."
         }
       ];
 
-      const KEY_BEST = "ozgem_best";
-      const KEY_SCORE = "ozgem_saved_score";
+      const EXTRA_OPENINGS = [
+        "Seninle geçen her gün kalbime yazılan yepyeni bir mutluluk hikayesi.",
+        "Gülüşünle başlayan her sabah, hayatımın en güzel armağanı.",
+        "Yanında huzur bulduğum, varlığıyla dünyamı güzelleştiren canım karım.",
+        "Gözlerine her baktığımda seninle ne kadar şanslı olduğumu yeniden hatırlıyorum.",
+        "Bu oyunu oynarken yüzünde oluşan o tatlı ifadeyi düşünmek bile beni gülümsetiyor."
+      ];
 
-      function readStoredInt(key, fallback, minVal) {
-        const raw = localStorage.getItem(key);
-        const parsed = raw !== null ? parseInt(raw, 10) : NaN;
-        const val = Number.isFinite(parsed) ? parsed : fallback;
-        return typeof minVal === "number" ? Math.max(minVal, val) : val;
+      const EXTRA_CLOSINGS = [
+        "Birlikte el ele geçireceğimiz, kahkahalarla dolu nice güzel günlerimiz olsun. Seni çok seviyorum ❤️",
+        "Kalbindeki tüm güzel dileklerin gerçeğe dönüştüğü, huzur dolu anlarımız hiç bitmesin ✨",
+        "İyi ki hayatımdasın, iyi ki benim canım Özgem'imsin 💖",
+        "Her günümüz sevgiyle, neşeyle ve senin o güzel gülüşünle dolsun 🌸"
+      ];
+
+      function getLoveNoteData(index) {
+        if (index < LOVE_NOTES.length) {
+          const item = LOVE_NOTES[index];
+          return {
+            emoji: item.emoji,
+            title: `${item.title}`,
+            heading: item.heading,
+            body: item.body
+          };
+        }
+        const base = LOVE_NOTES[index % LOVE_NOTES.length];
+        const openTxt = EXTRA_OPENINGS[index % EXTRA_OPENINGS.length];
+        const closeTxt = EXTRA_CLOSINGS[(index >> 1) % EXTRA_CLOSINGS.length];
+        return {
+          emoji: base.emoji,
+          title: `${base.title}`,
+          heading: base.heading,
+          body: `${openTxt} ${closeTxt}`
+        };
       }
 
-      let bestScore = readStoredInt(KEY_BEST, 0, 0);
-      let savedScore = readStoredInt(KEY_SCORE, 0, 0);
+      const KEY_BEST = "ozgem_best";
+      const KEY_SURPRISES = "ozgem_unlocked_surprises";
+      const KEY_SAVED_STATE = "ozgem_saved_board_v2";
 
-      function persistScore(scr) {
-        savedScore = Math.max(0, scr);
-        localStorage.setItem(KEY_SCORE, String(savedScore));
-        if (savedScore > bestScore) {
-          bestScore = savedScore;
-          localStorage.setItem(KEY_BEST, String(bestScore));
+      // Her 750 puanda bir kesin olarak yeni bir sevgi notu açılır!
+      const NOTE_STEP_SCORE = 750;
+
+      function readStoredInt(key, fallback, minVal) {
+        try {
+          const raw = localStorage.getItem(key);
+          const parsed = raw !== null ? parseInt(raw, 10) : NaN;
+          const val = Number.isFinite(parsed) ? parsed : fallback;
+          return typeof minVal === "number" ? Math.max(minVal, val) : val;
+        } catch (_) {
+          return fallback;
         }
       }
 
+      let bestScore = readStoredInt(KEY_BEST, 0, 0);
+      let unlockedSurprises = readStoredInt(KEY_SURPRISES, 1, 1);
+
+      function persistSurprises() {
+        try {
+          localStorage.setItem(KEY_SURPRISES, String(unlockedSurprises));
+        } catch (_) {}
+      }
+
       const canvas = document.getElementById("gameCanvas");
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext("2d", { alpha: false });
       const scoreEl = document.getElementById("scoreEl");
       const bestEl = document.getElementById("bestEl");
       const melonPill = document.getElementById("melonPill");
       const goalText = document.getElementById("goalText");
+      const progressFill = document.getElementById("progressFill");
       const chainStrip = document.getElementById("chainStrip");
 
       const topStrawberryBtn = document.getElementById("topStrawberryBtn");
-      const startStrawberryBtn = document.getElementById("startStrawberryBtn");
       const startOverlay = document.getElementById("startOverlay");
-      const progressOverlay = document.getElementById("progressOverlay");
+      const startSubText = document.getElementById("startSubText");
       const surpriseOverlay = document.getElementById("surpriseOverlay");
       const gameOverOverlay = document.getElementById("gameOverOverlay");
 
       const startBtn = document.getElementById("startBtn");
+      const newGameFromStartBtn = document.getElementById("newGameFromStartBtn");
       const continueGameBtn = document.getElementById("continueGameBtn");
       const retryGameBtn = document.getElementById("retryGameBtn");
       const shakeBtn = document.getElementById("shakeBtn");
       const shakeBadge = document.getElementById("shakeBadge");
-      const progressBtn = document.getElementById("progressBtn");
-      const grantShakeBtn = document.getElementById("grantShakeBtn");
-      const copyProgressBtn = document.getElementById("copyProgressBtn");
-      const closeProgressBtn = document.getElementById("closeProgressBtn");
       const noteBtn = document.getElementById("noteBtn");
+      const noteBadge = document.getElementById("noteBadge");
       const soundBtn = document.getElementById("soundBtn");
 
-      const sumScore = document.getElementById("sumScore");
-      const sumBest = document.getElementById("sumBest");
-      const sumMelon = document.getElementById("sumMelon");
-      const sumSurprises = document.getElementById("sumSurprises");
-      const sumShake = document.getElementById("sumShake");
-      const progressCodeArea = document.getElementById("progressCodeArea");
+      const prevNoteBtn = document.getElementById("prevNoteBtn");
+      const nextNoteBtn = document.getElementById("nextNoteBtn");
+      const noteCounterText = document.getElementById("noteCounterText");
 
       const surpriseEmoji = document.getElementById("surpriseEmoji");
       const surpriseTitle = document.getElementById("surpriseTitle");
@@ -711,11 +909,49 @@
       const letterBody = document.getElementById("letterBody");
       const bgMusic = document.getElementById("bgMusic");
 
+      // 7/24 Kesintisiz Romantik Radyo İstasyonları
+      const ROMANTIC_RADIO_STREAMS = [
+        "https://ice1.somafm.com/lush-128-mp3",
+        "https://ais-sa2.cdnstream1.com/2210_128.mp3",
+        "https://stream.zeno.fm/0r0xa792kwzuv"
+      ];
+      let isRadioMode = false;
+      let currentRadioIndex = 0;
+
+      function switchToRomanticRadio() {
+        isRadioMode = true;
+        bgMusic.loop = false;
+        bgMusic.src = ROMANTIC_RADIO_STREAMS[currentRadioIndex % ROMANTIC_RADIO_STREAMS.length];
+        if (soundEnabled) {
+          bgMusic.play().catch(() => {});
+        }
+      }
+
+      bgMusic.addEventListener("ended", () => {
+        if (!isRadioMode) {
+          switchToRomanticRadio();
+        } else {
+          currentRadioIndex = (currentRadioIndex + 1) % ROMANTIC_RADIO_STREAMS.length;
+          switchToRomanticRadio();
+        }
+      });
+
+      bgMusic.addEventListener("error", () => {
+        if (!isRadioMode) {
+          switchToRomanticRadio();
+        } else {
+          currentRadioIndex = (currentRadioIndex + 1) % ROMANTIC_RADIO_STREAMS.length;
+          setTimeout(() => {
+            if (soundEnabled) switchToRomanticRadio();
+          }, 1500);
+        }
+      });
+
       let soundEnabled = true;
       let audioCtx = null;
 
-      function playMergeTone(tier) {
-        if (!soundEnabled) return;
+      function ensureAudioCtx() {
+        if (!soundEnabled) return null;
         try {
           if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -723,21 +959,77 @@
           if (audioCtx.state === "suspended") {
             audioCtx.resume();
           }
-          const now = audioCtx.currentTime;
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = "sine";
-          const baseFreq = 275 + tier * 42;
-          osc.frequency.setValueAtTime(baseFreq, now);
-          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.38, now + 0.13);
+          return audioCtx;
+        } catch (_) {
+          return null;
+        }
+      }
 
-          gain.gain.setValueAtTime(0.11, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+      // Birleşme ve Kombo ses efekti
+      function playMergeTone(tier, comboCount) {
+        const actx = ensureAudioCtx();
+        if (!actx) return;
+        try {
+          const now = actx.currentTime;
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.type = "sine";
+          const comboBoost = Math.min(6, (comboCount || 1) - 1) * 35;
+          const baseFreq = 270 + tier * 44 + comboBoost;
+          osc.frequency.setValueAtTime(baseFreq, now);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.42, now + 0.14);
+
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
 
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(actx.destination);
           osc.start(now);
-          osc.stop(now + 0.17);
+          osc.stop(now + 0.18);
+        } catch (_) {}
+      }
+
+      // iPhone 11'de fiziksel titreşim hissini destekleyen tok bas salla sesi
+      function playShakeBassSound() {
+        const actx = ensureAudioCtx();
+        if (!actx) return;
+        try {
+          const now = actx.currentTime;
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(135, now);
+          osc.frequency.exponentialRampToValueAtTime(52, now + 0.22);
+
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+          osc.connect(gain);
+          gain.connect(actx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } catch (_) {}
+      }
+
+      // Sürpriz / Ödül kazanma melodi efekti
+      function playRewardChime() {
+        const actx = ensureAudioCtx();
+        if (!actx) return;
+        try {
+          const notes = [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, idx) => {
+            const now = actx.currentTime + idx * 0.075;
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            osc.start(now);
+            osc.stop(now + 0.23);
+          });
         } catch (_) {}
       }
 
@@ -755,6 +1047,7 @@
         if (document.visibilityState === "visible" && soundEnabled && gameState === "playing") {
           bgMusic.play().catch(() => {});
         } else if (document.visibilityState === "hidden") {
+          saveBoardState();
           bgMusic.pause();
         }
       });
@@ -764,25 +1057,43 @@
         syncMusic();
       });
 
+      let currentViewingNoteIndex = Math.max(0, unlockedSurprises - 1);
+
       noteBtn.addEventListener("click", () => {
         if (gameState === "playing" || gameState === "paused") {
-          const idx = Math.max(0, Math.min(SURPRISES.length - 1, unlockedSurprises - 1));
-          openSurpriseCard(idx, true);
+          currentViewingNoteIndex = Math.max(0, unlockedSurprises - 1);
+          openSurpriseCard(currentViewingNoteIndex, true);
         }
+      });
+
+      prevNoteBtn.addEventListener("click", () => {
+        const total = Math.max(1, unlockedSurprises);
+        currentViewingNoteIndex = (currentViewingNoteIndex - 1 + total) % total;
+        renderSurpriseModalContent(currentViewingNoteIndex, true);
+      });
+
+      nextNoteBtn.addEventListener("click", () => {
+        const total = Math.max(1, unlockedSurprises);
+        currentViewingNoteIndex = (currentViewingNoteIndex + 1) % total;
+        renderSurpriseModalContent(currentViewingNoteIndex, true);
       });
 
       let width = 360;
       let height = 560;
       let dpr = 1;
+      let canvasLeft = 0;
+      let bgGradient = null;
 
-      let score = savedScore;
+      let score = 0;
+      let nextNoteScoreTarget = NOTE_STEP_SCORE;
       let watermelonCount = 0;
-      let unlockedSurprises = 0;
       let gameState = "start";
       let surpriseTimer = null;
       let shakeCharges = 2;
-      let startStrawberryTapCount = 0;
-      let startStrawberryTapTimer = null;
+
+      // Kombo değişkenleri
+      let comboCount = 0;
+      let comboResetTimer = 0;
 
       const params = new URLSearchParams(window.location.search);
       const bonusFromUrl = parseInt(params.get("shake") || "0", 10);
@@ -791,8 +1102,8 @@
       }
 
       const engine = Engine.create({
-        positionIterations: 8,
-        velocityIterations: 6
+        positionIterations: 6,
+        velocityIterations: 4
       });
       const world = engine.world;
       engine.gravity.y = 1.02;
@@ -810,6 +1121,7 @@
       let dangerTimer = 0;
       let shakeTime = 0;
       let shakeIntensity = 0;
+      let autoSaveCooldown = 0;
 
       const SPAWN_Y = 48;
       const TOP_LINE_Y = 88;
@@ -817,6 +1129,187 @@
       const FLOOR_Y_OFFSET = 10;
       const DANGER_LIMIT = 2.6;
       const SETTLE_SPEED = 2.4;
+
+      // ============================================================================
+      // iPHONE 11 İÇİN TAM ÖNBELLEKLİ MEYVE + GÖLGE SPRITE SİSTEMİ
+      // ============================================================================
+      const fruitSpriteCache = [];
+      let shadowSpriteCanvas = null;
+
+      function buildShadowSprite() {
+        const sc = document.createElement("canvas");
+        sc.width = 128;
+        sc.height = 128;
+        const sctx = sc.getContext("2d");
+        sctx.beginPath();
+        sctx.arc(64, 64, 58, 0, Math.PI * 2);
+        sctx.fillStyle = "rgba(44, 32, 24, 0.11)";
+        sctx.fill();
+        shadowSpriteCanvas = sc;
+      }
+
+      function buildFruitSprites() {
+        buildShadowSprite();
+        const spriteDpr = Math.min(window.devicePixelRatio || 1, 2);
+        fruitSpriteCache.length = 0;
+
+        for (let i = 0; i < FRUITS.length; i++) {
+          const def = FRUITS[i];
+          const r = def.radius;
+          const pad = 6;
+          const half = r + pad;
+          const size = half * 2;
+
+          const off = document.createElement("canvas");
+          off.width = Math.round(size * spriteDpr);
+          off.height = Math.round(size * spriteDpr);
+          const octx = off.getContext("2d");
+          octx.scale(spriteDpr, spriteDpr);
+          octx.translate(half, half);
+
+          const grad = octx.createRadialGradient(-r * 0.32, -r * 0.34, r * 0.12, 0, 0, r);
+          grad.addColorStop(0, def.light);
+          grad.addColorStop(0.62, def.base);
+          grad.addColorStop(1, def.dark);
+
+          octx.beginPath();
+          octx.arc(0, 0, r, 0, Math.PI * 2);
+          octx.fillStyle = grad;
+          octx.fill();
+          octx.lineWidth = Math.max(2, r * 0.05);
+          octx.strokeStyle = def.dark;
+          octx.stroke();
+
+          if (def.name === "Karpuz") {
+            octx.save();
+            octx.beginPath();
+            octx.arc(0, 0, r - 2, 0, Math.PI * 2);
+            octx.clip();
+            octx.strokeStyle = "rgba(20, 83, 45, 0.5)";
+            octx.lineWidth = Math.max(3, r * 0.07);
+            for (let s = -2; s <= 2; s++) {
+              octx.beginPath();
+              octx.arc(s * r * 0.34, 0, r * 0.92, -Math.PI * 0.45, Math.PI * 0.45);
+              octx.stroke();
+            }
+            octx.restore();
+          }
+
+          octx.beginPath();
+          octx.ellipse(-r * 0.34, -r * 0.36, r * 0.25, r * 0.13, -0.65, 0, Math.PI * 2);
+          octx.fillStyle = "rgba(255, 255, 255, 0.68)";
+          octx.fill();
+
+          const eyeOffsetX = r * 0.32;
+          const eyeY = -r * 0.04;
+          const eyeR = Math.max(1.8, r * 0.075);
+
+          octx.fillStyle = "#231712";
+          octx.beginPath();
+          octx.arc(-eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+          octx.arc(eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
+          octx.fill();
+
+          octx.fillStyle = "rgba(255, 255, 255, 0.38)";
+          octx.beginPath();
+          octx.ellipse(-eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
+          octx.ellipse(eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
+          octx.fill();
+
+          octx.strokeStyle = "#231712";
+          octx.lineWidth = Math.max(1.7, r * 0.058);
+          octx.lineCap = "round";
+          octx.beginPath();
+          octx.arc(0, eyeY + r * 0.06, r * 0.22, 0.15 * Math.PI, 0.85 * Math.PI);
+          octx.stroke();
+
+          fruitSpriteCache.push({
+            canvas: off,
+            half,
+            size,
+            baseRadius: r
+          });
+        }
+      }
+      buildFruitSprites();
+
+      function buildChainStripOnce() {
+        chainStrip.innerHTML = "";
+        FRUITS.forEach((f, idx) => {
+          const dot = document.createElement("span");
+          const isFinal = idx === FRUITS.length - 1;
+          dot.className = "chain-dot" + (isFinal ? " final" : "");
+          dot.style.background = `radial-gradient(circle at 32% 28%, ${f.light}, ${f.base})`;
+          dot.textContent = isFinal ? "🍉" : String(idx + 1);
+          chainStrip.appendChild(dot);
+
+          if (idx < FRUITS.length - 1) {
+            const arrow = document.createElement("span");
+            arrow.className = "chain-arrow";
+            arrow.textContent = "›";
+            chainStrip.appendChild(arrow);
+          }
+        });
+      }
+      buildChainStripOnce();
+
+      // ============================================================================
+      // OTOMATİK KAYIT SİSTEMİ (Safari yenilese bile kaldığı yerden devam eder)
+      // ============================================================================
+      function saveBoardState() {
+        if (gameState === "gameover" || gameState === "start") return;
+        try {
+          const serializedFruits = fruitEntries.map((f) => ({
+            t: f.type,
+            xr: Number((f.body.position.x / Math.max(1, width)).toFixed(4)),
+            yr: Number((f.body.position.y / Math.max(1, height)).toFixed(4)),
+            a: Number((f.body.angle || 0).toFixed(3))
+          }));
+          const payload = {
+            score,
+            nextNoteScoreTarget,
+            watermelonCount,
+            shakeCharges,
+            currentType,
+            nextType,
+            fruits: serializedFruits
+          };
+          localStorage.setItem(KEY_SAVED_STATE, JSON.stringify(payload));
+        } catch (_) {}
+      }
+
+      function clearSavedBoardState() {
+        try {
+          localStorage.removeItem(KEY_SAVED_STATE);
+        } catch (_) {}
+      }
+
+      function readSavedBoardState() {
+        try {
+          const raw = localStorage.getItem(KEY_SAVED_STATE);
+          if (!raw) return null;
+          const data = JSON.parse(raw);
+          if (!data || !Array.isArray(data.fruits) || (data.score <= 0 && data.fruits.length === 0)) {
+            return null;
+          }
+          return data;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function setupStartModalOptions() {
+        const saved = readSavedBoardState();
+        if (saved) {
+          startSubText.innerHTML = `Kaldığın kutu hazır sevgilim (<strong>${saved.score} puan</strong> · <strong>${saved.fruits.length} meyve</strong>). İstersen kaldığın yerden devam edebilirsin ❤️`;
+          startBtn.textContent = "Kaldığım Yerden Devam Et";
+          newGameFromStartBtn.classList.add("visible");
+        } else {
+          startSubText.textContent = "Meyveleri birleştirip puan topladıkça ve 🍉 Karpuz yaptıkça sana özel sevgi notlarım ve anı fotoğraflarımız açılır.";
+          startBtn.textContent = "Oyuna Başla";
+          newGameFromStartBtn.classList.remove("visible");
+        }
+      }
 
       function clearPendingSurpriseTimer() {
         if (surpriseTimer !== null) {
@@ -838,167 +1331,71 @@
           : "Kutuyu Salla (Hak bitti)";
       }
 
-      function refreshProgressModal() {
-        sumScore.textContent = String(score);
-        sumBest.textContent = String(bestScore);
-        sumMelon.textContent = String(watermelonCount);
-        sumSurprises.textContent = `${unlockedSurprises} / ${SURPRISES.length}`;
-        sumShake.textContent = String(shakeCharges);
-        const stamp = new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
-        progressCodeArea.value =
-          `OZGM|${stamp}|P:${score}|R:${bestScore}|K:${watermelonCount}|S:${unlockedSurprises}/${SURPRISES.length}|H:${shakeCharges}`;
+      function updateNoteBadgeUI() {
+        noteBadge.textContent = String(Math.max(1, unlockedSurprises));
       }
 
-      function grantInstantShakeCharge(amount) {
+      function grantInstantShakeCharge(amount, customLabel) {
         const inc = Math.max(1, amount || 1);
         shakeCharges += inc;
         updateShakeButtonUI();
-        refreshProgressModal();
-        if (navigator.vibrate) {
-          try { navigator.vibrate([70, 35, 70]); } catch (_) {}
-        }
+        playShakeBassSound();
         if (gameState === "playing") {
           addScreenShake(3.2, 0.16);
           popups.push({
-            x: Math.max(48, Math.min(width - 48, dropX)),
+            x: Math.max(60, Math.min(width - 60, dropX)),
             y: TOP_LINE_Y - 14,
-            text: `+${inc} 🔀`,
+            text: customLabel || `+${inc} 🔀 Salla!`,
             alpha: 1
           });
+          saveBoardState();
         }
       }
 
       topStrawberryBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        grantInstantShakeCharge(1);
-      });
-
-      startStrawberryBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        startStrawberryTapCount += 1;
-        if (startStrawberryTapTimer !== null) {
-          clearTimeout(startStrawberryTapTimer);
-        }
-        startStrawberryTapTimer = setTimeout(() => {
-          startStrawberryTapCount = 0;
-          startStrawberryTapTimer = null;
-        }, 1400);
-
-        if (startStrawberryTapCount >= 5) {
-          startStrawberryTapCount = 0;
-          if (startStrawberryTapTimer !== null) {
-            clearTimeout(startStrawberryTapTimer);
-            startStrawberryTapTimer = null;
-          }
-          gameState = "paused";
-          refreshProgressModal();
-          progressOverlay.classList.add("active");
-        }
+        grantInstantShakeCharge(1, "+1 🔀 Çilek Hediyesi!");
       });
 
       function triggerGentleBoxShake() {
         if (gameState !== "playing" || shakeCharges <= 0) return;
         shakeCharges -= 1;
         updateShakeButtonUI();
-        addScreenShake(6.8, 0.32);
-        if (navigator.vibrate) {
-          try { navigator.vibrate([140, 45, 180]); } catch (_) {}
-        }
+        playShakeBassSound();
+        addScreenShake(7.2, 0.34);
 
         for (let i = 0; i < fruitEntries.length; i++) {
           const b = fruitEntries[i].body;
           const dir = i % 2 === 0 ? 1 : -1;
           Body.setVelocity(b, {
-            x: b.velocity.x + dir * (3.4 + Math.random() * 2.2),
-            y: b.velocity.y - (2.4 + Math.random() * 2.0)
+            x: b.velocity.x + dir * (3.6 + Math.random() * 2.2),
+            y: b.velocity.y - (2.6 + Math.random() * 2.0)
           });
         }
+        saveBoardState();
       }
 
       shakeBtn.addEventListener("click", triggerGentleBoxShake);
-
-      progressBtn.addEventListener("click", () => {
-        if (gameState === "start" || gameState === "gameover") return;
-        gameState = "paused";
-        refreshProgressModal();
-        progressOverlay.classList.add("active");
-      });
-
-      grantShakeBtn.addEventListener("click", () => {
-        grantInstantShakeCharge(1);
-        grantShakeBtn.textContent = "+1 Hak Verildi! (Tekrar Basabilirsin)";
-        setTimeout(() => {
-          grantShakeBtn.textContent = "+1 Anlık Salla / Titreşim Hakkı Ver";
-        }, 1200);
-      });
-
-      copyProgressBtn.addEventListener("click", () => {
-        const txt = progressCodeArea.value;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(txt).catch(() => {});
-        }
-        progressCodeArea.select();
-        copyProgressBtn.textContent = "Kopyalandı ✓";
-        setTimeout(() => {
-          copyProgressBtn.textContent = "İlerleme Özetini Kopyala";
-        }, 1200);
-      });
-
-      closeProgressBtn.addEventListener("click", () => {
-        progressOverlay.classList.remove("active");
-        if (gameState === "paused") {
-          gameState = "playing";
-        }
-      });
-
-      window.addEventListener("keydown", (e) => {
-        if (e.shiftKey && (e.key === "S" || e.key === "s")) {
-          e.preventDefault();
-          grantInstantShakeCharge(1);
-        }
-      });
-
-      function getNextMilestoneTarget() {
-        for (let i = 0; i < SCORE_MILESTONES.length; i++) {
-          if (score < SCORE_MILESTONES[i]) {
-            return SCORE_MILESTONES[i];
-          }
-        }
-        return null;
-      }
 
       function updateHUD() {
         scoreEl.textContent = score;
         if (score > bestScore) {
           bestScore = score;
-          localStorage.setItem(KEY_BEST, String(bestScore));
+          try {
+            localStorage.setItem(KEY_BEST, String(bestScore));
+          } catch (_) {}
         }
         bestEl.textContent = bestScore;
         melonPill.textContent = `🍉 Karpuz: ${watermelonCount}`;
+        updateNoteBadgeUI();
 
-        const nextTarget = getNextMilestoneTarget();
-        if (nextTarget !== null) {
-          goalText.innerHTML = `Sürpriz: <strong>${nextTarget.toLocaleString("tr-TR")} puan</strong> veya <strong>🍉 Karpuz</strong>`;
-        } else {
-          goalText.innerHTML = `Sürprizler açık · <strong>🍉 Karpuz</strong> biriktir`;
-        }
+        const prevTarget = Math.max(0, nextNoteScoreTarget - NOTE_STEP_SCORE);
+        const currentSpan = Math.max(1, nextNoteScoreTarget - prevTarget);
+        const progressed = Math.max(0, Math.min(currentSpan, score - prevTarget));
+        const pct = Math.round((progressed / currentSpan) * 100);
 
-        chainStrip.innerHTML = "";
-        FRUITS.forEach((f, idx) => {
-          const dot = document.createElement("span");
-          const isFinal = idx === FRUITS.length - 1;
-          dot.className = "chain-dot" + (isFinal ? " final" : "");
-          dot.style.background = `radial-gradient(circle at 32% 28%, ${f.light}, ${f.base})`;
-          dot.textContent = isFinal ? "🍉" : String(idx + 1);
-          chainStrip.appendChild(dot);
-
-          if (idx < FRUITS.length - 1) {
-            const arrow = document.createElement("span");
-            arrow.className = "chain-arrow";
-            arrow.textContent = "›";
-            chainStrip.appendChild(arrow);
-          }
-        });
+        progressFill.style.width = `${pct}%`;
+        goalText.innerHTML = `💌 Yeni Not (#${unlockedSurprises + 1}): <strong>${score} / ${nextNoteScoreTarget}</strong>`;
       }
 
       function clampExistingFruitsToBounds() {
@@ -1052,6 +1449,7 @@
 
       function resizeCanvas(forceReset) {
         const rect = canvas.getBoundingClientRect();
+        canvasLeft = rect.left;
         const w = Math.round(rect.width);
         const h = Math.round(rect.height);
         if (w <= 0 || h <= 0) return;
@@ -1069,6 +1467,10 @@
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
+        bgGradient = ctx.createLinearGradient(0, 0, 0, height);
+        bgGradient.addColorStop(0, "#fffcf7");
+        bgGradient.addColorStop(1, "#fdf2e2");
+
         rebuildBounds();
 
         if (forceReset) {
@@ -1082,7 +1484,7 @@
       window.addEventListener("orientationchange", () => setTimeout(() => resizeCanvas(true), 120));
       resizeCanvas(true);
 
-      function createFruitBody(typeIdx, x, y, spawnScale, age, sx, sy) {
+      function createFruitBody(typeIdx, x, y, spawnScale, age, sx, sy, angle) {
         const def = FRUITS[typeIdx];
         const body = Bodies.circle(x, y, def.radius, {
           restitution: 0.08,
@@ -1091,6 +1493,9 @@
           frictionAir: 0.012,
           density: 0.0012 * (1 + typeIdx * 0.08)
         });
+        if (angle) {
+          Body.setAngle(body, angle);
+        }
         const entry = {
           body,
           type: typeIdx,
@@ -1119,30 +1524,72 @@
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
-      function spawnMergeSparks(x, y, color) {
-        const count = Math.min(14, sparks.length > 90 ? 5 : 14);
+      function spawnMergeSparks(x, y, color, countOverride) {
+        const count = countOverride || (sparks.length > 55 ? 5 : 11);
         for (let i = 0; i < count; i++) {
           const ang = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.35;
-          const spd = 80 + Math.random() * 130;
+          const spd = 85 + Math.random() * 135;
           sparks.push({
             x,
             y,
             vx: Math.cos(ang) * spd,
-            vy: Math.sin(ang) * spd - 40,
-            r: 3.4 + Math.random() * 3.8,
+            vy: Math.sin(ang) * spd - 45,
+            r: 3.2 + Math.random() * 3.5,
             color,
             life: 1
           });
         }
       }
 
-      function startNewGame() {
+      function resumeSavedGame(saved) {
         clearPendingSurpriseTimer();
         resizeCanvas(true);
+        clearAllFruits();
+        popups = [];
+        sparks = [];
+        dangerTimer = 0;
+        dropCooldown = 0;
+        shakeTime = 0;
+        isPointerDown = false;
+
+        score = Math.max(0, saved.score || 0);
+        nextNoteScoreTarget = Math.max(
+          NOTE_STEP_SCORE,
+          saved.nextNoteScoreTarget || (Math.floor(score / NOTE_STEP_SCORE) + 1) * NOTE_STEP_SCORE
+        );
+        watermelonCount = Math.max(0, saved.watermelonCount || 0);
+        shakeCharges = typeof saved.shakeCharges === "number" ? Math.max(0, saved.shakeCharges) : 2;
+        currentType = typeof saved.currentType === "number" ? saved.currentType : pickSpawnFruit();
+        nextType = typeof saved.nextType === "number" ? saved.nextType : pickSpawnFruit();
+
+        for (let i = 0; i < saved.fruits.length; i++) {
+          const f = saved.fruits[i];
+          if (typeof f.t === "number" && f.t >= 0 && f.t < FRUITS.length) {
+            const fx = Math.max(24, Math.min(width - 24, (f.xr || 0.5) * width));
+            const fy = Math.max(60, Math.min(height - 24, (f.yr || 0.5) * height));
+            createFruitBody(f.t, fx, fy, 1, 2.0, 1, 1, f.a || 0);
+          }
+        }
+
+        dropX = width / 2;
+        gameState = "playing";
+        updateShakeButtonUI();
+        updateHUD();
+
+        startOverlay.classList.remove("active");
+        surpriseOverlay.classList.remove("active");
+        gameOverOverlay.classList.remove("active");
+      }
+
+      function startNewGame() {
+        clearPendingSurpriseTimer();
+        clearSavedBoardState();
+        resizeCanvas(true);
         score = 0;
+        nextNoteScoreTarget = NOTE_STEP_SCORE;
         watermelonCount = 0;
-        unlockedSurprises = 0;
-        persistScore(score);
+        comboCount = 0;
+        comboResetTimer = 0;
 
         shakeCharges = 2 + (Number.isFinite(bonusFromUrl) && bonusFromUrl > 0 ? Math.min(20, bonusFromUrl) : 0);
         updateShakeButtonUI();
@@ -1161,16 +1608,16 @@
         updateHUD();
 
         startOverlay.classList.remove("active");
-        progressOverlay.classList.remove("active");
         surpriseOverlay.classList.remove("active");
         gameOverOverlay.classList.remove("active");
       }
 
-      function openSurpriseCard(index, isManualView) {
-        clearPendingSurpriseTimer();
-        gameState = "paused";
-        const safeIdx = Math.max(0, Math.min(SURPRISES.length - 1, index));
-        const item = SURPRISES[safeIdx];
+      function renderSurpriseModalContent(index, isManualView) {
+        const total = Math.max(1, unlockedSurprises);
+        const safeIdx = Math.max(0, Math.min(total - 1, index));
+        currentViewingNoteIndex = safeIdx;
+
+        const item = getLoveNoteData(safeIdx);
         const photoFile = PHOTOS[safeIdx % PHOTOS.length];
 
         surprisePhotoImg.onload = () => {
@@ -1182,53 +1629,91 @@
         surprisePhotoFrame.classList.remove("has-photo");
         surprisePhotoImg.src = photoFile;
 
-        surpriseEmoji.textContent = isManualView ? "🎂" : item.emoji;
-        surpriseTitle.textContent = isManualView ? "Güzel Karım Özgem'e" : item.title;
+        surpriseEmoji.textContent = item.emoji;
+        surpriseTitle.textContent = item.title;
         surpriseSub.textContent = isManualView
-          ? `Doğum günü notun ve anı kartın (${safeIdx + 1}/${PHOTOS.length}).`
-          : item.sub;
+          ? `Sevgi Albümün · Fotoğraf ${(safeIdx % PHOTOS.length) + 1}/${PHOTOS.length}`
+          : `Harikasın sevgilim! #${safeIdx + 1}. sevgi notun açıldı ❤️`;
         letterHeading.textContent = item.heading;
         letterBody.textContent = item.body;
+        noteCounterText.textContent = `Not ${safeIdx + 1} / ${total}`;
         continueGameBtn.textContent = isManualView ? "Oyuna Dön" : "Kutudan Devam Et";
+      }
+
+      function openSurpriseCard(index, isManualView) {
+        clearPendingSurpriseTimer();
+        gameState = "paused";
+        renderSurpriseModalContent(index, isManualView);
 
         if (!isManualView) {
+          playRewardChime();
           launchConfetti();
         }
         surpriseOverlay.classList.add("active");
       }
 
-      function checkScoreMilestones() {
-        if (unlockedSurprises >= SURPRISES.length) return;
-        const milestoneIdx = Math.min(unlockedSurprises, SCORE_MILESTONES.length - 1);
-        if (score >= SCORE_MILESTONES[milestoneIdx]) {
-          const cardIdx = unlockedSurprises;
-          unlockedSurprises += 1;
-          clearPendingSurpriseTimer();
-          surpriseTimer = setTimeout(() => {
-            surpriseTimer = null;
-            if (gameState === "playing") {
-              openSurpriseCard(cardIdx, false);
-            }
-          }, 420);
+      function unlockNextLoveNote(reasonPopupText) {
+        const newCardIdx = unlockedSurprises;
+        unlockedSurprises += 1;
+        persistSurprises();
+
+        // Her 3 yeni notta bir otomatik +1 Salla Hakkı hediye edilir
+        if (unlockedSurprises % 3 === 0) {
+          shakeCharges += 1;
+          updateShakeButtonUI();
+          popups.push({
+            x: width / 2,
+            y: TOP_LINE_Y + 24,
+            text: "🎁 Bonus +1 🔀 Salla Hakkı!",
+            alpha: 1.2
+          });
+        }
+
+        if (reasonPopupText) {
+          popups.push({
+            x: width / 2,
+            y: TOP_LINE_Y + 4,
+            text: reasonPopupText,
+            alpha: 1.2
+          });
+        }
+
+        updateHUD();
+        saveBoardState();
+
+        clearPendingSurpriseTimer();
+        surpriseTimer = setTimeout(() => {
+          surpriseTimer = null;
+          if (gameState === "playing") {
+            openSurpriseCard(newCardIdx, false);
+          }
+        }, 460);
+      }
+
+      function checkScoreProgressForNote() {
+        if (score >= nextNoteScoreTarget) {
+          while (score >= nextNoteScoreTarget) {
+            nextNoteScoreTarget += NOTE_STEP_SCORE;
+          }
+          unlockNextLoveNote("💌 Yeni Sevgi Notu Açıldı!");
         }
       }
 
       function triggerGameOver() {
         if (gameState === "gameover") return;
         clearPendingSurpriseTimer();
+        clearSavedBoardState();
         pendingMerges = [];
         gameState = "gameover";
-        persistScore(score);
         document.getElementById("gameOverSub").textContent =
-          `Kutu sınır çizgisini geçti Özgem · Toplam Puan: ${score} · Yapılan Karpuz: ${watermelonCount}`;
+          `Toplam Puanın: ${score} · En Yüksek Rekorun: ${bestScore} · Açılan Sevgi Notu: ${unlockedSurprises}`;
         gameOverOverlay.classList.add("active");
       }
 
       function clientToX(clientX) {
-        const rect = canvas.getBoundingClientRect();
         const r = FRUITS[currentType].radius;
         const pad = Math.max(14, r);
-        return Math.max(pad, Math.min(width - pad, clientX - rect.left));
+        return Math.max(pad, Math.min(width - pad, clientX - canvasLeft));
       }
 
       function dropFruitAt(xPos) {
@@ -1238,36 +1723,43 @@
         const pad = Math.max(14, r);
         const x = Math.max(pad, Math.min(width - pad, xPos));
 
-        const entry = createFruitBody(currentType, x, SPAWN_Y, 0.85, 0, 0.96, 1.04);
+        const entry = createFruitBody(currentType, x, SPAWN_Y, 0.85, 0, 0.96, 1.04, 0);
         Body.setVelocity(entry.body, { x: 0, y: 1.5 });
 
         currentType = nextType;
         nextType = pickSpawnFruit();
-        dropCooldown = 0.25;
+        dropCooldown = 0.24;
+        autoSaveCooldown = 0.4;
       }
 
       Events.on(engine, "collisionStart", (event) => {
         if (gameState !== "playing") return;
-        const watermelonIndex = FRUITS.length - 1;
         const pairs = event.pairs;
 
         for (let i = 0; i < pairs.length; i++) {
           const aEntry = pairs[i].bodyA.plugin && pairs[i].bodyA.plugin.fruitEntry;
           const bEntry = pairs[i].bodyB.plugin && pairs[i].bodyB.plugin.fruitEntry;
 
-          if (aEntry && !aEntry.merged && Math.hypot(aEntry.body.velocity.x, aEntry.body.velocity.y) > 4.5) {
-            aEntry.scaleX = 1.06;
-            aEntry.scaleY = 0.94;
+          if (aEntry && !aEntry.merged) {
+            const vx = aEntry.body.velocity.x;
+            const vy = aEntry.body.velocity.y;
+            if (vx * vx + vy * vy > 20.25) {
+              aEntry.scaleX = 1.06;
+              aEntry.scaleY = 0.94;
+            }
           }
-          if (bEntry && !bEntry.merged && Math.hypot(bEntry.body.velocity.x, bEntry.body.velocity.y) > 4.5) {
-            bEntry.scaleX = 1.06;
-            bEntry.scaleY = 0.94;
+          if (bEntry && !bEntry.merged) {
+            const vx = bEntry.body.velocity.x;
+            const vy = bEntry.body.velocity.y;
+            if (vx * vx + vy * vy > 20.25) {
+              bEntry.scaleX = 1.06;
+              bEntry.scaleY = 0.94;
+            }
           }
 
           if (!aEntry || !bEntry) continue;
           if (aEntry.merged || bEntry.merged) continue;
           if (aEntry.type !== bEntry.type) continue;
-          if (aEntry.type >= watermelonIndex) continue;
 
           aEntry.merged = true;
           bEntry.merged = true;
@@ -1277,7 +1769,7 @@
             bEntry,
             mx: (aEntry.body.position.x + bEntry.body.position.x) * 0.5,
             my: (aEntry.body.position.y + bEntry.body.position.y) * 0.5,
-            nextTypeIdx: aEntry.type + 1
+            sameTypeIdx: aEntry.type
           });
         }
       });
@@ -1286,56 +1778,91 @@
         if (pendingMerges.length === 0) return;
         const watermelonIndex = FRUITS.length - 1;
         const batch = pendingMerges.splice(0, pendingMerges.length);
-        let triggeredWatermelon = false;
+        let triggeredSpecialCard = false;
+        let specialReasonText = "";
 
         for (let i = 0; i < batch.length; i++) {
-          const { aEntry, bEntry, mx, my, nextTypeIdx } = batch[i];
-          const nextDef = FRUITS[nextTypeIdx];
+          const { aEntry, bEntry, mx, my, sameTypeIdx } = batch[i];
 
           World.remove(world, aEntry.body);
           World.remove(world, bEntry.body);
           fruitEntries = fruitEntries.filter((item) => item !== aEntry && item !== bEntry);
 
-          createFruitBody(nextTypeIdx, mx, my, 0.75, 0.65, 1.08, 0.92);
+          // Kombo sayacı
+          comboCount = comboResetTimer > 0 ? comboCount + 1 : 1;
+          comboResetTimer = 2.1;
+          const comboBonus = comboCount > 1 ? Math.min(120, (comboCount - 1) * 12) : 0;
+
+          // İKİ KARPUZ BİRLEŞİRSE: Büyük kutlama ile ikisi de patlar, kutuda yer açılır!
+          if (sameTypeIdx === watermelonIndex) {
+            const megaGain = 1000 + comboBonus;
+            score += megaGain;
+            watermelonCount += 1;
+            shakeCharges += 1;
+            updateShakeButtonUI();
+
+            playRewardChime();
+            spawnMergeSparks(mx, my, "#e14b64", 22);
+            spawnMergeSparks(mx, my, "#16a34a", 18);
+            addScreenShake(7.5, 0.35);
+
+            popups.push({
+              x: mx,
+              y: my - 16,
+              text: `🍉 ÇİFT KARPUZ! +${megaGain} ❤️ +1 🔀`,
+              alpha: 1.35
+            });
+
+            triggeredSpecialCard = true;
+            specialReasonText = "🍉 Çift Karpuz Sürprizi!";
+            continue;
+          }
+
+          const nextTypeIdx = sameTypeIdx + 1;
+          const nextDef = FRUITS[nextTypeIdx];
+          createFruitBody(nextTypeIdx, mx, my, 0.75, 0.65, 1.08, 0.92, 0);
 
           const isWatermelon = nextTypeIdx === watermelonIndex;
-          const gained = nextDef.score + (isWatermelon ? 250 : 0);
+          const gained = nextDef.score + (isWatermelon ? 300 : 0) + comboBonus;
           score += gained;
+
           if (isWatermelon) {
             watermelonCount += 1;
-            triggeredWatermelon = true;
+            shakeCharges += 1;
+            updateShakeButtonUI();
+            triggeredSpecialCard = true;
+            specialReasonText = "🍉 Karpuz Yaptın Sevgilim!";
           }
-          persistScore(score);
-          updateHUD();
-          playMergeTone(nextTypeIdx);
+
+          playMergeTone(nextTypeIdx, comboCount);
           spawnMergeSparks(mx, my, nextDef.base);
           addScreenShake(Math.min(4.2, 1.1 + nextTypeIdx * 0.22), 0.14);
 
+          const comboLabel = comboCount >= 2 ? ` (${comboCount}x Kombo!)` : "";
           popups.push({
             x: mx,
             y: my - 12,
-            text: isWatermelon ? `+${gained} 🎉` : `+${gained}`,
+            text: isWatermelon ? `🍉 +${gained} 🎉` : `+${gained}${comboLabel}`,
             alpha: 1
           });
         }
 
-        if (triggeredWatermelon && unlockedSurprises < SURPRISES.length) {
-          const cardIdx = unlockedSurprises;
-          unlockedSurprises += 1;
-          clearPendingSurpriseTimer();
-          surpriseTimer = setTimeout(() => {
-            surpriseTimer = null;
-            if (gameState === "playing") {
-              openSurpriseCard(cardIdx, false);
-            }
-          }, 520);
+        updateHUD();
+        autoSaveCooldown = 0.25;
+
+        if (triggeredSpecialCard) {
+          while (score >= nextNoteScoreTarget) {
+            nextNoteScoreTarget += NOTE_STEP_SCORE;
+          }
+          unlockNextLoveNote(specialReasonText);
         } else {
-          checkScoreMilestones();
+          checkScoreProgressForNote();
         }
       }
 
       canvas.addEventListener("pointerdown", (e) => {
         if (gameState !== "playing") return;
+        canvasLeft = canvas.getBoundingClientRect().left;
         isPointerDown = true;
         dropX = clientToX(e.clientX);
       });
@@ -1362,6 +1889,16 @@
       });
 
       startBtn.addEventListener("click", () => {
+        syncMusic();
+        const saved = readSavedBoardState();
+        if (saved) {
+          resumeSavedGame(saved);
+        } else {
+          startNewGame();
+        }
+      });
+
+      newGameFromStartBtn.addEventListener("click", () => {
         syncMusic();
         startNewGame();
       });
@@ -1390,11 +1927,27 @@
           dropCooldown = Math.max(0, dropCooldown - dt);
         }
 
-        const clampedDt = Math.min(dt, 0.025);
+        if (comboResetTimer > 0) {
+          comboResetTimer = Math.max(0, comboResetTimer - dt);
+          if (comboResetTimer === 0) {
+            comboCount = 0;
+          }
+        }
+
+        if (autoSaveCooldown > 0) {
+          autoSaveCooldown = Math.max(0, autoSaveCooldown - dt);
+          if (autoSaveCooldown === 0) {
+            saveBoardState();
+          }
+        }
+
+        const clampedDt = Math.min(dt, 0.022);
         Engine.update(engine, clampedDt * 1000);
         flushPendingMerges();
 
         let anyAbove = false;
+        const settleSpeedSq = SETTLE_SPEED * SETTLE_SPEED;
+
         for (let i = 0; i < fruitEntries.length; i++) {
           const item = fruitEntries[i];
           item.age += clampedDt;
@@ -1405,8 +1958,9 @@
           item.scaleY += (1 - item.scaleY) * Math.min(1, clampedDt * 14);
 
           const r = FRUITS[item.type].radius;
-          const speed = Math.hypot(item.body.velocity.x, item.body.velocity.y);
-          if (item.age > 1.0 && speed < SETTLE_SPEED && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
+          const vx = item.body.velocity.x;
+          const vy = item.body.velocity.y;
+          if (item.age > 1.0 && (vx * vx + vy * vy) < settleSpeedSq && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
             anyAbove = true;
           }
         }
@@ -1433,96 +1987,45 @@
 
         for (let i = popups.length - 1; i >= 0; i--) {
           popups[i].y -= 36 * clampedDt;
-          popups[i].alpha -= clampedDt * 1.35;
+          popups[i].alpha -= clampedDt * 1.25;
           if (popups[i].alpha <= 0) {
             popups.splice(i, 1);
           }
         }
       }
 
-      function drawGlossyFruit(f) {
-        const def = FRUITS[f.type];
-        const r = f.radius * (f.spawnScale || 1);
+      // iPhone 11'de sıfır vektör maliyetiyle çalışan %100 drawImage tabanlı çizim
+      function drawCachedFruit(type, x, y, targetRadius, rotation, spawnScale, scaleX, scaleY) {
+        const sprite = fruitSpriteCache[type];
+        if (!sprite) return;
+
+        const r = targetRadius * (spawnScale || 1);
         if (r <= 1) return;
 
-        const sx = f.scaleX || 1;
-        const sy = f.scaleY || 1;
+        const sx = scaleX || 1;
+        const sy = scaleY || 1;
+        const ratio = r / sprite.baseRadius;
 
         ctx.save();
-        ctx.translate(f.x, f.y);
-        ctx.scale(sx, sy);
+        ctx.translate(x, y);
+        ctx.scale(sx * ratio, sy * ratio);
 
-        ctx.beginPath();
-        ctx.arc(0, r * 0.08, r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(44, 32, 24, 0.12)";
-        ctx.fill();
-
-        ctx.save();
-        ctx.rotate(f.rotation || 0);
-
-        const grad = ctx.createRadialGradient(-r * 0.32, -r * 0.34, r * 0.12, 0, 0, r);
-        grad.addColorStop(0, def.light);
-        grad.addColorStop(0.62, def.base);
-        grad.addColorStop(1, def.dark);
-
-        ctx.beginPath();
-        ctx.arc(0, 0, r, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-        ctx.lineWidth = Math.max(2, r * 0.05);
-        ctx.strokeStyle = def.dark;
-        ctx.stroke();
-
-        if (def.name === "Karpuz") {
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(0, 0, r - 2, 0, Math.PI * 2);
-          ctx.clip();
-          ctx.strokeStyle = "rgba(20, 83, 45, 0.5)";
-          ctx.lineWidth = Math.max(3, r * 0.07);
-          for (let s = -2; s <= 2; s++) {
-            ctx.beginPath();
-            ctx.arc(s * r * 0.34, 0, r * 0.92, -Math.PI * 0.45, Math.PI * 0.45);
-            ctx.stroke();
-          }
-          ctx.restore();
+        if (shadowSpriteCanvas) {
+          const sr = sprite.baseRadius * 1.1;
+          ctx.drawImage(shadowSpriteCanvas, -sr, -sr + sprite.baseRadius * 0.08, sr * 2, sr * 2);
         }
 
-        ctx.beginPath();
-        ctx.ellipse(-r * 0.34, -r * 0.36, r * 0.25, r * 0.13, -0.65, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255, 255, 255, 0.68)";
-        ctx.fill();
+        if (rotation) {
+          ctx.rotate(rotation);
+        }
 
-        const eyeOffsetX = r * 0.32;
-        const eyeY = -r * 0.04;
-        const eyeR = Math.max(1.8, r * 0.075);
-
-        ctx.fillStyle = "#231712";
-        ctx.beginPath();
-        ctx.arc(-eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
-        ctx.arc(eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "rgba(255, 255, 255, 0.38)";
-        ctx.beginPath();
-        ctx.ellipse(-eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
-        ctx.ellipse(eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = "#231712";
-        ctx.lineWidth = Math.max(1.7, r * 0.058);
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.arc(0, eyeY + r * 0.06, r * 0.22, 0.15 * Math.PI, 0.85 * Math.PI);
-        ctx.stroke();
-
-        ctx.restore();
+        ctx.drawImage(sprite.canvas, -sprite.half, -sprite.half, sprite.size, sprite.size);
         ctx.restore();
       }
 
       function render() {
-        resizeCanvas(false);
-        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = bgGradient || "#fffcf7";
+        ctx.fillRect(0, 0, width, height);
 
         ctx.save();
         if (shakeTime > 0) {
@@ -1546,14 +2049,7 @@
         ctx.textBaseline = "middle";
         ctx.fillText("SIRADAKİ", 14, 18);
 
-        drawGlossyFruit({
-          x: 33,
-          y: 42,
-          radius: 15,
-          type: nextType,
-          rotation: 0,
-          spawnScale: 1
-        });
+        drawCachedFruit(nextType, 33, 42, 15, 0, 1, 1, 1);
 
         if (gameState === "playing") {
           const curDef = FRUITS[currentType];
@@ -1567,28 +2063,30 @@
           ctx.stroke();
           ctx.setLineDash([]);
 
-          drawGlossyFruit({
-            x: dropX,
-            y: SPAWN_Y,
-            radius: curDef.radius,
-            type: currentType,
-            rotation: 0,
-            spawnScale: dropCooldown > 0 ? 0.78 : 1
-          });
+          drawCachedFruit(
+            currentType,
+            dropX,
+            SPAWN_Y,
+            curDef.radius,
+            0,
+            dropCooldown > 0 ? 0.78 : 1,
+            1,
+            1
+          );
         }
 
         for (let i = 0; i < fruitEntries.length; i++) {
           const item = fruitEntries[i];
-          drawGlossyFruit({
-            x: item.body.position.x,
-            y: item.body.position.y,
-            radius: FRUITS[item.type].radius,
-            type: item.type,
-            rotation: item.body.angle,
-            spawnScale: item.spawnScale,
-            scaleX: item.scaleX,
-            scaleY: item.scaleY
-          });
+          drawCachedFruit(
+            item.type,
+            item.body.position.x,
+            item.body.position.y,
+            FRUITS[item.type].radius,
+            item.body.angle,
+            item.spawnScale,
+            item.scaleX,
+            item.scaleY
+          );
         }
 
         for (let i = 0; i < sparks.length; i++) {
@@ -1602,8 +2100,8 @@
 
         for (let i = 0; i < popups.length; i++) {
           const p = popups[i];
-          ctx.globalAlpha = Math.max(0, p.alpha);
-          ctx.font = "800 16px -apple-system, sans-serif";
+          ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
+          ctx.font = "800 15px -apple-system, sans-serif";
           ctx.textAlign = "center";
           ctx.fillStyle = "#e14b64";
           ctx.fillText(p.text, p.x, p.y);
@@ -1624,6 +2122,7 @@
       const confettiCanvas = document.getElementById("confettiCanvas");
       const cCtx = confettiCanvas.getContext("2d");
       let particles = [];
+      let confettiAnimating = false;
 
       function resizeConfetti() {
         confettiCanvas.width = window.innerWidth;
@@ -1635,7 +2134,7 @@
       function launchConfetti() {
         const colors = ["#e14b64", "#f59e0b", "#10b981", "#0891b2", "#c026d3"];
         particles = [];
-        for (let i = 0; i < 65; i++) {
+        for (let i = 0; i < 55; i++) {
           particles.push({
             x: Math.random() * confettiCanvas.width,
             y: -20 - Math.random() * 140,
@@ -1648,6 +2147,10 @@
             color: colors[i % colors.length],
             life: 1
           });
+        }
+        if (!confettiAnimating) {
+          confettiAnimating = true;
+          requestAnimationFrame(renderConfetti);
         }
       }
 
@@ -1673,13 +2176,18 @@
           cCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
           cCtx.restore();
         }
-        requestAnimationFrame(renderConfetti);
+
+        if (particles.length > 0) {
+          requestAnimationFrame(renderConfetti);
+        } else {
+          confettiAnimating = false;
+        }
       }
 
+      setupStartModalOptions();
       updateShakeButtonUI();
       updateHUD();
       requestAnimationFrame(loop);
-      requestAnimationFrame(renderConfetti);
     })();
   </script>
 </body>
