@@ -286,7 +286,6 @@
       color: var(--muted);
     }
 
-    /* Yan boşluksuz, oranına göre dengeli fotoğraf çerçevesi */
     .photo-frame {
       width: auto;
       max-width: 100%;
@@ -448,7 +447,7 @@
     <div class="modal-card">
       <div class="hero-emoji">🍉</div>
       <h2 class="modal-title">Kutu Doldu!</h2>
-      <p class="modal-sub" id="gameOverSub">Harika oynadın Özgem.</p>
+      <p class="modal-sub" id="gameOverSub">Kutu sınır çizgisini geçti Özgem.</p>
       <button class="btn-primary" id="retryLevelBtn">Bu Bölümü Tekrar Oyna</button>
     </div>
   </div>
@@ -474,17 +473,17 @@
       setStrawberryIcon();
 
       const FRUITS = [
-        { name: "Kiraz",     radius: 21, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
-        { name: "Çilek",     radius: 28, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
-        { name: "Üzüm",      radius: 36, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
-        { name: "Mandalina", radius: 45, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
-        { name: "Portakal",  radius: 54, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
-        { name: "Elma",      radius: 64, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
-        { name: "Armut",     radius: 74, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
-        { name: "Şeftali",   radius: 85, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
-        { name: "Ananas",    radius: 96, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
-        { name: "Kavun",     radius: 108, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
-        { name: "Karpuz",    radius: 120, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
+        { name: "Kiraz",     radius: 23, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
+        { name: "Çilek",     radius: 30, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
+        { name: "Üzüm",      radius: 39, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
+        { name: "Mandalina", radius: 48, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
+        { name: "Portakal",  radius: 58, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
+        { name: "Elma",      radius: 69, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
+        { name: "Armut",     radius: 80, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
+        { name: "Şeftali",   radius: 92, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
+        { name: "Ananas",    radius: 104, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
+        { name: "Kavun",     radius: 116, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
+        { name: "Karpuz",    radius: 128, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
       ];
 
       const PHOTOS = [
@@ -495,9 +494,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v6";
-      const KEY_LEVEL = "ozgem_saved_level_v6";
-      const KEY_SCORE = "ozgem_saved_score_v6";
+      const KEY_BEST = "ozgem_best_v8";
+      const KEY_LEVEL = "ozgem_saved_level_v8";
+      const KEY_SCORE = "ozgem_saved_score_v8";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -616,7 +615,6 @@
       let shakeIntensity = 0;
       let nextBodyId = 1;
 
-      // Düşecek meyve tavan boşluğuyla ferah durur; sınır çizgisi altında net ayrışır
       const SPAWN_Y = 52;
       const TOP_LINE_Y = 108;
 
@@ -626,11 +624,11 @@
       }
 
       function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Kolay", gravity: 980 };
-        if (lvl === 2) return { tag: "Orta Kolay", gravity: 1020 };
-        if (lvl === 3) return { tag: "Orta", gravity: 1060 };
-        if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1100 };
-        return { tag: `${lvl}. Seviye Zor`, gravity: Math.min(1220, 1100 + (lvl - 4) * 25) };
+        if (lvl === 1) return { tag: "Kolay · Akıcı", gravity: 1020 };
+        if (lvl === 2) return { tag: "Orta Kolay", gravity: 1060 };
+        if (lvl === 3) return { tag: "Orta", gravity: 1100 };
+        if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1140 };
+        return { tag: `${lvl}. Seviye Zor`, gravity: Math.min(1260, 1140 + (lvl - 4) * 25) };
       }
 
       function updateHUD() {
@@ -691,18 +689,18 @@
 
       function pickSpawnFruit() {
         if (level === 1) {
-          const pool = [0, 0, 1, 1, 2, 2, 3];
+          const pool = [1, 1, 2, 2, 3, 3, 4];
           return pool[Math.floor(Math.random() * pool.length)];
         }
         if (level === 2) {
-          const pool = [0, 1, 1, 2, 2, 3, 3, 4];
+          const pool = [1, 2, 2, 3, 3, 4, 4];
           return pool[Math.floor(Math.random() * pool.length)];
         }
         if (level === 3) {
-          const pool = [1, 1, 2, 2, 3, 3, 4, 4];
+          const pool = [1, 2, 3, 3, 4, 4, 5];
           return pool[Math.floor(Math.random() * pool.length)];
         }
-        const pool = [1, 2, 2, 3, 3, 4, 4, 5];
+        const pool = [2, 2, 3, 3, 4, 4, 5];
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
@@ -723,12 +721,13 @@
             vx: 0,
             vy: 0,
             radius: def.radius,
-            rotation: (Math.random() - 0.5) * 0.35,
+            rotation: (Math.random() - 0.5) * 0.25,
             vr: 0,
             scaleX: 1,
             scaleY: 1,
             merged: false,
-            spawnScale: 1
+            spawnScale: 1,
+            age: 2
           });
         }
       }
@@ -825,7 +824,7 @@
         gameState = "gameover";
         persistProgress(level, score);
         document.getElementById("gameOverSub").textContent =
-          `${level}. bölümde ${score} puana ulaştın Özgem. Bölümün korundu, aynı bölümden devam edebilirsin.`;
+          `${level}. bölümde kutu doldu Özgem (${score} puan). Bölümün korundu, aynı bölümden devam edebilirsin.`;
         gameOverOverlay.classList.add("active");
       }
 
@@ -849,19 +848,20 @@
           x,
           y: SPAWN_Y,
           vx: 0,
-          vy: 18,
+          vy: 24,
           radius: r,
           rotation: 0,
-          vr: (Math.random() - 0.5) * 1.3,
-          scaleX: 0.95,
-          scaleY: 1.05,
+          vr: 0,
+          scaleX: 0.96,
+          scaleY: 1.04,
           merged: false,
-          spawnScale: 0.72
+          spawnScale: 0.72,
+          age: 0
         });
 
         currentType = nextType;
         nextType = pickSpawnFruit();
-        dropCooldown = 0.3;
+        dropCooldown = 0.28;
       }
 
       canvas.addEventListener("pointerdown", (e) => {
@@ -924,20 +924,22 @@
         }
 
         const gravity = getDifficultyInfo(level).gravity;
-        const damping = 0.992;
+        const damping = 0.985;
         const floorY = height - 10;
 
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
-          const weightFactor = 1 - Math.min(0.65, f.type * 0.06);
-          const bounce = 0.22 * weightFactor + 0.06;
+          f.age = (f.age || 0) + dt;
+
+          const weightFactor = 1 - Math.min(0.75, f.type * 0.075);
+          const bounce = 0.14 * weightFactor + 0.02;
 
           if (f.spawnScale < 1) {
-            f.spawnScale = Math.min(1, f.spawnScale + dt * 7.5);
+            f.spawnScale = Math.min(1, f.spawnScale + dt * 8);
           }
 
-          f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 15);
-          f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 15);
+          f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 16);
+          f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 16);
 
           f.vy += gravity * dt;
           f.vx *= damping;
@@ -946,32 +948,38 @@
           f.x += f.vx * dt;
           f.y += f.vy * dt;
 
-          f.vr = ((f.vx / Math.max(16, f.radius)) * 0.85 * weightFactor) + f.vr * 0.9;
+          // Yavaşlayan veya oturan meyvelerin dönmesini hızla durdur
+          const speed = Math.hypot(f.vx, f.vy);
+          if (speed < 28) {
+            f.vr *= 0.65;
+            if (Math.abs(f.vr) < 0.04) {
+              f.vr = 0;
+            }
+          } else {
+            f.vr = ((f.vx / Math.max(24, f.radius)) * 0.35 * weightFactor) + f.vr * 0.72;
+          }
           f.rotation += f.vr * dt;
 
           if (f.x - f.radius < 8) {
             f.x = 8 + f.radius;
             f.vx = Math.abs(f.vx) * bounce;
-            f.scaleX = 0.93;
-            f.scaleY = 1.05;
           } else if (f.x + f.radius > width - 8) {
             f.x = width - 8 - f.radius;
             f.vx = -Math.abs(f.vx) * bounce;
-            f.scaleX = 0.93;
-            f.scaleY = 1.05;
           }
 
           if (f.y + f.radius > floorY) {
             const impactVy = f.vy;
             f.y = floorY - f.radius;
             if (f.vy > 0) {
-              f.vy = -f.vy * bounce;
-              if (impactVy > 210) {
-                f.scaleX = 1.07;
-                f.scaleY = 0.93;
+              f.vy = impactVy > 90 ? -f.vy * bounce : 0;
+              if (impactVy > 240) {
+                f.scaleX = 1.06;
+                f.scaleY = 0.94;
               }
             }
-            f.vx *= 0.88;
+            f.vx *= 0.78;
+            if (Math.abs(f.vx) < 8) f.vx = 0;
           }
         }
 
@@ -1015,15 +1023,16 @@
                     type: nextTypeIdx,
                     x: mx,
                     y: my,
-                    vx: (a.vx + b.vx) * 0.2,
-                    vy: -105,
+                    vx: (a.vx + b.vx) * 0.12,
+                    vy: -85,
                     radius: nextDef.radius,
                     rotation: 0,
-                    vr: (Math.random() - 0.5) * 1.4,
-                    scaleX: 1.11,
-                    scaleY: 0.89,
+                    vr: 0,
+                    scaleX: 1.09,
+                    scaleY: 0.91,
                     merged: false,
-                    spawnScale: 0.72
+                    spawnScale: 0.72,
+                    age: 0.35
                   });
 
                   const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
@@ -1065,11 +1074,11 @@
                 const ny = dy / dist;
                 const overlap = minDist - dist;
 
-                const massA = Math.pow(a.radius, 1.4);
-                const massB = Math.pow(b.radius, 1.4);
+                const massA = Math.pow(a.radius, 1.5);
+                const massB = Math.pow(b.radius, 1.5);
                 const totalMass = massA + massB;
-                const moveA = (massB / totalMass) * 0.88;
-                const moveB = (massA / totalMass) * 0.88;
+                const moveA = (massB / totalMass) * 0.85;
+                const moveB = (massA / totalMass) * 0.85;
 
                 a.x -= nx * overlap * moveA;
                 a.y -= ny * overlap * moveA;
@@ -1080,11 +1089,11 @@
                 const rvy = b.vy - a.vy;
                 const velAlongNormal = rvx * nx + rvy * ny;
                 if (velAlongNormal < 0) {
-                  const impulse = -(1 + 0.14) * velAlongNormal * 0.5;
-                  a.vx -= impulse * nx * (massB / totalMass) * 1.4;
-                  a.vy -= impulse * ny * (massB / totalMass) * 1.4;
-                  b.vx += impulse * nx * (massA / totalMass) * 1.4;
-                  b.vy += impulse * ny * (massA / totalMass) * 1.4;
+                  const impulse = -(1 + 0.06) * velAlongNormal * 0.45;
+                  a.vx -= impulse * nx * (massB / totalMass) * 1.1;
+                  a.vy -= impulse * ny * (massB / totalMass) * 1.1;
+                  b.vx += impulse * nx * (massA / totalMass) * 1.1;
+                  b.vy += impulse * ny * (massA / totalMass) * 1.1;
                 }
               }
             }
@@ -1117,8 +1126,7 @@
         let anyAbove = false;
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
-          const settled = f.y > SPAWN_Y + 26 && Math.hypot(f.vx, f.vy) < 42 && f.spawnScale >= 0.98;
-          if (settled && f.y - f.radius < TOP_LINE_Y - 4) {
+          if ((f.age || 0) > 0.65 && f.y - f.radius < TOP_LINE_Y) {
             anyAbove = true;
             break;
           }
@@ -1126,11 +1134,11 @@
 
         if (anyAbove) {
           dangerTimer += dt;
-          if (dangerTimer > 1.55) {
+          if (dangerTimer > 1.25) {
             triggerGameOver();
           }
         } else {
-          dangerTimer = Math.max(0, dangerTimer - dt * 2.2);
+          dangerTimer = Math.max(0, dangerTimer - dt * 2.5);
         }
       }
 
@@ -1225,17 +1233,15 @@
           ctx.translate(dx, dy);
         }
 
-        // Üst sınır çizgisi
         ctx.setLineDash([6, 6]);
         ctx.lineWidth = 1.6;
-        ctx.strokeStyle = dangerTimer > 0.2 ? "rgba(225, 75, 100, 0.88)" : "rgba(180, 145, 120, 0.45)";
+        ctx.strokeStyle = dangerTimer > 0.15 ? "rgba(225, 75, 100, 0.9)" : "rgba(180, 145, 120, 0.45)";
         ctx.beginPath();
         ctx.moveTo(12, TOP_LINE_Y);
         ctx.lineTo(width - 12, TOP_LINE_Y);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Sıradaki meyve önizlemesi
         ctx.fillStyle = "#7d6757";
         ctx.font = "700 10px -apple-system, sans-serif";
         ctx.textAlign = "left";
@@ -1251,7 +1257,6 @@
           spawnScale: 1
         });
 
-        // Aktif düşecek meyve
         if (gameState === "playing") {
           const curDef = FRUITS[currentType];
 
