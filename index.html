@@ -9,6 +9,7 @@
   <meta name="theme-color" content="#fdf4e7" />
   <title>Özgem</title>
   <link id="apple-icon" rel="apple-touch-icon" href="" />
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
   <style>
     :root {
       --bg: #fdf4e7;
@@ -456,6 +457,8 @@
 
   <script>
     (function () {
+      const { Engine, World, Bodies, Body, Events } = Matter;
+
       function setStrawberryIcon() {
         const c = document.createElement("canvas");
         c.width = 180;
@@ -472,18 +475,19 @@
       }
       setStrawberryIcon();
 
+      // Orijinal Suika oranlarına yakın, mobil kutuyla uyumlu meyve boyutları
       const FRUITS = [
-        { name: "Kiraz",     radius: 22, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
-        { name: "Çilek",     radius: 29, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
-        { name: "Üzüm",      radius: 37, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
-        { name: "Mandalina", radius: 46, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
-        { name: "Portakal",  radius: 55, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
-        { name: "Elma",      radius: 65, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
-        { name: "Armut",     radius: 75, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
-        { name: "Şeftali",   radius: 86, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
-        { name: "Ananas",    radius: 97, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
-        { name: "Kavun",     radius: 108, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
-        { name: "Karpuz",    radius: 120, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
+        { name: "Kiraz",     radius: 17, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },
+        { name: "Çilek",     radius: 23, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },
+        { name: "Üzüm",      radius: 30, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },
+        { name: "Mandalina", radius: 37, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },
+        { name: "Portakal",  radius: 45, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },
+        { name: "Elma",      radius: 54, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },
+        { name: "Armut",     radius: 63, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 },
+        { name: "Şeftali",   radius: 73, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 },
+        { name: "Ananas",    radius: 83, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 },
+        { name: "Kavun",     radius: 94, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },
+        { name: "Karpuz",    radius: 106, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }
       ];
 
       const PHOTOS = [
@@ -494,9 +498,10 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v15";
-      const KEY_LEVEL = "ozgem_saved_level_v15";
-      const KEY_SCORE = "ozgem_saved_score_v15";
+      // Kalıcı kayıt anahtarları
+      const KEY_BEST = "ozgem_best";
+      const KEY_LEVEL = "ozgem_saved_level";
+      const KEY_SCORE = "ozgem_saved_score";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -607,7 +612,14 @@
       let gameState = "start";
       let levelCardTimer = null;
 
-      let fruits = [];
+      const engine = Engine.create({
+        positionIterations: 8,
+        velocityIterations: 6
+      });
+      const world = engine.world;
+
+      let walls = [];
+      let fruitEntries = []; // { body, type, spawnScale, age, merged }
       let popups = [];
       let sparks = [];
       let dropX = 180;
@@ -618,10 +630,11 @@
       let dangerTimer = 0;
       let shakeTime = 0;
       let shakeIntensity = 0;
-      let nextBodyId = 1;
 
       const SPAWN_Y = 52;
       const TOP_LINE_Y = 108;
+      const WALL_THICKNESS = 48;
+      const FLOOR_Y_OFFSET = 10;
 
       function clearPendingLevelTimer() {
         if (levelCardTimer !== null) {
@@ -636,11 +649,11 @@
       }
 
       function getDifficultyInfo(lvl) {
-        if (lvl === 1) return { tag: "Çok Kolay", gravity: 960 };
-        if (lvl === 2) return { tag: "Kolay", gravity: 1020 };
-        if (lvl === 3) return { tag: "Orta", gravity: 1080 };
-        if (lvl === 4) return { tag: "Zorlayıcı", gravity: 1140 };
-        return { tag: `Zor (${lvl}. Bölüm)`, gravity: Math.min(1260, 1140 + (lvl - 4) * 28) };
+        if (lvl === 1) return { tag: "Çok Kolay", gravityY: 1.05 };
+        if (lvl === 2) return { tag: "Kolay", gravityY: 1.12 };
+        if (lvl === 3) return { tag: "Orta", gravityY: 1.18 };
+        if (lvl === 4) return { tag: "Zorlayıcı", gravityY: 1.24 };
+        return { tag: `Zor (${lvl}. Bölüm)`, gravityY: Math.min(1.4, 1.24 + (lvl - 4) * 0.03) };
       }
 
       function updateHUD() {
@@ -673,6 +686,37 @@
         });
       }
 
+      function rebuildBounds() {
+        if (walls.length > 0) {
+          World.remove(world, walls);
+          walls = [];
+        }
+        const floorY = height - FLOOR_Y_OFFSET;
+        const leftWall = Bodies.rectangle(
+          8 - WALL_THICKNESS / 2,
+          height / 2,
+          WALL_THICKNESS,
+          height * 2,
+          { isStatic: true, friction: 0.3, restitution: 0.05 }
+        );
+        const rightWall = Bodies.rectangle(
+          width - 8 + WALL_THICKNESS / 2,
+          height / 2,
+          WALL_THICKNESS,
+          height * 2,
+          { isStatic: true, friction: 0.3, restitution: 0.05 }
+        );
+        const floor = Bodies.rectangle(
+          width / 2,
+          floorY + WALL_THICKNESS / 2,
+          width + WALL_THICKNESS * 2,
+          WALL_THICKNESS,
+          { isStatic: true, friction: 0.45, restitution: 0.05 }
+        );
+        walls = [leftWall, rightWall, floor];
+        World.add(world, walls);
+      }
+
       function resizeCanvas(forceReset) {
         const rect = canvas.getBoundingClientRect();
         const w = Math.round(rect.width);
@@ -692,8 +736,10 @@
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
+        rebuildBounds();
+
         if (forceReset) {
-          const r = FRUITS[currentType] ? FRUITS[currentType].radius : 22;
+          const r = FRUITS[currentType] ? FRUITS[currentType].radius : 17;
           const pad = Math.max(14, r);
           dropX = Math.max(pad, Math.min(width - pad, dropX || width / 2));
         }
@@ -702,6 +748,35 @@
       window.addEventListener("resize", () => resizeCanvas(true));
       window.addEventListener("orientationchange", () => setTimeout(() => resizeCanvas(true), 120));
       resizeCanvas(true);
+
+      function createFruitBody(typeIdx, x, y, spawnScale, age) {
+        const def = FRUITS[typeIdx];
+        const body = Bodies.circle(x, y, def.radius, {
+          restitution: 0.08,
+          friction: 0.28,
+          frictionStatic: 0.35,
+          frictionAir: 0.012,
+          density: 0.0012 * (1 + typeIdx * 0.08)
+        });
+        const entry = {
+          body,
+          type: typeIdx,
+          spawnScale: spawnScale ?? 1,
+          age: age ?? 0,
+          merged: false
+        };
+        body.plugin = { fruitEntry: entry };
+        fruitEntries.push(entry);
+        World.add(world, body);
+        return entry;
+      }
+
+      function clearAllFruits() {
+        for (let i = 0; i < fruitEntries.length; i++) {
+          World.remove(world, fruitEntries[i].body);
+        }
+        fruitEntries = [];
+      }
 
       function pickSpawnFruit() {
         if (level === 1) {
@@ -722,29 +797,14 @@
 
       function seedInitialFruits(lvl) {
         if (lvl <= 1) return;
-        const count = Math.min(6, lvl + 1);
-        const floorY = height - 10;
-        const usableW = Math.max(80, width - 32);
+        const count = Math.min(5, lvl + 1);
+        const floorY = height - FLOOR_Y_OFFSET;
+        const usableW = Math.max(80, width - 36);
         for (let i = 0; i < count; i++) {
           const t = Math.min(4, ((i * 2 + lvl) % 5));
           const def = FRUITS[t];
-          const x = 16 + ((i + 0.5) / count) * usableW;
-          fruits.push({
-            id: nextBodyId++,
-            type: t,
-            x,
-            y: floorY - def.radius,
-            vx: 0,
-            vy: 0,
-            radius: def.radius,
-            rotation: (Math.random() - 0.5) * 0.25,
-            vr: 0,
-            scaleX: 1,
-            scaleY: 1,
-            merged: false,
-            spawnScale: 1,
-            age: 3
-          });
+          const x = 18 + ((i + 0.5) / count) * usableW;
+          createFruitBody(t, x, floorY - def.radius - 2, 1, 3);
         }
       }
 
@@ -775,13 +835,15 @@
         persistProgress(level, score);
 
         levelCompleted = false;
-        fruits = [];
+        clearAllFruits();
         popups = [];
         sparks = [];
         dangerTimer = 0;
         dropCooldown = 0;
         shakeTime = 0;
         isPointerDown = false;
+        engine.gravity.y = getDifficultyInfo(level).gravityY;
+
         seedInitialFruits(level);
         currentType = pickSpawnFruit();
         nextType = pickSpawnFruit();
@@ -862,27 +924,76 @@
         const pad = Math.max(14, r);
         const x = Math.max(pad, Math.min(width - pad, xPos));
 
-        fruits.push({
-          id: nextBodyId++,
-          type: currentType,
-          x,
-          y: SPAWN_Y,
-          vx: 0,
-          vy: 45,
-          radius: r,
-          rotation: 0,
-          vr: 0,
-          scaleX: 0.96,
-          scaleY: 1.04,
-          merged: false,
-          spawnScale: 0.85,
-          age: 0
-        });
+        const entry = createFruitBody(currentType, x, SPAWN_Y, 0.85, 0);
+        Body.setVelocity(entry.body, { x: 0, y: 1.5 });
 
         currentType = nextType;
         nextType = pickSpawnFruit();
         dropCooldown = 0.28;
       }
+
+      // Matter.js çarpışma birleştirme olayı
+      Events.on(engine, "collisionStart", (event) => {
+        if (gameState !== "playing") return;
+        const watermelonIndex = FRUITS.length - 1;
+        const pairs = event.pairs;
+
+        for (let i = 0; i < pairs.length; i++) {
+          const aEntry = pairs[i].bodyA.plugin && pairs[i].bodyA.plugin.fruitEntry;
+          const bEntry = pairs[i].bodyB.plugin && pairs[i].bodyB.plugin.fruitEntry;
+          if (!aEntry || !bEntry) continue;
+          if (aEntry.merged || bEntry.merged) continue;
+          if (aEntry.type !== bEntry.type) continue;
+          if (aEntry.type >= watermelonIndex) continue;
+
+          aEntry.merged = true;
+          bEntry.merged = true;
+
+          const mx = (aEntry.body.position.x + bEntry.body.position.x) * 0.5;
+          const my = (aEntry.body.position.y + bEntry.body.position.y) * 0.5;
+          const nextTypeIdx = aEntry.type + 1;
+          const nextDef = FRUITS[nextTypeIdx];
+
+          World.remove(world, aEntry.body);
+          World.remove(world, bEntry.body);
+          fruitEntries = fruitEntries.filter((item) => item !== aEntry && item !== bEntry);
+
+          createFruitBody(nextTypeIdx, mx, my, 0.75, 0.65);
+
+          const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
+          score += gained;
+          persistProgress(level, score);
+          savedLevel = level;
+          savedScore = score;
+          updateHUD();
+          playMergeTone(nextTypeIdx);
+          spawnMergeSparks(mx, my, nextDef.base);
+          addScreenShake(Math.min(4.0, 1.1 + nextTypeIdx * 0.22), 0.12);
+
+          popups.push({
+            x: mx,
+            y: my - 12,
+            text: `+${gained}`,
+            alpha: 1
+          });
+
+          if (!levelCompleted && nextTypeIdx === watermelonIndex) {
+            levelCompleted = true;
+            const completedLvl = level;
+            const nextSavedLvl = completedLvl + 1;
+            persistProgress(nextSavedLvl, score);
+            savedLevel = nextSavedLvl;
+            savedScore = score;
+            addScreenShake(4.8, 0.2);
+            levelCardTimer = setTimeout(() => {
+              levelCardTimer = null;
+              if (gameState === "playing") {
+                openLevelCard(completedLvl, false);
+              }
+            }, 520);
+          }
+        }
+      });
 
       canvas.addEventListener("pointerdown", (e) => {
         if (gameState !== "playing") return;
@@ -948,282 +1059,51 @@
           dropCooldown = Math.max(0, dropCooldown - dt);
         }
 
-        const gravity = getDifficultyInfo(level).gravity;
-        const floorY = height - 10;
-        const leftWall = 8;
-        const rightWall = width - 8;
+        // Sabit zaman adımıyla fizik motorunu ilerlet
+        const clampedDt = Math.min(dt, 0.025);
+        Engine.update(engine, clampedDt * 1000);
 
-        for (let i = 0; i < fruits.length; i++) {
-          const f = fruits[i];
-          f.age = (f.age || 0) + dt;
-
-          if (f.spawnScale < 1) {
-            f.spawnScale = Math.min(1, f.spawnScale + dt * 7.5);
+        let anyAbove = false;
+        for (let i = 0; i < fruitEntries.length; i++) {
+          const item = fruitEntries[i];
+          item.age += clampedDt;
+          if (item.spawnScale < 1) {
+            item.spawnScale = Math.min(1, item.spawnScale + clampedDt * 7.5);
           }
 
-          f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 15);
-          f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 15);
-
-          f.vy += gravity * dt;
-
-          // Hafif hava direnci
-          f.vx *= Math.pow(0.92, dt * 60);
-          f.vy *= Math.pow(0.992, dt * 60);
-
-          f.x += f.vx * dt;
-          f.y += f.vy * dt;
-
-          // Yuvarlanma dönüşü: yatay hız ve zemin/temas sürtünmesiyle uyumlu
-          const rollFromVx = f.vx / Math.max(18, f.radius);
-          f.vr += (rollFromVx - f.vr) * Math.min(1, dt * 12);
-          f.vr *= Math.pow(0.9, dt * 60);
-          if (Math.abs(f.vr) < 0.015) f.vr = 0;
-          f.rotation = (f.rotation || 0) + f.vr * dt;
-
-          // Sol & sağ duvar çarpışması
-          if (f.x - f.radius < leftWall) {
-            f.x = leftWall + f.radius;
-            if (f.vx < 0) {
-              f.vx = -f.vx * 0.18;
-              f.scaleX = 0.92;
-              f.scaleY = 1.07;
-            }
-          } else if (f.x + f.radius > rightWall) {
-            f.x = rightWall - f.radius;
-            if (f.vx > 0) {
-              f.vx = -f.vx * 0.18;
-              f.scaleX = 0.92;
-              f.scaleY = 1.07;
-            }
-          }
-
-          // Zemin çarpışması
-          if (f.y + f.radius > floorY) {
-            f.y = floorY - f.radius;
-            if (f.vy > 60) {
-              f.scaleX = 1.08;
-              f.scaleY = 0.92;
-              f.vy = -f.vy * 0.12;
-              if (Math.abs(f.vy) < 12) f.vy = 0;
-            } else {
-              f.vy = 0;
-            }
-            f.vx *= Math.pow(0.78, dt * 60);
-            if (Math.abs(f.vx) < 3) f.vx = 0;
+          const r = FRUITS[item.type].radius;
+          const speed = Math.hypot(item.body.velocity.x, item.body.velocity.y);
+          if (item.age > 0.85 && speed < 3.2 && item.body.position.y - r * 0.65 < TOP_LINE_Y) {
+            anyAbove = true;
           }
         }
 
-        const toAdd = [];
-        const toRemove = new Set();
-        const watermelonIndex = FRUITS.length - 1;
-
-        // Çarpışma ve birleşme çözümü
-        const iterations = 6;
-        for (let iter = 0; iter < iterations; iter++) {
-          for (let i = 0; i < fruits.length; i++) {
-            if (toRemove.has(fruits[i].id)) continue;
-            for (let j = i + 1; j < fruits.length; j++) {
-              if (toRemove.has(fruits[j].id)) continue;
-
-              const a = fruits[i];
-              const b = fruits[j];
-              const dx = b.x - a.x;
-              const dy = b.y - a.y;
-              const minDist = a.radius + b.radius;
-              const distSq = dx * dx + dy * dy;
-
-              if (distSq < minDist * minDist) {
-                if (
-                  iter === 0 &&
-                  a.type === b.type &&
-                  !a.merged &&
-                  !b.merged &&
-                  a.type < watermelonIndex
-                ) {
-                  a.merged = true;
-                  b.merged = true;
-                  toRemove.add(a.id);
-                  toRemove.add(b.id);
-
-                  const nextTypeIdx = a.type + 1;
-                  const nextDef = FRUITS[nextTypeIdx];
-                  const mx = (a.x + b.x) * 0.5;
-                  const my = (a.y + b.y) * 0.5;
-                  const avgVx = (a.vx + b.vx) * 0.25;
-
-                  toAdd.push({
-                    id: nextBodyId++,
-                    type: nextTypeIdx,
-                    x: mx,
-                    y: my,
-                    vx: avgVx,
-                    vy: -18,
-                    radius: nextDef.radius,
-                    rotation: 0,
-                    vr: avgVx / Math.max(20, nextDef.radius),
-                    scaleX: 1.09,
-                    scaleY: 0.91,
-                    merged: false,
-                    spawnScale: 0.72,
-                    age: 0.6
-                  });
-
-                  const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
-                  score += gained;
-                  persistProgress(level, score);
-                  savedLevel = level;
-                  savedScore = score;
-                  updateHUD();
-                  playMergeTone(nextTypeIdx);
-                  spawnMergeSparks(mx, my, nextDef.base);
-                  addScreenShake(Math.min(4.2, 1.2 + nextTypeIdx * 0.25), 0.12);
-
-                  popups.push({
-                    x: mx,
-                    y: my - 12,
-                    text: `+${gained}`,
-                    alpha: 1
-                  });
-
-                  if (!levelCompleted && nextTypeIdx === watermelonIndex) {
-                    levelCompleted = true;
-                    const completedLvl = level;
-                    const nextSavedLvl = completedLvl + 1;
-                    persistProgress(nextSavedLvl, score);
-                    savedLevel = nextSavedLvl;
-                    savedScore = score;
-                    addScreenShake(5.0, 0.22);
-                    levelCardTimer = setTimeout(() => {
-                      levelCardTimer = null;
-                      if (gameState === "playing") {
-                        openLevelCard(completedLvl, false);
-                      }
-                    }, 520);
-                  }
-                  continue;
-                }
-
-                const dist = Math.sqrt(distSq) || 0.0001;
-                const nx = dx / dist;
-                const ny = dy / dist;
-                const overlap = minDist - dist;
-
-                const massA = Math.pow(a.radius, 1.5);
-                const massB = Math.pow(b.radius, 1.5);
-                const totalMass = massA + massB;
-                const ratioA = massB / totalMass;
-                const ratioB = massA / totalMass;
-
-                // Pozisyon düzeltmesi (iterasyon başına yumuşak dağıtım)
-                const corrPercent = 0.75;
-                const corrX = nx * overlap * corrPercent;
-                const corrY = ny * overlap * corrPercent;
-
-                a.x -= corrX * ratioA;
-                a.y -= corrY * ratioA;
-                b.x += corrX * ratioB;
-                b.y += corrY * ratioB;
-
-                // Göreceli hız normal bileşeni (sadece ilk iterasyonda impulse uygula)
-                if (iter === 0) {
-                  const rvx = b.vx - a.vx;
-                  const rvy = b.vy - a.vy;
-                  const velAlongNormal = rvx * nx + rvy * ny;
-
-                  if (velAlongNormal < 0) {
-                    const restitution = 0.14;
-                    const jImpulse = (-(1 + restitution) * velAlongNormal) / (1 / massA + 1 / massB);
-                    const impulseX = jImpulse * nx;
-                    const impulseY = jImpulse * ny;
-
-                    a.vx -= impulseX / massA;
-                    a.vy -= impulseY / massA;
-                    b.vx += impulseX / massB;
-                    b.vy += impulseY / massB;
-
-                    // Teğetsel sürtünme ve kayma hissi
-                    const tx = -ny;
-                    const ty = nx;
-                    const velAlongTangent = rvx * tx + rvy * ty;
-                    const friction = 0.18;
-                    const jt = (-velAlongTangent * friction) / (1 / massA + 1 / massB);
-
-                    a.vx -= (jt * tx) / massA;
-                    a.vy -= (jt * ty) / massA;
-                    b.vx += (jt * tx) / massB;
-                    b.vy += (jt * ty) / massB;
-
-                    // Eğimli yüzeyden doğal yuvarlanma eğilimi
-                    if (Math.abs(nx) > 0.25 && ny < 0.7) {
-                      a.vr -= nx * 1.4;
-                      b.vr += nx * 1.4;
-                    }
-                  }
-                }
-              }
-            }
+        if (anyAbove) {
+          dangerTimer += clampedDt;
+          if (dangerTimer > 1.2) {
+            triggerGameOver();
           }
-        }
-
-        // Son iterasyondan sonra duvar/zemin sınırlarını tekrar güvenceye al
-        for (let i = 0; i < fruits.length; i++) {
-          const f = fruits[i];
-          if (f.x - f.radius < leftWall) {
-            f.x = leftWall + f.radius;
-            if (f.vx < 0) f.vx = 0;
-          } else if (f.x + f.radius > rightWall) {
-            f.x = rightWall - f.radius;
-            if (f.vx > 0) f.vx = 0;
-          }
-          if (f.y + f.radius > floorY) {
-            f.y = floorY - f.radius;
-            if (f.vy > 0) f.vy = 0;
-          }
-          if (Math.abs(f.vx) < 2) f.vx = 0;
-          if (Math.abs(f.vy) < 2) f.vy = 0;
-        }
-
-        if (toRemove.size > 0 || toAdd.length > 0) {
-          fruits = fruits.filter((f) => !toRemove.has(f.id)).concat(toAdd);
+        } else {
+          dangerTimer = Math.max(0, dangerTimer - clampedDt * 1.8);
         }
 
         for (let i = sparks.length - 1; i >= 0; i--) {
           const s = sparks[i];
-          s.x += s.vx * dt;
-          s.y += s.vy * dt;
-          s.vy += 280 * dt;
-          s.life -= dt * 2.5;
+          s.x += s.vx * clampedDt;
+          s.y += s.vy * clampedDt;
+          s.vy += 280 * clampedDt;
+          s.life -= clampedDt * 2.5;
           if (s.life <= 0) {
             sparks.splice(i, 1);
           }
         }
 
         for (let i = popups.length - 1; i >= 0; i--) {
-          popups[i].y -= 36 * dt;
-          popups[i].alpha -= dt * 1.35;
+          popups[i].y -= 36 * clampedDt;
+          popups[i].alpha -= clampedDt * 1.35;
           if (popups[i].alpha <= 0) {
             popups.splice(i, 1);
           }
-        }
-
-        // Üst sınır çizgisi kontrolü (yerleşmiş/yavaşlamış meyveler için)
-        let anyAbove = false;
-        for (let i = 0; i < fruits.length; i++) {
-          const f = fruits[i];
-          const speed = Math.hypot(f.vx, f.vy);
-          if ((f.age || 0) > 0.75 && speed < 140 && f.y - f.radius * 0.65 < TOP_LINE_Y) {
-            anyAbove = true;
-            break;
-          }
-        }
-
-        if (anyAbove) {
-          dangerTimer += dt;
-          if (dangerTimer > 1.2) {
-            triggerGameOver();
-          }
-        } else {
-          dangerTimer = Math.max(0, dangerTimer - dt * 1.8);
         }
       }
 
@@ -1232,12 +1112,8 @@
         const r = f.radius * (f.spawnScale || 1);
         if (r <= 1) return;
 
-        const sx = f.scaleX || 1;
-        const sy = f.scaleY || 1;
-
         ctx.save();
         ctx.translate(f.x, f.y);
-        ctx.scale(sx, sy);
 
         ctx.beginPath();
         ctx.arc(0, r * 0.08, r, 0, Math.PI * 2);
@@ -1364,8 +1240,16 @@
           });
         }
 
-        for (let i = 0; i < fruits.length; i++) {
-          drawGlossyFruit(fruits[i]);
+        for (let i = 0; i < fruitEntries.length; i++) {
+          const item = fruitEntries[i];
+          drawGlossyFruit({
+            x: item.body.position.x,
+            y: item.body.position.y,
+            radius: FRUITS[item.type].radius,
+            type: item.type,
+            rotation: item.body.angle,
+            spawnScale: item.spawnScale
+          });
         }
 
         for (let i = 0; i < sparks.length; i++) {
