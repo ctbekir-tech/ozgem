@@ -494,9 +494,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v10";
-      const KEY_LEVEL = "ozgem_saved_level_v10";
-      const KEY_SCORE = "ozgem_saved_score_v10";
+      const KEY_BEST = "ozgem_best_v11";
+      const KEY_LEVEL = "ozgem_saved_level_v11";
+      const KEY_SCORE = "ozgem_saved_score_v11";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -606,6 +606,7 @@
       let popups = [];
       let sparks = [];
       let dropX = 180;
+      let dropDir = 1;
       let currentType = 0;
       let nextType = 1;
       let dropCooldown = 0;
@@ -762,10 +763,11 @@
         dangerTimer = 0;
         dropCooldown = 0;
         shakeTime = 0;
+        dropDir = 1;
         seedInitialFruits(level);
         currentType = pickSpawnFruit();
         nextType = pickSpawnFruit();
-        dropX = width / 2;
+        dropX = width * 0.42;
         gameState = "playing";
         updateHUD();
 
@@ -838,15 +840,17 @@
         const def = FRUITS[currentType];
         const r = def.radius;
         const pad = Math.max(14, r);
-        const x = Math.max(pad, Math.min(width - pad, dropX));
+        const nudge = dropDir * 9;
+        dropDir = -dropDir;
+        const x = Math.max(pad, Math.min(width - pad, dropX + nudge));
 
         fruits.push({
           id: nextBodyId++,
           type: currentType,
           x,
           y: SPAWN_Y,
-          vx: 0,
-          vy: 24,
+          vx: nudge * 4.5,
+          vy: 26,
           radius: r,
           scaleX: 0.96,
           scaleY: 1.04,
@@ -1006,7 +1010,7 @@
                     type: nextTypeIdx,
                     x: mx,
                     y: my,
-                    vx: (a.vx + b.vx) * 0.15,
+                    vx: (a.vx + b.vx) * 0.15 + (mx < width / 2 ? -24 : 24),
                     vy: -75,
                     radius: nextDef.radius,
                     scaleX: 1.09,
@@ -1055,10 +1059,9 @@
                 const ny = dy / dist;
                 const overlap = minDist - dist;
 
-                // Tam dikey üst üste binmelerde yana kaymayı tetikleyerek kuleleşmeyi önle
                 let adjNx = nx;
-                if (Math.abs(nx) < 0.08 && Math.abs(ny) > 0.92) {
-                  adjNx = (a.id % 2 === 0 ? 1 : -1) * 0.18;
+                if (Math.abs(nx) < 0.12 && Math.abs(ny) > 0.88) {
+                  adjNx = (a.id % 2 === 0 ? 1 : -1) * 0.28;
                 }
 
                 const massA = Math.pow(a.radius, 1.35);
@@ -1072,11 +1075,13 @@
                 b.x += adjNx * overlap * moveB;
                 b.y += ny * overlap * moveB;
 
-                // Üstteki meyve altındakinin eğimine göre yana yuvarlansın
+                // Üstteki meyveyi yatay eğime göre yana doğru kaydırarak kuleleşmeyi önle
                 if (a.y < b.y) {
-                  a.vx += adjNx * overlap * 16;
+                  const sign = Math.abs(dx) < 2 ? (a.id % 2 === 0 ? -1 : 1) : (dx > 0 ? -1 : 1);
+                  a.vx += sign * Math.max(14, overlap * 26);
                 } else {
-                  b.vx -= adjNx * overlap * 16;
+                  const sign = Math.abs(dx) < 2 ? (b.id % 2 === 0 ? 1 : -1) : (dx > 0 ? 1 : -1);
+                  b.vx += sign * Math.max(14, overlap * 26);
                 }
 
                 const rvx = b.vx - a.vx;
