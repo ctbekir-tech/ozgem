@@ -494,9 +494,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v13";
-      const KEY_LEVEL = "ozgem_saved_level_v13";
-      const KEY_SCORE = "ozgem_saved_score_v13";
+      const KEY_BEST = "ozgem_best_v14";
+      const KEY_LEVEL = "ozgem_saved_level_v14";
+      const KEY_SCORE = "ozgem_saved_score_v14";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -680,7 +680,11 @@
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
-        dropX = Math.max(36, Math.min(width - 36, dropX || width / 2));
+        if (forceReset) {
+          const r = FRUITS[currentType] ? FRUITS[currentType].radius : 22;
+          const pad = Math.max(14, r);
+          dropX = Math.max(pad, Math.min(width - pad, dropX || width / 2));
+        }
       }
 
       window.addEventListener("resize", () => resizeCanvas(true));
@@ -835,13 +839,13 @@
         return Math.max(pad, Math.min(width - pad, clientX - rect.left));
       }
 
-      // Nişan alınan noktadan düz ve kontrollü düşüş (sağa sola fırlatma yok)
-      function dropFruit() {
+      // Bırakılan noktadan tam dikey düşüş başlatır
+      function dropFruitAt(xPos) {
         if (gameState !== "playing" || dropCooldown > 0) return;
         const def = FRUITS[currentType];
         const r = def.radius;
         const pad = Math.max(14, r);
-        const x = Math.max(pad, Math.min(width - pad, dropX));
+        const x = Math.max(pad, Math.min(width - pad, xPos));
 
         fruits.push({
           id: nextBodyId++,
@@ -857,7 +861,8 @@
           scaleY: 1.03,
           merged: false,
           spawnScale: 0.78,
-          age: 0
+          age: 0,
+          freeFall: true
         });
 
         currentType = nextType;
@@ -882,8 +887,9 @@
         if (!isPointerDown) return;
         isPointerDown = false;
         if (gameState === "playing") {
-          dropX = clientToX(e.clientX);
-          dropFruit();
+          const finalX = clientToX(e.clientX);
+          dropX = finalX;
+          dropFruitAt(finalX);
         }
       });
 
@@ -939,15 +945,21 @@
           f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 16);
           f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 16);
 
+          // İlk serbest düşüşte tam düz inmesini sağla
+          if (f.freeFall) {
+            f.vx = 0;
+            f.vr = 0;
+          } else {
+            f.vx *= damping;
+          }
+
           f.vy += gravity * dt;
-          f.vx *= damping;
           f.vy *= damping;
 
           f.x += f.vx * dt;
           f.y += f.vy * dt;
 
-          // Yuvarlanma hissi: yatay hıza bağlı doğal dönüş, hız azaldığında yumuşak duruş
-          const targetVr = Math.abs(f.vx) > 10 ? (f.vx / Math.max(22, f.radius)) * 0.45 : 0;
+          const targetVr = !f.freeFall && Math.abs(f.vx) > 10 ? (f.vx / Math.max(22, f.radius)) * 0.45 : 0;
           f.vr += (targetVr - f.vr) * Math.min(1, dt * 10);
           if (Math.abs(f.vx) < 8) {
             f.vr *= 0.8;
@@ -957,14 +969,17 @@
 
           if (f.x - f.radius < 8) {
             f.x = 8 + f.radius;
+            f.freeFall = false;
             if (f.vx < 0) f.vx = -f.vx * 0.14;
           } else if (f.x + f.radius > width - 8) {
             f.x = width - 8 - f.radius;
+            f.freeFall = false;
             if (f.vx > 0) f.vx = -f.vx * 0.14;
           }
 
           if (f.y + f.radius > floorY) {
             f.y = floorY - f.radius;
+            f.freeFall = false;
             if (f.vy > 0) {
               f.vy = 0;
             }
@@ -991,6 +1006,9 @@
               const distSq = dx * dx + dy * dy;
 
               if (distSq < minDist * minDist) {
+                a.freeFall = false;
+                b.freeFall = false;
+
                 if (
                   iter === 0 &&
                   a.type === b.type &&
@@ -1022,7 +1040,8 @@
                     scaleY: 0.93,
                     merged: false,
                     spawnScale: 0.78,
-                    age: 0.5
+                    age: 0.5,
+                    freeFall: false
                   });
 
                   const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
@@ -1080,7 +1099,6 @@
                 b.x += adjNx * overlap * moveB;
                 b.y += ny * overlap * moveB;
 
-                // Doğal eğim yuvarlanması (zıplama itmesi vermeden)
                 if (a.y < b.y && Math.abs(adjNx) > 0.14) {
                   a.vx += -adjNx * Math.min(24, overlap * 12);
                 } else if (b.y < a.y && Math.abs(adjNx) > 0.14) {
@@ -1091,7 +1109,6 @@
           }
         }
 
-        // Yerleşmiş meyvelerdeki mikro titremeleri temizle
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
           if (Math.abs(f.vx) < 4) f.vx = 0;
