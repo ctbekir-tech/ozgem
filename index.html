@@ -473,19 +473,19 @@
       }
       setStrawberryIcon();
 
-      // Orijinal 11 Meyve Sırası ve Dengeli Hacim Oranları
+      // Ardışık meyvelerin renkleri asla birbirine karışmayacak şekilde net ve canlı seçildi
       const FRUITS = [
-        { name: "Kiraz",     radius: 20, light: "#ff859b", base: "#e11d48", dark: "#9f1239", score: 2 },
-        { name: "Çilek",     radius: 27, light: "#ff8fa3", base: "#f43f5e", dark: "#be123c", score: 4 },
-        { name: "Üzüm",      radius: 35, light: "#c084fc", base: "#7e22ce", dark: "#581c87", score: 8 },
-        { name: "Mandalina", radius: 44, light: "#fdba74", base: "#ea580c", dark: "#9a3412", score: 16 },
-        { name: "Portakal",  radius: 53, light: "#fcd34d", base: "#f59e0b", dark: "#b45309", score: 32 },
-        { name: "Elma",      radius: 63, light: "#fca5a5", base: "#dc2626", dark: "#991b1b", score: 64 },
-        { name: "Armut",     radius: 73, light: "#bef264", base: "#65a30d", dark: "#3f6212", score: 128 },
-        { name: "Şeftali",   radius: 84, light: "#fbcfe8", base: "#ec4899", dark: "#9d174d", score: 256 },
-        { name: "Ananas",    radius: 95, light: "#fde047", base: "#eab308", dark: "#a16207", score: 512 },
-        { name: "Kavun",     radius: 107, light: "#d9f99d", base: "#84cc16", dark: "#4d7c0f", score: 1024 },
-        { name: "Karpuz",    radius: 119, light: "#86efac", base: "#16a34a", dark: "#166534", score: 2048 }
+        { name: "Kiraz",     radius: 20, light: "#ff8fab", base: "#e11d48", dark: "#881337", score: 2 },   // Canlı Vişne-Kırmızı
+        { name: "Çilek",     radius: 27, light: "#a3e635", base: "#65a30d", dark: "#365314", score: 4 },   // Taze Fıstık Yeşili (çilek yaprağı/canlı ton ayrımı)
+        { name: "Üzüm",      radius: 35, light: "#c084fc", base: "#7e22ce", dark: "#4c1d95", score: 8 },   // Derin Mor
+        { name: "Mandalina", radius: 44, light: "#fdba74", base: "#f97316", dark: "#9a3412", score: 16 },  // Parlak Turuncu
+        { name: "Portakal",  radius: 53, light: "#fde047", base: "#eab308", dark: "#854d0e", score: 32 },  // Güneş Sarısı
+        { name: "Elma",      radius: 63, light: "#67e8f9", base: "#0891b2", dark: "#164e63", score: 64 },  // Ferah Turkuaz/Mavi-Yeşil ayrımı
+        { name: "Armut",     radius: 73, light: "#fda4af", base: "#f43f5e", dark: "#9f1239", score: 128 }, // Mercan Pembe-Kırmızı
+        { name: "Şeftali",   radius: 84, light: "#f0abfc", base: "#c026d3", dark: "#701a75", score: 256 }, // Tatlı Orkide/Eflatun
+        { name: "Ananas",    radius: 95, light: "#fcd34d", base: "#d97706", dark: "#78350f", score: 512 }, // Altın Kehribar
+        { name: "Kavun",     radius: 107, light: "#6ee7b7", base: "#059669", dark: "#064e3b", score: 1024 },// Zümrüt Yeşili
+        { name: "Karpuz",    radius: 119, light: "#86efac", base: "#16a34a", dark: "#14532d", score: 2048 }// Koyu Karpuz Yeşili + Şerit
       ];
 
       const PHOTOS = [
@@ -496,9 +496,9 @@
         "resim5.jpg"
       ];
 
-      const KEY_BEST = "ozgem_best_v3";
-      const KEY_LEVEL = "ozgem_saved_level_v3";
-      const KEY_SCORE = "ozgem_saved_score_v3";
+      const KEY_BEST = "ozgem_best_v4";
+      const KEY_LEVEL = "ozgem_saved_level_v4";
+      const KEY_SCORE = "ozgem_saved_score_v4";
 
       let bestScore = parseInt(localStorage.getItem(KEY_BEST) || "0", 10) || 0;
       let savedLevel = Math.max(1, parseInt(localStorage.getItem(KEY_LEVEL) || "1", 10) || 1);
@@ -561,18 +561,18 @@
           }
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.type = "sine";
-          const baseFreq = 310 + tier * 36;
+          osc.type = "triangle";
+          const baseFreq = 290 + tier * 38;
           osc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.26, audioCtx.currentTime + 0.1);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.32, audioCtx.currentTime + 0.12);
 
-          gain.gain.setValueAtTime(0.075, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.09, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
 
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start();
-          osc.stop(audioCtx.currentTime + 0.13);
+          osc.stop(audioCtx.currentTime + 0.15);
         } catch (_) {}
       }
 
@@ -613,12 +613,19 @@
       let dropCooldown = 0;
       let isPointerDown = false;
       let dangerTimer = 0;
+      let shakeTime = 0;
+      let shakeIntensity = 0;
       let nextBodyId = 1;
 
       const TOP_LINE_Y = 82;
 
+      function addScreenShake(intensity, duration) {
+        shakeIntensity = Math.max(shakeIntensity, intensity);
+        shakeTime = Math.max(shakeTime, duration);
+      }
+
       function getDifficultyText(lvl) {
-        if (lvl === 1) return "Kolay · Ferah Başlangıç";
+        if (lvl === 1) return "Kolay · Rahat Başlangıç";
         if (lvl === 2) return "Orta Kolay · Isınma";
         if (lvl === 3) return "Orta · Akıcı Tempo";
         if (lvl === 4) return "Zorlayıcı · Dikkatli Yerleşim";
@@ -699,8 +706,10 @@
             vx: 0,
             vy: 0,
             radius: def.radius,
-            rotation: (Math.random() - 0.5) * 0.4,
+            rotation: (Math.random() - 0.5) * 0.35,
             vr: 0,
+            scaleX: 1,
+            scaleY: 1,
             merged: false,
             spawnScale: 1
           });
@@ -708,16 +717,16 @@
       }
 
       function spawnMergeSparks(x, y, color) {
-        const count = Math.min(10, sparks.length > 90 ? 4 : 10);
+        const count = Math.min(12, sparks.length > 90 ? 5 : 12);
         for (let i = 0; i < count; i++) {
           const ang = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.35;
-          const spd = 65 + Math.random() * 110;
+          const spd = 75 + Math.random() * 125;
           sparks.push({
             x,
             y,
             vx: Math.cos(ang) * spd,
-            vy: Math.sin(ang) * spd - 20,
-            r: 3 + Math.random() * 3.5,
+            vy: Math.sin(ang) * spd - 35,
+            r: 3.2 + Math.random() * 3.6,
             color,
             life: 1
           });
@@ -737,6 +746,7 @@
         sparks = [];
         dangerTimer = 0;
         dropCooldown = 0;
+        shakeTime = 0;
         seedInitialFruits(level);
         currentType = pickSpawnFruit();
         nextType = pickSpawnFruit();
@@ -822,17 +832,19 @@
           x,
           y,
           vx: 0,
-          vy: 2,
+          vy: 12,
           radius: r,
           rotation: 0,
-          vr: (Math.random() - 0.5) * 1.2,
+          vr: (Math.random() - 0.5) * 1.4,
+          scaleX: 0.92,
+          scaleY: 1.09,
           merged: false,
-          spawnScale: 0.55
+          spawnScale: 0.65
         });
 
         currentType = nextType;
         nextType = pickSpawnFruit();
-        dropCooldown = 0.36;
+        dropCooldown = 0.34;
       }
 
       canvas.addEventListener("pointerdown", (e) => {
@@ -896,20 +908,28 @@
       function stepPhysics(dt) {
         if (gameState !== "playing") return;
 
+        if (shakeTime > 0) {
+          shakeTime = Math.max(0, shakeTime - dt);
+        }
+
         if (dropCooldown > 0) {
           dropCooldown = Math.max(0, dropCooldown - dt);
         }
 
-        const gravity = 980;
-        const damping = 0.993;
-        const bounce = 0.24;
+        const gravity = 1020;
+        const damping = 0.992;
+        const bounce = 0.28;
         const floorY = height - 10;
 
         for (let i = 0; i < fruits.length; i++) {
           const f = fruits[i];
           if (f.spawnScale < 1) {
-            f.spawnScale = Math.min(1, f.spawnScale + dt * 6.5);
+            f.spawnScale = Math.min(1, f.spawnScale + dt * 7);
           }
+
+          // Yumuşak esneme toparlanması
+          f.scaleX += (1 - f.scaleX) * Math.min(1, dt * 14);
+          f.scaleY += (1 - f.scaleY) * Math.min(1, dt * 14);
 
           f.vy += gravity * dt;
           f.vx *= damping;
@@ -918,21 +938,31 @@
           f.x += f.vx * dt;
           f.y += f.vy * dt;
 
-          // Yuvarlanma dönüşü
-          f.vr = (f.vx / Math.max(14, f.radius)) * 0.85 + f.vr * 0.92;
+          f.vr = (f.vx / Math.max(14, f.radius)) * 0.95 + f.vr * 0.92;
           f.rotation += f.vr * dt;
 
           if (f.x - f.radius < 8) {
             f.x = 8 + f.radius;
             f.vx = Math.abs(f.vx) * bounce;
+            f.scaleX = 0.88;
+            f.scaleY = 1.1;
           } else if (f.x + f.radius > width - 8) {
             f.x = width - 8 - f.radius;
             f.vx = -Math.abs(f.vx) * bounce;
+            f.scaleX = 0.88;
+            f.scaleY = 1.1;
           }
 
           if (f.y + f.radius > floorY) {
+            const impactVy = f.vy;
             f.y = floorY - f.radius;
-            if (f.vy > 0) f.vy = -f.vy * bounce;
+            if (f.vy > 0) {
+              f.vy = -f.vy * bounce;
+              if (impactVy > 180) {
+                f.scaleX = 1.13;
+                f.scaleY = 0.86;
+              }
+            }
             f.vx *= 0.9;
           }
         }
@@ -977,13 +1007,15 @@
                     type: nextTypeIdx,
                     x: mx,
                     y: my,
-                    vx: (a.vx + b.vx) * 0.22,
-                    vy: -75,
+                    vx: (a.vx + b.vx) * 0.24,
+                    vy: -95,
                     radius: nextDef.radius,
                     rotation: 0,
-                    vr: (Math.random() - 0.5) * 1.6,
+                    vr: (Math.random() - 0.5) * 1.8,
+                    scaleX: 1.18,
+                    scaleY: 0.84,
                     merged: false,
-                    spawnScale: 0.65
+                    spawnScale: 0.68
                   });
 
                   const gained = Math.round(nextDef.score * (1 + (level - 1) * 0.15));
@@ -994,6 +1026,7 @@
                   updateHUD();
                   playMergeTone(nextTypeIdx);
                   spawnMergeSparks(mx, my, nextDef.base);
+                  addScreenShake(Math.min(5, 1.5 + nextTypeIdx * 0.35), 0.14);
 
                   popups.push({
                     x: mx,
@@ -1009,11 +1042,12 @@
                     persistProgress(nextSavedLvl, score);
                     savedLevel = nextSavedLvl;
                     savedScore = score;
+                    addScreenShake(6, 0.25);
                     setTimeout(() => {
                       if (gameState === "playing") {
                         openLevelCard(completedLvl, false);
                       }
-                    }, 450);
+                    }, 480);
                   }
                   continue;
                 }
@@ -1036,7 +1070,7 @@
                 const rvy = b.vy - a.vy;
                 const velAlongNormal = rvx * nx + rvy * ny;
                 if (velAlongNormal < 0) {
-                  const impulse = -(1 + 0.16) * velAlongNormal * 0.5;
+                  const impulse = -(1 + 0.18) * velAlongNormal * 0.5;
                   a.vx -= impulse * nx;
                   a.vy -= impulse * ny;
                   b.vx += impulse * nx;
@@ -1055,8 +1089,8 @@
           const s = sparks[i];
           s.x += s.vx * dt;
           s.y += s.vy * dt;
-          s.vy += 260 * dt;
-          s.life -= dt * 2.6;
+          s.vy += 280 * dt;
+          s.life -= dt * 2.5;
           if (s.life <= 0) {
             sparks.splice(i, 1);
           }
@@ -1092,15 +1126,19 @@
 
       function drawGlossyFruit(f) {
         const def = FRUITS[f.type];
-        const r = f.radius * f.spawnScale;
+        const r = f.radius * (f.spawnScale || 1);
         if (r <= 1) return;
+
+        const sx = f.scaleX || 1;
+        const sy = f.scaleY || 1;
 
         ctx.save();
         ctx.translate(f.x, f.y);
+        ctx.scale(sx, sy);
 
         ctx.beginPath();
         ctx.arc(0, r * 0.08, r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(44, 32, 24, 0.11)";
+        ctx.fillStyle = "rgba(44, 32, 24, 0.12)";
         ctx.fill();
 
         ctx.save();
@@ -1115,7 +1153,7 @@
         ctx.arc(0, 0, r, 0, Math.PI * 2);
         ctx.fillStyle = grad;
         ctx.fill();
-        ctx.lineWidth = Math.max(1.8, r * 0.045);
+        ctx.lineWidth = Math.max(2, r * 0.05);
         ctx.strokeStyle = def.dark;
         ctx.stroke();
 
@@ -1124,7 +1162,7 @@
           ctx.beginPath();
           ctx.arc(0, 0, r - 2, 0, Math.PI * 2);
           ctx.clip();
-          ctx.strokeStyle = "rgba(20, 83, 45, 0.45)";
+          ctx.strokeStyle = "rgba(20, 83, 45, 0.5)";
           ctx.lineWidth = Math.max(3, r * 0.07);
           for (let s = -2; s <= 2; s++) {
             ctx.beginPath();
@@ -1135,8 +1173,8 @@
         }
 
         ctx.beginPath();
-        ctx.ellipse(-r * 0.34, -r * 0.36, r * 0.24, r * 0.13, -0.65, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+        ctx.ellipse(-r * 0.34, -r * 0.36, r * 0.25, r * 0.13, -0.65, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.68)";
         ctx.fill();
 
         const eyeOffsetX = r * 0.32;
@@ -1149,14 +1187,14 @@
         ctx.arc(eyeOffsetX, eyeY, eyeR, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = "rgba(255, 120, 140, 0.42)";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.38)";
         ctx.beginPath();
         ctx.ellipse(-eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
         ctx.ellipse(eyeOffsetX * 1.18, eyeY + r * 0.14, r * 0.13, r * 0.075, 0, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.strokeStyle = "#231712";
-        ctx.lineWidth = Math.max(1.6, r * 0.055);
+        ctx.lineWidth = Math.max(1.7, r * 0.058);
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.arc(0, eyeY + r * 0.06, r * 0.22, 0.15 * Math.PI, 0.85 * Math.PI);
@@ -1170,9 +1208,15 @@
         ctx.clearRect(0, 0, width, height);
 
         ctx.save();
+        if (shakeTime > 0) {
+          const dx = (Math.random() - 0.5) * shakeIntensity * 2;
+          const dy = (Math.random() - 0.5) * shakeIntensity * 2;
+          ctx.translate(dx, dy);
+        }
+
         ctx.setLineDash([6, 6]);
         ctx.lineWidth = 1.6;
-        ctx.strokeStyle = dangerTimer > 0.2 ? "rgba(225, 75, 100, 0.82)" : "rgba(180, 145, 120, 0.45)";
+        ctx.strokeStyle = dangerTimer > 0.2 ? "rgba(225, 75, 100, 0.85)" : "rgba(180, 145, 120, 0.45)";
         ctx.beginPath();
         ctx.moveTo(12, TOP_LINE_Y);
         ctx.lineTo(width - 12, TOP_LINE_Y);
@@ -1198,7 +1242,7 @@
           const curDef = FRUITS[currentType];
           const previewY = TOP_LINE_Y - 30;
 
-          ctx.strokeStyle = "rgba(180, 145, 120, 0.28)";
+          ctx.strokeStyle = "rgba(180, 145, 120, 0.3)";
           ctx.lineWidth = 1.5;
           ctx.setLineDash([4, 6]);
           ctx.beginPath();
@@ -1263,7 +1307,7 @@
       resizeConfetti();
 
       function launchConfetti() {
-        const colors = ["#e14b64", "#f59e0b", "#10b981", "#ec4899", "#fb7185"];
+        const colors = ["#e14b64", "#f59e0b", "#10b981", "#0891b2", "#c026d3"];
         particles = [];
         for (let i = 0; i < 65; i++) {
           particles.push({
