@@ -52,86 +52,100 @@
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 6px);
       padding-bottom: calc(var(--safe-bottom) + 8px);
-      padding-left: 12px;
-      padding-right: 12px;
-      gap: 7px;
+      padding-left: 10px;
+      padding-right: 10px;
+      gap: 6px;
     }
 
     .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 4px;
       flex-shrink: 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       min-width: 0;
+      flex: 1 1 auto;
     }
 
     .brand-emoji {
-      font-size: 22px;
+      font-size: 19px;
       line-height: 1;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      border-radius: 8px;
+      transition: transform 0.14s ease, background 0.14s ease;
+    }
+
+    .brand-emoji:active {
+      transform: scale(0.88);
+      background: var(--accent-soft);
     }
 
     .brand-title {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 800;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.35px;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.15;
     }
 
     .stats {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 3px;
       flex-shrink: 0;
     }
 
     .stat-box {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 4px 9px;
+      border-radius: 10px;
+      padding: 3px 6px;
       text-align: center;
-      min-width: 54px;
+      min-width: 42px;
     }
 
     .stat-label {
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.2px;
       color: var(--muted);
       line-height: 1.1;
     }
 
     .stat-value {
-      font-size: 14px;
+      font-size: 12.5px;
       font-weight: 800;
       color: var(--ink);
       line-height: 1.2;
     }
 
     .icon-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
+      width: 29px;
+      height: 29px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--ink);
-      font-size: 15px;
+      font-size: 13.5px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
       position: relative;
+      padding: 0;
     }
 
     .icon-btn:active {
@@ -143,6 +157,24 @@
       cursor: default;
     }
 
+    .shake-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 14px;
+      height: 14px;
+      padding: 0 3px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 8.5px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
     .status-bar {
       display: flex;
       align-items: center;
@@ -150,28 +182,30 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 13px;
-      padding: 6px 11px;
-      font-size: 12.5px;
+      padding: 6px 10px;
+      font-size: 11.5px;
       flex-shrink: 0;
-      gap: 8px;
+      gap: 6px;
     }
 
     .status-pill {
       background: var(--accent-soft);
       color: var(--accent);
       font-weight: 800;
-      padding: 3px 9px;
+      padding: 3px 8px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 11px;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .goal-text {
       color: var(--muted);
       font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      line-height: 1.25;
+      text-align: right;
+      flex: 1 1 auto;
     }
 
     .goal-text strong {
@@ -202,23 +236,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 2px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 13px;
-      padding: 5px 6px;
+      padding: 5px 5px;
       flex-shrink: 0;
       overflow-x: auto;
     }
 
     .chain-dot {
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 800;
       color: #fff;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
@@ -227,16 +261,17 @@
     }
 
     .chain-dot.final {
-      width: 22px;
-      height: 22px;
-      font-size: 11px;
+      width: 21px;
+      height: 21px;
+      font-size: 10.5px;
       box-shadow: 0 0 0 2px var(--accent-soft), inset 0 2px 4px rgba(255, 255, 255, 0.55);
     }
 
     .chain-arrow {
-      font-size: 9px;
+      font-size: 8.5px;
       color: var(--muted);
       opacity: 0.5;
+      flex-shrink: 0;
     }
 
     .overlay {
@@ -248,7 +283,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 16px);
+      padding: calc(var(--safe-top) + 14px) 14px calc(var(--safe-bottom) + 14px);
       z-index: 30;
       opacity: 0;
       pointer-events: none;
@@ -266,40 +301,45 @@
       max-height: 100%;
       overflow-y: auto;
       background: var(--card);
-      border-radius: 26px;
-      padding: 20px 18px;
+      border-radius: 24px;
+      padding: 18px 15px;
       box-shadow: 0 20px 50px rgba(32, 18, 10, 0.25);
       text-align: center;
       border: 1px solid var(--border);
     }
 
     .hero-emoji {
-      font-size: 42px;
+      font-size: 40px;
       line-height: 1.1;
       margin-bottom: 6px;
+      cursor: pointer;
     }
 
     .modal-title {
-      margin: 0 0 4px;
-      font-size: 20px;
+      margin: 0 0 5px;
+      font-size: 18.5px;
       font-weight: 800;
-      letter-spacing: -0.4px;
+      letter-spacing: -0.35px;
+      white-space: normal;
+      word-break: break-word;
     }
 
     .modal-sub {
-      margin: 0 0 12px;
-      font-size: 13px;
+      margin: 0 0 11px;
+      font-size: 12.5px;
       line-height: 1.45;
       color: var(--muted);
+      white-space: normal;
+      word-break: break-word;
     }
 
     .photo-frame {
       width: auto;
       max-width: 100%;
-      max-height: 235px;
-      border-radius: 18px;
+      max-height: 205px;
+      border-radius: 16px;
       overflow: hidden;
-      margin: 0 auto 13px;
+      margin: 0 auto 12px;
       border: 2px solid var(--border);
       background: #f7efe4;
       display: none;
@@ -314,43 +354,98 @@
       width: auto;
       height: auto;
       max-width: 100%;
-      max-height: 235px;
+      max-height: 205px;
       object-fit: contain;
     }
 
     .love-letter {
       background: #fff7f8;
       border: 1px solid #fad3da;
-      border-radius: 18px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
+      border-radius: 16px;
+      padding: 11px 12px;
+      margin-bottom: 13px;
       text-align: left;
-      font-size: 13.5px;
-      line-height: 1.55;
+      font-size: 13px;
+      line-height: 1.5;
       color: #3a2629;
+      white-space: normal;
+      word-break: break-word;
     }
 
     .love-letter strong {
       display: block;
       margin-bottom: 4px;
       color: var(--accent);
-      font-size: 14px;
+      font-size: 13.5px;
+    }
+
+    .progress-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 10px 12px;
+      margin-bottom: 11px;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .progress-box div {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 2px 0;
+    }
+
+    .progress-code {
+      width: 100%;
+      min-height: 60px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fffdf9;
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10.5px;
+      padding: 8px;
+      resize: none;
+      margin-bottom: 8px;
+      user-select: text;
+      -webkit-user-select: text;
     }
 
     .btn-primary {
       width: 100%;
       border: none;
-      border-radius: 16px;
+      border-radius: 15px;
       background: var(--accent);
       color: #ffffff;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
-      padding: 14px 18px;
+      padding: 13px 16px;
       cursor: pointer;
       box-shadow: 0 8px 20px rgba(225, 75, 100, 0.28);
+      white-space: normal;
     }
 
     .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      margin-top: 7px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 11px 14px;
+      cursor: pointer;
+      white-space: normal;
+    }
+
+    .btn-secondary:active {
       transform: scale(0.98);
     }
 
@@ -370,7 +465,7 @@
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <span class="brand-emoji">🍓</span>
+        <span class="brand-emoji" id="topStrawberryBtn" title="Dokununca +1 Titreşim Hakkı" aria-label="Çilek Titreşim Hakkı">🍓</span>
         <span class="brand-title">Güzel Karım Özgem</span>
       </div>
       <div class="stats">
@@ -382,7 +477,10 @@
           <div class="stat-label">Rekor</div>
           <div class="stat-value" id="bestEl">0</div>
         </div>
-        <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla" aria-label="Kutuyu Salla">🔀</button>
+        <button class="icon-btn" id="shakeBtn" title="Kutuyu Salla / Titreşim" aria-label="Kutuyu Salla">
+          🔀<span class="shake-badge" id="shakeBadge">2</span>
+        </button>
+        <button class="icon-btn" id="progressBtn" title="İlerleme ve Hak" aria-label="İlerleme ve Hak">📊</button>
         <button class="icon-btn" id="noteBtn" title="Doğum Günü Notu" aria-label="Doğum Günü Notu">💌</button>
         <button class="icon-btn" id="soundBtn" title="Müzik ve Ses" aria-label="Müzik ve Ses">🔊</button>
       </div>
@@ -403,12 +501,34 @@
   <!-- Açılış Ekranı -->
   <div class="overlay active" id="startOverlay">
     <div class="modal-card">
-      <div class="hero-emoji">🍓</div>
+      <div class="hero-emoji" id="startStrawberryBtn">🍓</div>
       <h1 class="modal-title">Güzel Karım Özgem</h1>
       <p class="modal-sub">
-        İyi ki doğdun sevgilim. Aynı meyveleri birleştirip puan topladıkça ve 🍉 Karpuz yaptıkça doğum günü sürprizlerin açılır!
+        İyi ki doğdun sevgilim. Meyveleri birleştirip puan topladıkça ve 🍉 Karpuz yaptıkça sürpriz kartların açılır.
       </p>
       <button class="btn-primary" id="startBtn">Oyuna Başla</button>
+    </div>
+  </div>
+
+  <!-- İlerleme ve Anlık Salla / Titreşim Hakkı Ekranı -->
+  <div class="overlay" id="progressOverlay">
+    <div class="modal-card">
+      <div class="hero-emoji">📊</div>
+      <h2 class="modal-title">Oyuncu İlerlemesi</h2>
+      <p class="modal-sub">İlerleme özetini kopyalayabilir veya anlık salla/titreşim hakkı verebilirsin.</p>
+
+      <div class="progress-box" id="progressSummaryBox">
+        <div><span>Anlık Puan:</span><strong id="sumScore">0</strong></div>
+        <div><span>En Yüksek Rekor:</span><strong id="sumBest">0</strong></div>
+        <div><span>Yapılan Karpuz:</span><strong id="sumMelon">0</strong></div>
+        <div><span>Açılan Sürpriz:</span><strong id="sumSurprises">0 / 5</strong></div>
+        <div><span>Kalan Salla Hakkı:</span><strong id="sumShake">2</strong></div>
+      </div>
+
+      <textarea class="progress-code" id="progressCodeArea" readonly></textarea>
+      <button class="btn-primary" id="grantShakeBtn">+1 Anlık Salla / Titreşim Hakkı Ver</button>
+      <button class="btn-secondary" id="copyProgressBtn">İlerleme Özetini Kopyala</button>
+      <button class="btn-secondary" id="closeProgressBtn">Kapat</button>
     </div>
   </div>
 
@@ -556,7 +676,10 @@
       const goalText = document.getElementById("goalText");
       const chainStrip = document.getElementById("chainStrip");
 
+      const topStrawberryBtn = document.getElementById("topStrawberryBtn");
+      const startStrawberryBtn = document.getElementById("startStrawberryBtn");
       const startOverlay = document.getElementById("startOverlay");
+      const progressOverlay = document.getElementById("progressOverlay");
       const surpriseOverlay = document.getElementById("surpriseOverlay");
       const gameOverOverlay = document.getElementById("gameOverOverlay");
 
@@ -564,8 +687,20 @@
       const continueGameBtn = document.getElementById("continueGameBtn");
       const retryGameBtn = document.getElementById("retryGameBtn");
       const shakeBtn = document.getElementById("shakeBtn");
-      const soundBtn = document.getElementById("soundBtn");
+      const shakeBadge = document.getElementById("shakeBadge");
+      const progressBtn = document.getElementById("progressBtn");
+      const grantShakeBtn = document.getElementById("grantShakeBtn");
+      const copyProgressBtn = document.getElementById("copyProgressBtn");
+      const closeProgressBtn = document.getElementById("closeProgressBtn");
       const noteBtn = document.getElementById("noteBtn");
+      const soundBtn = document.getElementById("soundBtn");
+
+      const sumScore = document.getElementById("sumScore");
+      const sumBest = document.getElementById("sumBest");
+      const sumMelon = document.getElementById("sumMelon");
+      const sumSurprises = document.getElementById("sumSurprises");
+      const sumShake = document.getElementById("sumShake");
+      const progressCodeArea = document.getElementById("progressCodeArea");
 
       const surpriseEmoji = document.getElementById("surpriseEmoji");
       const surpriseTitle = document.getElementById("surpriseTitle");
@@ -646,6 +781,14 @@
       let gameState = "start";
       let surpriseTimer = null;
       let shakeCharges = 2;
+      let startStrawberryTapCount = 0;
+      let startStrawberryTapTimer = null;
+
+      const params = new URLSearchParams(window.location.search);
+      const bonusFromUrl = parseInt(params.get("shake") || "0", 10);
+      if (Number.isFinite(bonusFromUrl) && bonusFromUrl > 0) {
+        shakeCharges += Math.min(20, bonusFromUrl);
+      }
 
       const engine = Engine.create({
         positionIterations: 8,
@@ -688,29 +831,132 @@
       }
 
       function updateShakeButtonUI() {
+        shakeBadge.textContent = String(shakeCharges);
         shakeBtn.classList.toggle("used", shakeCharges <= 0);
         shakeBtn.title = shakeCharges > 0
           ? `Kutuyu Salla (${shakeCharges} hak kaldı)`
           : "Kutuyu Salla (Hak bitti)";
       }
 
+      function refreshProgressModal() {
+        sumScore.textContent = String(score);
+        sumBest.textContent = String(bestScore);
+        sumMelon.textContent = String(watermelonCount);
+        sumSurprises.textContent = `${unlockedSurprises} / ${SURPRISES.length}`;
+        sumShake.textContent = String(shakeCharges);
+        const stamp = new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+        progressCodeArea.value =
+          `OZGM|${stamp}|P:${score}|R:${bestScore}|K:${watermelonCount}|S:${unlockedSurprises}/${SURPRISES.length}|H:${shakeCharges}`;
+      }
+
+      function grantInstantShakeCharge(amount) {
+        const inc = Math.max(1, amount || 1);
+        shakeCharges += inc;
+        updateShakeButtonUI();
+        refreshProgressModal();
+        if (navigator.vibrate) {
+          try { navigator.vibrate([70, 35, 70]); } catch (_) {}
+        }
+        if (gameState === "playing") {
+          addScreenShake(3.2, 0.16);
+          popups.push({
+            x: Math.max(48, Math.min(width - 48, dropX)),
+            y: TOP_LINE_Y - 14,
+            text: `+${inc} 🔀`,
+            alpha: 1
+          });
+        }
+      }
+
+      topStrawberryBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        grantInstantShakeCharge(1);
+      });
+
+      startStrawberryBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        startStrawberryTapCount += 1;
+        if (startStrawberryTapTimer !== null) {
+          clearTimeout(startStrawberryTapTimer);
+        }
+        startStrawberryTapTimer = setTimeout(() => {
+          startStrawberryTapCount = 0;
+          startStrawberryTapTimer = null;
+        }, 1400);
+
+        if (startStrawberryTapCount >= 5) {
+          startStrawberryTapCount = 0;
+          if (startStrawberryTapTimer !== null) {
+            clearTimeout(startStrawberryTapTimer);
+            startStrawberryTapTimer = null;
+          }
+          gameState = "paused";
+          refreshProgressModal();
+          progressOverlay.classList.add("active");
+        }
+      });
+
       function triggerGentleBoxShake() {
         if (gameState !== "playing" || shakeCharges <= 0) return;
         shakeCharges -= 1;
         updateShakeButtonUI();
-        addScreenShake(4.8, 0.24);
+        addScreenShake(6.8, 0.32);
+        if (navigator.vibrate) {
+          try { navigator.vibrate([140, 45, 180]); } catch (_) {}
+        }
 
         for (let i = 0; i < fruitEntries.length; i++) {
           const b = fruitEntries[i].body;
           const dir = i % 2 === 0 ? 1 : -1;
           Body.setVelocity(b, {
-            x: b.velocity.x + dir * (2.2 + Math.random() * 1.6),
-            y: b.velocity.y - (1.5 + Math.random() * 1.4)
+            x: b.velocity.x + dir * (3.4 + Math.random() * 2.2),
+            y: b.velocity.y - (2.4 + Math.random() * 2.0)
           });
         }
       }
 
       shakeBtn.addEventListener("click", triggerGentleBoxShake);
+
+      progressBtn.addEventListener("click", () => {
+        if (gameState === "start" || gameState === "gameover") return;
+        gameState = "paused";
+        refreshProgressModal();
+        progressOverlay.classList.add("active");
+      });
+
+      grantShakeBtn.addEventListener("click", () => {
+        grantInstantShakeCharge(1);
+        grantShakeBtn.textContent = "+1 Hak Verildi! (Tekrar Basabilirsin)";
+        setTimeout(() => {
+          grantShakeBtn.textContent = "+1 Anlık Salla / Titreşim Hakkı Ver";
+        }, 1200);
+      });
+
+      copyProgressBtn.addEventListener("click", () => {
+        const txt = progressCodeArea.value;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(txt).catch(() => {});
+        }
+        progressCodeArea.select();
+        copyProgressBtn.textContent = "Kopyalandı ✓";
+        setTimeout(() => {
+          copyProgressBtn.textContent = "İlerleme Özetini Kopyala";
+        }, 1200);
+      });
+
+      closeProgressBtn.addEventListener("click", () => {
+        progressOverlay.classList.remove("active");
+        if (gameState === "paused") {
+          gameState = "playing";
+        }
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.shiftKey && (e.key === "S" || e.key === "s")) {
+          e.preventDefault();
+          grantInstantShakeCharge(1);
+        }
+      });
 
       function getNextMilestoneTarget() {
         for (let i = 0; i < SCORE_MILESTONES.length; i++) {
@@ -732,9 +978,9 @@
 
         const nextTarget = getNextMilestoneTarget();
         if (nextTarget !== null) {
-          goalText.innerHTML = `Sürpriz hedefi: <strong>${nextTarget.toLocaleString("tr-TR")} puan</strong> veya <strong>🍉 Karpuz</strong>`;
+          goalText.innerHTML = `Sürpriz: <strong>${nextTarget.toLocaleString("tr-TR")} puan</strong> veya <strong>🍉 Karpuz</strong>`;
         } else {
-          goalText.innerHTML = `Tüm puan sürprizleri açık · <strong>🍉 Karpuz</strong> biriktir`;
+          goalText.innerHTML = `Sürprizler açık · <strong>🍉 Karpuz</strong> biriktir`;
         }
 
         chainStrip.innerHTML = "";
@@ -868,7 +1114,6 @@
         pendingMerges = [];
       }
 
-      // Orijinal Suika Game gibi ilk meyvelerden dengeli ve akıcı düşüş havuzu
       function pickSpawnFruit() {
         const pool = [0, 1, 1, 2, 2, 3, 3, 4];
         return pool[Math.floor(Math.random() * pool.length)];
@@ -899,7 +1144,7 @@
         unlockedSurprises = 0;
         persistScore(score);
 
-        shakeCharges = 2;
+        shakeCharges = 2 + (Number.isFinite(bonusFromUrl) && bonusFromUrl > 0 ? Math.min(20, bonusFromUrl) : 0);
         updateShakeButtonUI();
         clearAllFruits();
         popups = [];
@@ -916,6 +1161,7 @@
         updateHUD();
 
         startOverlay.classList.remove("active");
+        progressOverlay.classList.remove("active");
         surpriseOverlay.classList.remove("active");
         gameOverOverlay.classList.remove("active");
       }
